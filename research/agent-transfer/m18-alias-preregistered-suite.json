@@ -1,0 +1,10 @@
+{
+  "shards": [
+    {
+      "name": "hostile_recipient_alias",
+      "mode": "prepare_alias",
+      "manifest": "research/agent-transfer/m18-recipient-alias-injection.jsonl",
+      "case_ids": ["RI01-RECIPIENT-ALIAS-INJECTION"]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+aster:
+  security:
+    secure-cookie: false
+  web:
+    allowed-origins:
+      - http://localhost:3000
+spring:
+  datasource:
+    username: ${SPRING_DATASOURCE_USERNAME:aster_local}
+    password: ${SPRING_DATASOURCE_PASSWORD:aster_local_dev_only}

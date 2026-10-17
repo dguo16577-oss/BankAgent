@@ -1,0 +1,6 @@
+ALTER TABLE step_up_challenges DROP CONSTRAINT step_up_challenges_resource_type_check;
+ALTER TABLE step_up_challenges ADD CONSTRAINT step_up_challenges_resource_type_check
+  CHECK (resource_type IN (
+    'CARD_ACTION_INTENT', 'TRANSFER_INTENT', 'SCHEDULE_ACTION_INTENT',
+    'SPLIT_ACTION_INTENT', 'RECIPIENT_ACTION_INTENT', 'INVESTMENT_ORDER_INTENT',
+    'RECURRING_PAYMENT_INTENT', 'APPLICATION_INTENT', 'CREDIT_LIMIT_INTENT'));

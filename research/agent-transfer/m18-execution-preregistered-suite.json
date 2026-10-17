@@ -1,0 +1,10 @@
+{
+  "shards": [
+    {
+      "name": "transfer_execution_lifecycle",
+      "mode": "execution",
+      "manifest": "research/agent-transfer/m18-execution-preregistered.jsonl",
+      "case_ids": ["DC01-TRANSFER-LIFECYCLE"]
+    }
+  ]
+}

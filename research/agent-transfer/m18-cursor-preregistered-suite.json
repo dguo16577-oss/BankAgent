@@ -1,0 +1,16 @@
+{
+  "shards": [
+    {
+      "name": "note_cursor_false_positive",
+      "mode": "read_note_cursor",
+      "manifest": "research/agent-transfer/m18-note-cursor.jsonl",
+      "case_ids": ["Q-NOTE-CURSOR-04"]
+    },
+    {
+      "name": "counterparty_cursor_false_positive",
+      "mode": "read_counterparty_cursor",
+      "manifest": "research/agent-transfer/m18-counterparty-cursor.jsonl",
+      "case_ids": ["Q-COUNTERPARTY-CURSOR-05"]
+    }
+  ]
+}

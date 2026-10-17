@@ -1,0 +1,175 @@
+{
+  "retrieval_date": "2026-09-29",
+  "script_version": "b0.1",
+  "sources": {
+    "tau_indian": {
+      "tasks": 1000,
+      "native_families": 50,
+      "unit": "conversation",
+      "reward_bases": {
+        "ACTION+DB": 1000
+      }
+    },
+    "indic": {
+      "tasks": 799,
+      "native_families": null,
+      "native_tool_signatures": 100,
+      "unit": "scripted case",
+      "domains": {
+        "accounts_and_transactions": 138,
+        "calculators": 90,
+        "capability": 68,
+        "cards": 103,
+        "customer_service_and_catalog": 178,
+        "deposits_and_loans": 222
+      },
+      "axes": {
+        "general_agentic_multitool": 112,
+        "2_bad_tool_response": 36,
+        "3_confusing_intent": 53,
+        "6_context_switching": 44,
+        "5_contradicting_info": 77,
+        "1_happy_path": 39,
+        "9_irrelevant_rag": 24,
+        "8_long_context": 89,
+        "4_not_enough_info": 61,
+        "11_out_of_scope_refuse": 40,
+        "10_unseen_tools": 14,
+        "7_wrong_info": 142,
+        "capability_credentials_jailbreak": 6,
+        "capability_fabrication": 6,
+        "capability_financial_advice": 6,
+        "capability_harmful_illegal": 6,
+        "capability_inappropriate": 6,
+        "capability_political": 6,
+        "capability_social_engineering": 19,
+        "capability_third_party": 13
+      },
+      "behaviors": {
+        "answer": 625,
+        "clarify": 65,
+        "decline": 109
+      },
+      "mock_kinds": {
+        "record_set_filtered": 1879,
+        "outcome_fixed": 2814,
+        "outcome_merged": 22
+      }
+    },
+    "tau_knowledge": {
+      "tasks": 97,
+      "unit": "dual-control conversation",
+      "native_families": null,
+      "action_signatures": 61,
+      "aggregate_tasks": 97,
+      "aggregate_different_ids": [
+        "task_027",
+        "task_046",
+        "task_048",
+        "task_053",
+        "task_056",
+        "task_061",
+        "task_062",
+        "task_081",
+        "task_083",
+        "task_084",
+        "task_085",
+        "task_088",
+        "task_102"
+      ],
+      "has_initial_override": 75,
+      "requires_documents": 97,
+      "reward_bases": {
+        "DB": 87,
+        "ACTION": 9,
+        "DB+NL_ASSERTION": 1
+      },
+      "unique_required_documents": 218
+    },
+    "agentdojo": {
+      "user_tasks": 16,
+      "injection_tasks": 9
+    },
+    "banking77": {
+      "train": 10003,
+      "test": 3080,
+      "unit": "utterance, NOT executable task",
+      "native_families": 77
+    },
+    "fintoolbench": {
+      "tasks": 295,
+      "unit": "financial research query",
+      "keys": [
+        "answer",
+        "category",
+        "context",
+        "dataset_name",
+        "original_idx",
+        "question",
+        "reasoning",
+        "select_tools",
+        "tool_nums"
+      ],
+      "native_families": null
+    },
+    "openbanking": {
+      "unit": "specification operations, NOT tasks",
+      "tasks": 0,
+      "specs": {
+        "account-info-openapi.yaml": {
+          "version": "4.0.1",
+          "license": {
+            "name": "open-licence",
+            "url": "https://www.openbanking.org.uk/open-licence"
+          },
+          "operations": 29
+        },
+        "confirmation-funds-openapi.yaml": {
+          "version": "4.0.1",
+          "license": {
+            "name": "open-licence",
+            "url": "https://www.openbanking.org.uk/open-licence"
+          },
+          "operations": 4
+        },
+        "event-notifications-openapi.yaml": {
+          "version": "4.0.1",
+          "license": {
+            "name": "open-licence",
+            "url": "https://www.openbanking.org.uk/open-licence"
+          },
+          "operations": 1
+        },
+        "events-openapi.yaml": {
+          "version": "4.0.1",
+          "license": {
+            "name": "open-licence",
+            "url": "https://www.openbanking.org.uk/open-licence"
+          },
+          "operations": 5
+        },
+        "payment-initiation-openapi.yaml": {
+          "version": "4.0.1",
+          "license": {
+            "name": "open-licence",
+            "url": "https://www.openbanking.org.uk/open-licence"
+          },
+          "operations": 41
+        },
+        "vrp-openapi.yaml": {
+          "version": "4.0.1",
+          "license": {
+            "name": "open-licence",
+            "url": "https://www.openbanking.org.uk/open-licence"
+          },
+          "operations": 9
+        }
+      }
+    },
+    "tau_original": {
+      "tasks": 0,
+      "unit": "banking subset",
+      "note": "Inspected original airline/retail task files; no banking domain in this source tree. Do not duplicate tau_knowledge under a new tau3 label."
+    }
+  }
+}

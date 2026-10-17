@@ -1,0 +1,107 @@
+# M24.1 Critical / High inventory
+
+扫描日期：2026-09-29。每行是一个镜像中的 CVE/package finding；保留扫描器原始评级。处置状态不是公网发布批准。完整运行路径、layer diff ID、初步结论见 [CSV](critical-high.csv)。
+
+| Image    | Severity | CVE            | Package           | Installed                | Scanner fixed version | Status                         |
+| -------- | -------- | -------------- | ----------------- | ------------------------ | --------------------- | ------------------------------ |
+| backend  | CRITICAL | CVE-2026-65182 | tomcat-embed-core | 11.0.24                  | 11.0.25               | UNRESOLVED_PATCH_AVAILABLE     |
+| backend  | CRITICAL | CVE-2026-65905 | tomcat-embed-core | 11.0.24                  | 11.0.25               | UNRESOLVED_PATCH_AVAILABLE     |
+| backend  | CRITICAL | CVE-2026-68525 | tomcat-embed-core | 11.0.24                  | 11.0.25               | UNRESOLVED_PATCH_AVAILABLE     |
+| backend  | HIGH     | CVE-2026-68497 | jackson-databind  | 3.1.5                    | 3.1.6                 | UNRESOLVED_PATCH_AVAILABLE     |
+| postgres | CRITICAL | CVE-2025-68121 | stdlib            | 1.24.6                   | 1.24.13               | UNRESOLVED_REACHABILITY_REVIEW |
+| postgres | CRITICAL | CVE-2026-39821 | stdlib            | 1.24.6                   | 1.25.13               | UNRESOLVED_REACHABILITY_REVIEW |
+| postgres | HIGH     | CVE-2025-58187 | stdlib            | 1.24.6                   | 1.24.9                | UNRESOLVED_REACHABILITY_REVIEW |
+| postgres | HIGH     | CVE-2025-58188 | stdlib            | 1.24.6                   | 1.24.8                | UNRESOLVED_REACHABILITY_REVIEW |
+| postgres | HIGH     | CVE-2025-61723 | stdlib            | 1.24.6                   | 1.24.8                | UNRESOLVED_REACHABILITY_REVIEW |
+| postgres | HIGH     | CVE-2025-61725 | stdlib            | 1.24.6                   | 1.24.8                | UNRESOLVED_REACHABILITY_REVIEW |
+| postgres | HIGH     | CVE-2025-61726 | stdlib            | 1.24.6                   | 1.24.12               | UNRESOLVED_REACHABILITY_REVIEW |
+| postgres | HIGH     | CVE-2025-61729 | stdlib            | 1.24.6                   | 1.24.11               | UNRESOLVED_REACHABILITY_REVIEW |
+| postgres | HIGH     | CVE-2026-25679 | stdlib            | 1.24.6                   | 1.25.8                | UNRESOLVED_REACHABILITY_REVIEW |
+| postgres | HIGH     | CVE-2026-32280 | stdlib            | 1.24.6                   | 1.25.9                | UNRESOLVED_REACHABILITY_REVIEW |
+| postgres | HIGH     | CVE-2026-32281 | stdlib            | 1.24.6                   | 1.25.9                | UNRESOLVED_REACHABILITY_REVIEW |
+| postgres | HIGH     | CVE-2026-32283 | stdlib            | 1.24.6                   | 1.25.9                | UNRESOLVED_REACHABILITY_REVIEW |
+| postgres | HIGH     | CVE-2026-33811 | stdlib            | 1.24.6                   | 1.25.10               | UNRESOLVED_REACHABILITY_REVIEW |
+| postgres | HIGH     | CVE-2026-33814 | stdlib            | 1.24.6                   | 1.25.10               | UNRESOLVED_REACHABILITY_REVIEW |
+| postgres | HIGH     | CVE-2026-33818 | stdlib            | 1.24.6                   | 1.25.13               | UNRESOLVED_REACHABILITY_REVIEW |
+| postgres | HIGH     | CVE-2026-39820 | stdlib            | 1.24.6                   | 1.25.10               | UNRESOLVED_REACHABILITY_REVIEW |
+| postgres | HIGH     | CVE-2026-39822 | stdlib            | 1.24.6                   | 1.25.12               | UNRESOLVED_REACHABILITY_REVIEW |
+| postgres | HIGH     | CVE-2026-39836 | stdlib            | 1.24.6                   | 1.25.10               | UNRESOLVED_REACHABILITY_REVIEW |
+| postgres | HIGH     | CVE-2026-42499 | stdlib            | 1.24.6                   | 1.25.10               | UNRESOLVED_REACHABILITY_REVIEW |
+| postgres | HIGH     | CVE-2026-42504 | stdlib            | 1.24.6                   | 1.25.11               | UNRESOLVED_REACHABILITY_REVIEW |
+| postgres | HIGH     | CVE-2026-56853 | stdlib            | 1.24.6                   | 1.25.13               | UNRESOLVED_REACHABILITY_REVIEW |
+| postgres | HIGH     | CVE-2026-56859 | stdlib            | 1.24.6                   | 1.25.13               | UNRESOLVED_REACHABILITY_REVIEW |
+| postgres | HIGH     | CVE-2026-56862 | stdlib            | 1.24.6                   | 1.25.13               | UNRESOLVED_REACHABILITY_REVIEW |
+| postgres | HIGH     | CVE-2026-86140 | libxml2           | 2.13.9-r2                | not fixed             | UNRESOLVED_NO_VENDOR_FIX       |
+| proxy    | CRITICAL | CVE-2026-10536 | curl              | 8.17.0-r1                | 8.22.0-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | CRITICAL | CVE-2026-11564 | curl              | 8.17.0-r1                | 8.22.0-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | CRITICAL | CVE-2026-11856 | curl              | 8.17.0-r1                | 8.22.0-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | CRITICAL | CVE-2026-18924 | curl              | 8.17.0-r1                | 8.22.0-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | CRITICAL | CVE-2026-19931 | curl              | 8.17.0-r1                | 8.22.0-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | CRITICAL | CVE-2026-31789 | openssl           | 3.5.5-r0                 | 3.5.6-r0              | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | CRITICAL | CVE-2026-34182 | openssl           | 3.5.5-r0                 | 3.5.7-r0              | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | CRITICAL | CVE-2026-42055 | nginx             | 1.28.3-r1                | 1.28.3-r4             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | CRITICAL | CVE-2026-42533 | nginx             | 1.28.3-r1                | 1.28.3-r6             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | CRITICAL | CVE-2026-63073 | openssl           | 3.5.5-r0                 | 3.5.8-r0              | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | CRITICAL | CVE-2026-75803 | openssl           | 3.5.5-r0                 | 3.5.8-r0              | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | CRITICAL | CVE-2026-8924  | curl              | 8.17.0-r1                | 8.22.0-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | CRITICAL | CVE-2026-8925  | curl              | 8.17.0-r1                | 8.22.0-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | CRITICAL | CVE-2026-8926  | curl              | 8.17.0-r1                | 8.22.0-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | CRITICAL | CVE-2026-8927  | curl              | 8.17.0-r1                | 8.22.0-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | CRITICAL | CVE-2026-9079  | curl              | 8.17.0-r1                | 8.22.0-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | CRITICAL | CVE-2026-9256  | nginx             | 1.28.3-r1                | 1.28.3-r2             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-11352 | curl              | 8.17.0-r1                | 8.22.0-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-11586 | curl              | 8.17.0-r1                | 8.22.0-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-12064 | curl              | 8.17.0-r1                | 8.22.0-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-13608 | curl              | 8.17.0-r1                | 8.22.0-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-14456 | openssl           | 3.5.5-r0                 | 3.5.8-r0              | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-14457 | openssl           | 3.5.5-r0                 | 3.5.8-r0              | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-18798 | openssl           | 3.5.5-r0                 | 3.5.8-r0              | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-27135 | nghttp2           | 1.68.0-r0                | 1.68.1                | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-28387 | openssl           | 3.5.5-r0                 | 3.5.6-r0              | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-28388 | openssl           | 3.5.5-r0                 | 3.5.6-r0              | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-28389 | openssl           | 3.5.5-r0                 | 3.5.6-r0              | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-28390 | openssl           | 3.5.5-r0                 | 3.5.6-r0              | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-31790 | openssl           | 3.5.5-r0                 | 3.5.6-r0              | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-33416 | libpng            | 1.6.55-r0                | 1.6.56-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-33630 | c-ares            | 1.34.6-r0                | 1.34.8-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-33636 | libpng            | 1.6.55-r0                | 1.6.56-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-34180 | openssl           | 3.5.5-r0                 | 3.5.7-r0              | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-34181 | openssl           | 3.5.5-r0                 | 3.5.7-r0              | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-34183 | openssl           | 3.5.5-r0                 | 3.5.7-r0              | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-3805  | curl              | 8.17.0-r1                | 8.19.0-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-40200 | musl              | 1.2.5-r21                | 1.2.5-r23             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-42764 | openssl           | 3.5.5-r0                 | 3.5.7-r0              | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-45445 | openssl           | 3.5.5-r0                 | 3.5.7-r0              | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-45447 | openssl           | 3.5.5-r0                 | 3.5.7-r0              | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-49975 | nginx             | 1.28.3-r1                | 1.28.3-r3             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-54874 | openssl           | 3.5.5-r0                 | 3.5.8-r0              | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-56434 | nginx             | 1.28.3-r1                | 1.28.3-r6             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-5773  | curl              | 8.17.0-r1                | 8.20.0-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-60005 | nginx             | 1.28.3-r1                | 1.28.3-r6             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-6276  | curl              | 8.17.0-r1                | 8.20.0-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-63072 | openssl           | 3.5.5-r0                 | 3.5.8-r0              | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-63075 | openssl           | 3.5.5-r0                 | 3.5.8-r0              | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-63076 | openssl           | 3.5.5-r0                 | 3.5.8-r0              | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-66046 | expat             | 2.7.5-r0                 | 2.8.4-r0              | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-7383  | openssl           | 3.5.5-r0                 | 3.5.7-r0              | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-76641 | expat             | 2.7.5-r0                 | 2.8.4-r0              | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-76642 | util-linux        | 2.41.2-r0                | 2.41.6-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-78408 | util-linux        | 2.41.2-r0                | 2.41.6-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-78410 | util-linux        | 2.41.2-r0                | 2.41.6-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-80229 | curl              | 8.17.0-r1                | 8.22.0-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-80230 | curl              | 8.17.0-r1                | 8.22.0-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-80231 | curl              | 8.17.0-r1                | 8.22.0-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-80255 | curl              | 8.17.0-r1                | 8.22.0-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-82208 | curl              | 8.17.0-r1                | 8.22.0-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-82209 | curl              | 8.17.0-r1                | 8.22.0-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-8286  | curl              | 8.17.0-r1                | 8.22.0-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-86140 | libxml2           | 2.13.9-r0                | not fixed             | UNRESOLVED_NO_VENDOR_FIX       |
+| proxy    | HIGH     | CVE-2026-8932  | curl              | 8.17.0-r1                | 8.22.0-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-9076  | openssl           | 3.5.5-r0                 | 3.5.7-r0              | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-9080  | curl              | 8.17.0-r1                | 8.22.0-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-93990 | expat             | 2.7.5-r0                 | 2.8.5-r0              | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-9545  | curl              | 8.17.0-r1                | 8.22.0-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-9546  | curl              | 8.17.0-r1                | 8.22.0-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| proxy    | HIGH     | CVE-2026-9547  | curl              | 8.17.0-r1                | 8.22.0-r0             | UNRESOLVED_PATCH_AVAILABLE     |
+| web      | HIGH     | CVE-2026-82560 | perl              | 5.40.1-6+deb13u1         | not fixed             | NOT_AFFECTED_COMPONENT_ABSENT  |
+| web      | HIGH     | CVE-2026-85091 | zlib              | 1:1.3.dfsg+really1.3.1-1 | not fixed             | UNRESOLVED_NO_VENDOR_FIX       |

@@ -1,0 +1,21 @@
+{
+  "shards": [
+    {
+      "name": "prepare_core_retest",
+      "mode": "prepare",
+      "manifest": "research/agent-transfer/m18-prepare-pilot.jsonl",
+      "case_ids": [
+        "N-PREP-01",
+        "N-PREP-02",
+        "P-PREP-01",
+        "A-AMB-01",
+        "M-CHOICE-01",
+        "MI-AMOUNT-01",
+        "P-NOMATCH-02",
+        "UO-DIRECT-01",
+        "H-NOMATCH-01",
+        "N-PINYIN-03"
+      ]
+    }
+  ]
+}

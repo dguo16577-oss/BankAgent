@@ -1,0 +1,38 @@
+{
+  "images.json": {
+    "sha256": "8809aa0894d6deb8001ec6c5de44d2979f64b211da56890e2e43ce36d6371fb8",
+    "bytes": 4738
+  },
+  "web.sarif.json": {
+    "sha256": "c4badb7375bb06d91fd51166c14dc1151b3f7fa3ecd0cb2d097b0c8ca1907288",
+    "bytes": 166916
+  },
+  "proxy.sarif.json": {
+    "sha256": "310fcacf42dae6df49dbaf160af524620839c78cf0d94400188ff72ac19ee509",
+    "bytes": 435566
+  },
+  "postgres.sarif.json": {
+    "sha256": "078e085200dcaddcd10e23709c8192ea53386bd06a051e3414f85da469948d22",
+    "bytes": 132861
+  },
+  "backend.sarif.json": {
+    "sha256": "4c968a595d0a504fec31027d67c2303ebc539d6ab8ae0cf47e9786927da1710d",
+    "bytes": 684144
+  },
+  "backend.spdx.json": {
+    "sha256": "605e115457345cef9a0ac409ff62ad2c791cd0bb1f895b309937f5231fe80840",
+    "bytes": 3591468
+  },
+  "web-runtime.txt": {
+    "sha256": "23bc5e7588c4ecc620976648d1f0634d81bffa8cefdf8209fbc22ac8c0938e8f",
+    "bytes": 1447
+  },
+  "proxy-runtime.txt": {
+    "sha256": "815d7cd55a07177cb75d5f70a8899b50bc16dfdcd62e259f00363e0e637e138d",
+    "bytes": 6809
+  },
+  "postgres-runtime.txt": {
+    "sha256": "9232ca3503086a43b6df8bd1b5b9a5ae3d569f70e25e435b4ff9254e13dba4c3",
+    "bytes": 167
+  }
+}

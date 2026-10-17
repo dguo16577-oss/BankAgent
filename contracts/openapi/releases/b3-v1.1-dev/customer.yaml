@@ -1,0 +1,5558 @@
+openapi: 3.0.3
+info:
+  title: Banking API
+  version: 1.12.0
+  description:
+    Customer Banking API. Revision 1.12.0 adds one-time scheduled CNY payments with immutable
+    review, amendment, cancellation and internal deterministic execution. Existing operations remain compatible.
+    Public unchanged.
+paths:
+  /customer/applications:
+    get:
+      operationId: listProductApplications
+      summary: List the current customer product applications, newest first
+      x-session-required: true
+      responses:
+        "200":
+          description: Applications
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductApplicationsResponse"
+        "400":
+          description: Request could not be completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Request could not be completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Request could not be completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Request could not be completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Request could not be completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Product does not accept applications
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Request could not be completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+    post:
+      operationId: submitProductApplication
+      summary: Submit a card or personal loan application for review
+      description:
+        Submission is intake only; it never issues a card, approves credit or moves funds.
+        One pending application per customer and product. Exact retries return the same application.
+      x-session-required: true
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 128
+            pattern: ^[A-Za-z0-9_-]{1,128}$
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubmitProductApplicationRequest"
+      responses:
+        "201":
+          description: Application submitted (including idempotent replay)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductApplication"
+        "400":
+          description: Request could not be completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Request could not be completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Request could not be completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Request could not be completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Request could not be completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Product does not accept applications
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Request could not be completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /customer/applications/{applicationId}:
+    get:
+      operationId: getProductApplication
+      summary: Get an owned product application
+      x-session-required: true
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 128
+      responses:
+        "200":
+          description: Application
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductApplication"
+        "400":
+          description: Request could not be completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Request could not be completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Request could not be completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Request could not be completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Request could not be completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Product does not accept applications
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Request could not be completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /customer/session:
+    get:
+      operationId: getSession
+      summary: Get the demo user session
+      responses:
+        "200":
+          description: Session
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Session"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Unexpected service or persistence failure
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-session-required: true
+  /customer/overview:
+    get:
+      operationId: getOverview
+      summary: Get the Web Dashboard read model
+      description:
+        A presentation aggregate, not an Accounts, Cards or Transactions domain API. Optional
+        sections may be omitted; empty arrays mean no items.
+      responses:
+        "200":
+          description: Dashboard snapshot
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Overview"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Unexpected service or persistence failure
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-session-required: true
+  /customer/accounts:
+    get:
+      operationId: listAccounts
+      summary: List accounts (Banking Domain API)
+      responses:
+        "200":
+          description: Accounts and estimated base-currency total
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountsResponse"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          $ref: "#/components/responses/ApiFailure"
+      x-session-required: true
+  /customer/accounts/{accountId}:
+    get:
+      operationId: getAccount
+      summary: Get an account (Banking Domain API)
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: string
+            minLength: 1
+          description: Opaque account identifier.
+      responses:
+        "200":
+          description: Account detail including embedded recent transactions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountDetail"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Account not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          $ref: "#/components/responses/ApiFailure"
+      x-session-required: true
+  /customer/transactions:
+    get:
+      operationId: listTransactions
+      summary: Query transactions (Banking Domain API)
+      description:
+        "Cursor pagination only. Stable order: occurredAt descending, id ascending by code
+        point. Filter before pagination."
+      parameters:
+        - name: accountId
+          in: query
+          schema:
+            type: string
+        - name: from
+          in: query
+          schema:
+            $ref: "#/components/schemas/Timestamp"
+          description: Inclusive occurredAt lower bound.
+        - name: to
+          in: query
+          schema:
+            $ref: "#/components/schemas/Timestamp"
+          description: Exclusive occurredAt upper bound; must be after from.
+        - name: status
+          in: query
+          schema:
+            $ref: "#/components/schemas/TransactionStatus"
+        - name: direction
+          in: query
+          schema:
+            $ref: "#/components/schemas/TransactionDirection"
+        - name: type
+          in: query
+          schema:
+            $ref: "#/components/schemas/TransactionType"
+        - name: category
+          in: query
+          schema:
+            $ref: "#/components/schemas/TransactionCategory"
+        - name: search
+          in: query
+          schema:
+            type: string
+            maxLength: 100
+          description:
+            Trimmed case-insensitive literal substring of title, merchant name or counterparty
+            name.
+        - name: cursor
+          in: query
+          schema:
+            type: string
+            maxLength: 2048
+          description:
+            Opaque continuation token bound to filters and snapshot. Client must not parse or
+            construct.
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 10
+        - name: cardId
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter known card attribution; combines with all other filters before cursor pagination.
+      responses:
+        "200":
+          description: Filtered page
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionPage"
+        "400":
+          description: Invalid query or cursor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          $ref: "#/components/responses/ApiFailure"
+      x-session-required: true
+  /customer/transactions/{transactionId}:
+    get:
+      operationId: getTransaction
+      summary: Get transaction detail
+      parameters:
+        - name: transactionId
+          in: path
+          required: true
+          schema:
+            type: string
+            minLength: 1
+      responses:
+        "200":
+          description: Transaction detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionDetail"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: TRANSACTION_NOT_FOUND
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          $ref: "#/components/responses/ApiFailure"
+      x-session-required: true
+  /customer/recipients:
+    get:
+      operationId: getRecipients
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+            maxLength: 100
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecipientsResponse"
+        "400":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-session-required: true
+    post:
+      operationId: createRecipient
+      summary: createRecipient
+      x-session-required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecipientSummary"
+        "400":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Banking error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Banking error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema:
+            type: string
+            pattern: ^[A-Za-z0-9_-]{1,128}$
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExecuteRecipientActionRequest"
+  /customer/transfer-intents:
+    post:
+      operationId: createTransferIntent
+      description:
+        Validate and persist an immutable review snapshot. Does not debit accounts or create
+        transactions.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTransferIntentRequest"
+      responses:
+        "201":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferIntent"
+        "400":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-session-required: true
+  /customer/transfer-intents/{intentId}:
+    get:
+      operationId: getTransferIntent
+      parameters:
+        - name: intentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferIntent"
+        "400":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-session-required: true
+  /customer/transfers/{transferId}:
+    get:
+      operationId: getTransferReceipt
+      parameters:
+        - name: transferId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferReceipt"
+        "400":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-session-required: true
+  /customer/transfers:
+    post:
+      operationId: executeTransfer
+      description:
+        Explicit confirmation of prepared intent. Same key and body returns the same receipt;
+        key reuse with changed body is 409. Revalidate all preconditions before atomic mutation.
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 128
+            pattern: ^[A-Za-z0-9_-]{1,128}$
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExecuteTransferRequest"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferReceipt"
+        "400":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-session-required: true
+  /customer/cards:
+    get:
+      operationId: getCards
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CardsResponse"
+        "400":
+          description: Shared API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Additional verification or valid intent-bound action authorization is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Shared API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Shared API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Shared API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Shared API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-session-required: true
+  /customer/cards/{cardId}:
+    get:
+      operationId: getCardDetail
+      parameters:
+        - in: path
+          name: cardId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CardDetail"
+        "400":
+          description: Shared API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Additional verification or valid intent-bound action authorization is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Shared API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Shared API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Shared API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Shared API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-session-required: true
+  /customer/card-action-intents/{intentId}:
+    get:
+      operationId: getCardActionIntent
+      parameters:
+        - in: path
+          name: intentId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CardActionIntent"
+        "400":
+          description: Shared API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Additional verification or valid intent-bound action authorization is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Shared API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Shared API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Shared API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Shared API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-session-required: true
+  /customer/card-actions/{actionId}:
+    get:
+      operationId: getCardActionReceipt
+      parameters:
+        - in: path
+          name: actionId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CardActionReceipt"
+        "400":
+          description: Shared API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Additional verification or valid intent-bound action authorization is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Shared API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Shared API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Shared API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Shared API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-session-required: true
+  /customer/card-action-intents:
+    post:
+      operationId: prepareCardAction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCardActionIntentRequest"
+      responses:
+        "201":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CardActionIntent"
+        "400":
+          description: Shared API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Additional verification or valid intent-bound action authorization is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Shared API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Shared API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Shared API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Shared API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-session-required: true
+  /customer/card-actions:
+    post:
+      operationId: executeCardAction
+      description:
+        Revalidate exact card state and version. STEP_UP_AUTH is always blocked with 403 in
+        M5. Successful requests are idempotent within this endpoint.
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema:
+            type: string
+            pattern: ^[A-Za-z0-9_-]{1,128}$
+            minLength: 1
+            maxLength: 128
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExecuteCardActionRequest"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CardActionReceipt"
+        "400":
+          description: Shared API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Additional verification or valid intent-bound action authorization is required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Shared API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Shared API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Shared API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Shared API error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-session-required: true
+  /customer/spending/summary:
+    get:
+      summary: SpendingSummary
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SpendingSummary"
+        "400":
+          description: Invalid query or request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Expired intent, hash mismatch, stale state, executed intent or idempotency conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Recurring payment is not manageable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Persistence or internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      description:
+        Analytics derived from completed debit CARD_PAYMENT, DIRECT_DEBIT and FEE transactions;
+        TRANSFER category excluded. Default scope is CNY accounts, with no FX conversion. accountId scopes
+        to that account and its original currency. [from,to) uses occurredAt. Default current MTD and
+        previous-month same-day/time comparison in UTC+08; paired custom windows accepted, or comparison
+        inferred by shifting both boundaries one calendar month (clamped). Maximum period 366 days. Daily
+        trend buckets in UTC+08, including zero days. If calendar clamping collapses an inferred comparison,
+        its end is the next local midnight after its clamped start.
+      parameters:
+        - name: from
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/Timestamp"
+        - name: to
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/Timestamp"
+        - name: compareFrom
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/Timestamp"
+        - name: compareTo
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/Timestamp"
+        - name: accountId
+          in: query
+          required: false
+          schema:
+            type: string
+      operationId: getSpendingSummary
+      x-session-required: true
+  /customer/recurring-payments:
+    get:
+      summary: RecurringPaymentsResponse
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecurringPaymentsResponse"
+        "400":
+          description: Invalid query or request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Expired intent, hash mismatch, stale state, executed intent or idempotency conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Recurring payment is not manageable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Persistence or internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      operationId: listRecurringPayments
+      x-session-required: true
+  /customer/recurring-payments/{recurringPaymentId}:
+    get:
+      summary: RecurringPaymentDetail
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecurringPaymentDetail"
+        "400":
+          description: Invalid query or request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Expired intent, hash mismatch, stale state, executed intent or idempotency conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Recurring payment is not manageable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Persistence or internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      parameters:
+        - name: recurringPaymentId
+          in: path
+          required: true
+          schema:
+            type: string
+      operationId: getRecurringPayment
+      x-session-required: true
+  /customer/recurring-payment-action-intents:
+    post:
+      summary: RecurringPaymentActionIntent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRecurringPaymentActionIntentRequest"
+      responses:
+        "201":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecurringPaymentActionIntent"
+        "400":
+          description: Invalid query or request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Expired intent, hash mismatch, stale state, executed intent or idempotency conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Recurring payment is not manageable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Persistence or internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      operationId: prepareRecurringPaymentAction
+      x-session-required: true
+  /customer/recurring-payment-action-intents/{intentId}:
+    get:
+      summary: RecurringPaymentActionIntent
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecurringPaymentActionIntent"
+        "400":
+          description: Invalid query or request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Expired intent, hash mismatch, stale state, executed intent or idempotency conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Recurring payment is not manageable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Persistence or internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      parameters:
+        - name: intentId
+          in: path
+          required: true
+          schema:
+            type: string
+      operationId: getRecurringPaymentActionIntent
+      x-session-required: true
+  /customer/recurring-payment-actions:
+    post:
+      summary: RecurringPaymentActionReceipt
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExecuteRecurringPaymentActionRequest"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecurringPaymentActionReceipt"
+        "400":
+          description: Invalid query or request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Expired intent, hash mismatch, stale state, executed intent or idempotency conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Recurring payment is not manageable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Persistence or internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema:
+            type: string
+            pattern: ^[A-Za-z0-9_-]{1,128}$
+      operationId: executeRecurringPaymentAction
+      x-session-required: true
+  /customer/recurring-payment-actions/{actionId}:
+    get:
+      summary: RecurringPaymentActionReceipt
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecurringPaymentActionReceipt"
+        "400":
+          description: Invalid query or request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Expired intent, hash mismatch, stale state, executed intent or idempotency conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Recurring payment is not manageable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Persistence or internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      parameters:
+        - name: actionId
+          in: path
+          required: true
+          schema:
+            type: string
+      operationId: getRecurringPaymentActionReceipt
+      x-session-required: true
+  /customer/wealth/portfolio:
+    get:
+      operationId: getWealthPortfolio
+      summary: getWealthPortfolio
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PortfolioSummary"
+        "400":
+          description: Invalid request or query
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Expired prerequisite, stale state, hash or idempotency conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description:
+            Unavailable product, unsuitable product, invalid amount/currency, ineligible account
+            or insufficient funds
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Persistence or internal failure
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-session-required: true
+  /customer/wealth/products:
+    get:
+      operationId: listInvestmentProducts
+      summary: listInvestmentProducts
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InvestmentProductsResponse"
+        "400":
+          description: Invalid request or query
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Expired prerequisite, stale state, hash or idempotency conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description:
+            Unavailable product, unsuitable product, invalid amount/currency, ineligible account
+            or insufficient funds
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Persistence or internal failure
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      parameters:
+        - name: type
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/InvestmentProductType"
+        - name: riskLevel
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/RiskLevel"
+      x-session-required: true
+  /customer/wealth/products/{productId}:
+    get:
+      operationId: getInvestmentProduct
+      summary: getInvestmentProduct
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InvestmentProductDetail"
+        "400":
+          description: Invalid request or query
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Expired prerequisite, stale state, hash or idempotency conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description:
+            Unavailable product, unsuitable product, invalid amount/currency, ineligible account
+            or insufficient funds
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Persistence or internal failure
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+      x-session-required: true
+  /customer/wealth/risk-profile:
+    get:
+      operationId: getRiskProfile
+      summary: getRiskProfile
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserRiskProfile"
+        "400":
+          description: Invalid request or query
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Expired prerequisite, stale state, hash or idempotency conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description:
+            Unavailable product, unsuitable product, invalid amount/currency, ineligible account
+            or insufficient funds
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Persistence or internal failure
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-session-required: true
+  /customer/wealth/suitability-checks:
+    post:
+      operationId: createSuitabilityCheck
+      summary: createSuitabilityCheck
+      responses:
+        "201":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuitabilityCheck"
+        "400":
+          description: Invalid request or query
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Expired prerequisite, stale state, hash or idempotency conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description:
+            Unavailable product, unsuitable product, invalid amount/currency, ineligible account
+            or insufficient funds
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Persistence or internal failure
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSuitabilityCheckRequest"
+      x-session-required: true
+  /customer/wealth/suitability-checks/{checkId}:
+    get:
+      operationId: getSuitabilityCheck
+      summary: getSuitabilityCheck
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuitabilityCheck"
+        "400":
+          description: Invalid request or query
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Expired prerequisite, stale state, hash or idempotency conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description:
+            Unavailable product, unsuitable product, invalid amount/currency, ineligible account
+            or insufficient funds
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Persistence or internal failure
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      parameters:
+        - name: checkId
+          in: path
+          required: true
+          schema:
+            type: string
+      x-session-required: true
+  /customer/investment-order-intents:
+    post:
+      operationId: createInvestmentOrderIntent
+      summary: createInvestmentOrderIntent
+      responses:
+        "201":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InvestmentOrderIntent"
+        "400":
+          description: Invalid request or query
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Expired prerequisite, stale state, hash or idempotency conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description:
+            Unavailable product, unsuitable product, invalid amount/currency, ineligible account
+            or insufficient funds
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Persistence or internal failure
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateInvestmentOrderIntentRequest"
+      x-session-required: true
+  /customer/investment-order-intents/{intentId}:
+    get:
+      operationId: getInvestmentOrderIntent
+      summary: getInvestmentOrderIntent
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InvestmentOrderIntent"
+        "400":
+          description: Invalid request or query
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Expired prerequisite, stale state, hash or idempotency conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description:
+            Unavailable product, unsuitable product, invalid amount/currency, ineligible account
+            or insufficient funds
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Persistence or internal failure
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      parameters:
+        - name: intentId
+          in: path
+          required: true
+          schema:
+            type: string
+      x-session-required: true
+  /customer/investment-orders:
+    post:
+      operationId: executeInvestmentOrder
+      summary: executeInvestmentOrder
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InvestmentOrderReceipt"
+        "400":
+          description: Invalid request or query
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Expired prerequisite, stale state, hash or idempotency conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description:
+            Unavailable product, unsuitable product, invalid amount/currency, ineligible account
+            or insufficient funds
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Persistence or internal failure
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExecuteInvestmentOrderRequest"
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema:
+            type: string
+            pattern: ^[A-Za-z0-9_-]{1,128}$
+      description:
+        Execute the exact immutable intent after all prerequisite and relevant snapshot revalidation.
+        Same key and request replay the same receipt. Simulation only; atomic deposit debit, portfolio
+        addition and INVESTMENT_PURCHASE transaction.
+      x-session-required: true
+  /customer/investment-orders/{orderId}:
+    get:
+      operationId: getInvestmentOrder
+      summary: getInvestmentOrder
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InvestmentOrderReceipt"
+        "400":
+          description: Invalid request or query
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Expired prerequisite, stale state, hash or idempotency conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description:
+            Unavailable product, unsuitable product, invalid amount/currency, ineligible account
+            or insufficient funds
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Persistence or internal failure
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+      x-session-required: true
+  /customer/auth/login:
+    post:
+      operationId: login
+      tags:
+        - Security
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Session
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Session"
+        "400":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Unexpected service or persistence failure
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-session-required: false
+  /customer/auth/logout:
+    post:
+      operationId: logout
+      tags:
+        - Security
+      responses:
+        "200":
+          description: LogoutResponse
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LogoutResponse"
+        "400":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Unexpected service or persistence failure
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-session-required: true
+  /customer/auth/step-up-challenges:
+    post:
+      operationId: createStepUpChallenge
+      tags:
+        - Security
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateStepUpChallengeRequest"
+      responses:
+        "200":
+          description: StepUpChallenge
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StepUpChallenge"
+        "400":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Unexpected service or persistence failure
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-session-required: true
+  /customer/auth/step-up-challenges/{challengeId}:
+    get:
+      operationId: getStepUpChallenge
+      tags:
+        - Security
+      parameters:
+        - name: challengeId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: StepUpChallenge
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StepUpChallenge"
+        "400":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Unexpected service or persistence failure
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-session-required: true
+  /customer/auth/step-up-challenges/{challengeId}/verify:
+    post:
+      operationId: verifyStepUpChallenge
+      tags:
+        - Security
+      parameters:
+        - name: challengeId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyStepUpRequest"
+      responses:
+        "200":
+          description: StepUpVerificationResponse
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StepUpVerificationResponse"
+        "400":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Unexpected service or persistence failure
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-session-required: true
+  /customer/recipients/{recipientId}:
+    get:
+      operationId: getRecipient
+      summary: getRecipient
+      x-session-required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecipientSummary"
+        "400":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Banking error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Banking error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      parameters:
+        - name: recipientId
+          in: path
+          required: true
+          schema:
+            type: string
+  /customer/recipient-action-intents:
+    post:
+      operationId: prepareRecipientAction
+      summary: prepareRecipientAction
+      x-session-required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecipientActionIntent"
+        "400":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Banking error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Banking error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PrepareRecipientActionRequest"
+  /customer/recipient-action-intents/{intentId}:
+    get:
+      operationId: getRecipientActionIntent
+      summary: getRecipientActionIntent
+      x-session-required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecipientActionIntent"
+        "400":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Banking error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Banking error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      parameters:
+        - name: intentId
+          in: path
+          required: true
+          schema:
+            type: string
+  /customer/recipient-actions:
+    post:
+      operationId: deactivateRecipient
+      summary: deactivateRecipient
+      x-session-required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecipientSummary"
+        "400":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Banking error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Banking error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema:
+            type: string
+            pattern: ^[A-Za-z0-9_-]{1,128}$
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExecuteRecipientActionRequest"
+  /customer/scheduled-payments:
+    get:
+      operationId: listScheduledPayments
+      summary: listScheduledPayments
+      x-session-required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScheduledPaymentsResponse"
+        "400":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Banking error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Banking error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /customer/scheduled-payments/{scheduleId}:
+    get:
+      operationId: getScheduledPayment
+      summary: getScheduledPayment
+      x-session-required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScheduledPayment"
+        "400":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Banking error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Banking error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      parameters:
+        - in: path
+          name: scheduleId
+          required: true
+          schema:
+            type: string
+            minLength: 1
+  /customer/scheduled-payment-intents:
+    post:
+      operationId: prepareScheduleAction
+      summary: prepareScheduleAction
+      x-session-required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScheduleActionIntent"
+        "400":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Banking error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Banking error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PrepareScheduleActionRequest"
+  /customer/scheduled-payment-intents/{intentId}:
+    get:
+      operationId: getScheduleActionIntent
+      summary: getScheduleActionIntent
+      x-session-required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScheduleActionIntent"
+        "400":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Banking error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Banking error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      parameters:
+        - in: path
+          name: intentId
+          required: true
+          schema:
+            type: string
+            minLength: 1
+  /customer/scheduled-payment-actions:
+    post:
+      operationId: executeScheduleAction
+      summary: executeScheduleAction
+      x-session-required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScheduledPayment"
+        "400":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: ApiError
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "422":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Banking validation or service error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Banking error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Banking error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExecuteScheduleActionRequest"
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          required: true
+          schema:
+            type: string
+            pattern: ^[A-Za-z0-9_-]{1,128}$
+components:
+  responses:
+    ApiFailure:
+      description: API failure
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiError"
+  schemas:
+    SubmitProductApplicationRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - productId
+        - accountId
+        - contactEmail
+        - consent
+      properties:
+        productId:
+          type: string
+          minLength: 1
+          maxLength: 128
+        accountId:
+          type: string
+          minLength: 1
+          maxLength: 128
+        contactEmail:
+          type: string
+          format: email
+          maxLength: 254
+        consent:
+          type: boolean
+          enum:
+            - true
+        monthlyIncome:
+          $ref: "#/components/schemas/Money"
+        requestedAmount:
+          $ref: "#/components/schemas/Money"
+        termMonths:
+          type: integer
+          enum:
+            - 6
+            - 12
+            - 24
+            - 36
+        purpose:
+          type: string
+          enum:
+            - EDUCATION
+            - HOME_IMPROVEMENT
+            - PERSONAL
+    ProductApplication:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - productId
+        - productTitle
+        - productType
+        - accountId
+        - maskedAccountNumber
+        - contactEmail
+        - status
+        - submittedAt
+      properties:
+        id:
+          type: string
+          minLength: 1
+          maxLength: 128
+        productId:
+          type: string
+          minLength: 1
+          maxLength: 128
+        productTitle:
+          type: string
+        productType:
+          type: string
+          enum:
+            - DEBIT_CARD
+            - CREDIT_CARD
+            - PERSONAL_LOAN
+        accountId:
+          type: string
+          minLength: 1
+          maxLength: 128
+        maskedAccountNumber:
+          type: string
+        contactEmail:
+          type: string
+          format: email
+        status:
+          type: string
+          enum:
+            - SUBMITTED
+        submittedAt:
+          type: string
+          format: date-time
+        monthlyIncome:
+          $ref: "#/components/schemas/Money"
+        requestedAmount:
+          $ref: "#/components/schemas/Money"
+        termMonths:
+          type: integer
+        purpose:
+          type: string
+          enum:
+            - EDUCATION
+            - HOME_IMPROVEMENT
+            - PERSONAL
+    ProductApplicationsResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProductApplication"
+    Session:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - authenticated
+        - user
+        - status
+        - assuranceLevel
+        - authenticatedAt
+        - expiresAt
+        - mode
+      properties:
+        id:
+          type: string
+        authenticated:
+          type: boolean
+        user:
+          $ref: "#/components/schemas/User"
+        status:
+          $ref: "#/components/schemas/SessionStatus"
+        assuranceLevel:
+          $ref: "#/components/schemas/AssuranceLevel"
+        authenticatedAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+        expiresAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+        mode:
+          type: string
+          enum:
+            - SIMULATED_AUTH
+    User:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - displayName
+      properties:
+        id:
+          type: string
+          example: demo-user
+        displayName:
+          type: string
+          example: Alex Chen
+    Money:
+      type: object
+      additionalProperties: false
+      required:
+        - amount
+        - currency
+      properties:
+        amount:
+          type: string
+          pattern: ^-?(0|[1-9][0-9]*)\.[0-9]{2}$
+          description:
+            Exact signed decimal string, two fractional digits for the currently supported
+            CNY and USD currencies. Never a JSON number.
+          example: "23842.31"
+        currency:
+          type: string
+          enum:
+            - CNY
+            - USD
+    Timestamp:
+      type: string
+      format: date-time
+      pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+      description: ISO 8601 timestamp with mandatory UTC offset (Z is +00:00).
+      example: 2026-09-27 10:30:00+08:00
+    Overview:
+      type: object
+      additionalProperties: false
+      required:
+        - asOf
+        - baseCurrency
+        - totalBalance
+        - user
+      properties:
+        asOf:
+          $ref: "#/components/schemas/Timestamp"
+        baseCurrency:
+          type: string
+          enum:
+            - CNY
+            - USD
+        user:
+          $ref: "#/components/schemas/User"
+        totalBalance:
+          allOf:
+            - $ref: "#/components/schemas/Money"
+          description:
+            Sum of deposit account balances converted to baseCurrency at snapshot demo FX rates,
+            rounded half-up to cents. Excludes investments, pending debits, and card liabilities.
+        balanceNote:
+          type: string
+          description: Human-readable valuation assumptions.
+        exchangeEquivalents:
+          type: array
+          description:
+            Exchange-rate provenance for foreign accounts included in totalBalance. Estimated
+            equivalents, not executable rates.
+          items:
+            $ref: "#/components/schemas/ExchangeEquivalent"
+        accounts:
+          type: array
+          items:
+            $ref: "#/components/schemas/AccountSummary"
+        spending:
+          $ref: "#/components/schemas/OverviewSpendingSummary"
+        recentTransactions:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransactionSummary"
+        cards:
+          type: array
+          items:
+            $ref: "#/components/schemas/CardSummary"
+        upcomingPayments:
+          type: array
+          items:
+            $ref: "#/components/schemas/UpcomingPayment"
+        wealth:
+          $ref: "#/components/schemas/WealthSummary"
+    AccountSummary:
+      type: object
+      description:
+        Shared account fields; extended by AccountDetail. Only masked account identifiers are
+        exposed.
+      required:
+        - id
+        - displayName
+        - type
+        - status
+        - currency
+        - maskedAccountNumber
+        - balance
+        - availableBalance
+      properties:
+        id:
+          type: string
+          description: Opaque identifier; clients must not parse.
+        displayName:
+          type: string
+        type:
+          $ref: "#/components/schemas/AccountType"
+        status:
+          $ref: "#/components/schemas/AccountStatus"
+        currency:
+          type: string
+          enum:
+            - CNY
+            - USD
+        maskedAccountNumber:
+          type: string
+          pattern: ^•••• [0-9]{4}$
+          description: Server-masked identifier. Never expose a full account number.
+        balance:
+          $ref: "#/components/schemas/Money"
+        availableBalance:
+          allOf:
+            - $ref: "#/components/schemas/Money"
+          description:
+            Balance less pendingAmount in the same currency. Does not override account status
+            restrictions.
+        pendingAmount:
+          allOf:
+            - $ref: "#/components/schemas/Money"
+          description: Non-negative reserved debits not yet posted; absent when not applicable.
+        baseCurrencyEquivalent:
+          $ref: "#/components/schemas/ExchangeEquivalent"
+    AccountType:
+      type: string
+      enum:
+        - CURRENT
+        - SAVINGS
+        - MULTI_CURRENCY
+        - TIME_DEPOSIT
+    AccountStatus:
+      type: string
+      enum:
+        - ACTIVE
+        - RESTRICTED
+        - FROZEN
+        - CLOSED
+    ExchangeEquivalent:
+      type: object
+      additionalProperties: false
+      required:
+        - value
+        - sourceCurrency
+        - exchangeRate
+        - conversionAsOf
+        - conversionSource
+      properties:
+        value:
+          $ref: "#/components/schemas/Money"
+        sourceCurrency:
+          type: string
+          enum:
+            - CNY
+            - USD
+        exchangeRate:
+          type: string
+          pattern: ^(0|[1-9][0-9]*)\.[0-9]+$
+          description:
+            Target currency units per one source currency unit; positive demo estimate. Round
+            converted balance half-up to cents.
+        conversionAsOf:
+          $ref: "#/components/schemas/Timestamp"
+        conversionSource:
+          type: string
+          enum:
+            - DEMO_RATE
+    AccountDetail:
+      allOf:
+        - $ref: "#/components/schemas/AccountSummary"
+        - type: object
+          required:
+            - asOf
+            - recentTransactions
+          properties:
+            asOf:
+              $ref: "#/components/schemas/Timestamp"
+            openedAt:
+              $ref: "#/components/schemas/Timestamp"
+            recentTransactions:
+              type: array
+              description:
+                Embedded recent activity only. Full history is provided by the Transactions domain
+                API.
+              items:
+                $ref: "#/components/schemas/TransactionSummary"
+    AccountsResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - asOf
+        - baseCurrency
+        - totalBalance
+        - accounts
+        - exchangeEquivalents
+      properties:
+        asOf:
+          $ref: "#/components/schemas/Timestamp"
+        baseCurrency:
+          type: string
+          enum:
+            - CNY
+            - USD
+        totalBalance:
+          allOf:
+            - $ref: "#/components/schemas/Money"
+          description: Estimated base-currency sum of deposit balances, not available funds or net assets.
+        accounts:
+          type: array
+          items:
+            $ref: "#/components/schemas/AccountSummary"
+        exchangeEquivalents:
+          type: array
+          items:
+            $ref: "#/components/schemas/ExchangeEquivalent"
+    ApiError:
+      type: object
+      additionalProperties: false
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          enum:
+            - APPLICATION_NOT_FOUND
+            - APPLICATION_ALREADY_SUBMITTED
+            - PRODUCT_NOT_APPLICABLE
+            - ACCOUNT_NOT_FOUND
+            - INTERNAL_ERROR
+            - TRANSACTION_NOT_FOUND
+            - INVALID_QUERY
+            - INVALID_CURSOR
+            - ACCOUNT_NOT_ELIGIBLE
+            - RECIPIENT_NOT_FOUND
+            - RECIPIENT_NOT_ELIGIBLE
+            - INVALID_AMOUNT
+            - CURRENCY_MISMATCH
+            - INSUFFICIENT_FUNDS
+            - TRANSFER_INTENT_NOT_FOUND
+            - TRANSFER_INTENT_EXPIRED
+            - TRANSFER_INTENT_HASH_MISMATCH
+            - TRANSFER_INTENT_ALREADY_EXECUTED
+            - IDEMPOTENCY_KEY_REUSED
+            - TRANSFER_NOT_FOUND
+            - INVALID_REQUEST
+            - PERSISTENCE_UNAVAILABLE
+            - CARD_NOT_FOUND
+            - CARD_NOT_ELIGIBLE
+            - CARD_STATE_CHANGED
+            - NO_CARD_CHANGES
+            - CARD_ACTION_INTENT_NOT_FOUND
+            - CARD_ACTION_INTENT_EXPIRED
+            - CARD_ACTION_INTENT_HASH_MISMATCH
+            - CARD_ACTION_INTENT_ALREADY_EXECUTED
+            - CARD_ACTION_NOT_FOUND
+            - STEP_UP_AUTH_REQUIRED
+            - RECURRING_PAYMENT_NOT_FOUND
+            - RECURRING_PAYMENT_NOT_MANAGEABLE
+            - RECURRING_PAYMENT_ALREADY_STOPPED
+            - RECURRING_PAYMENT_STATE_CHANGED
+            - RECURRING_PAYMENT_INTENT_NOT_FOUND
+            - RECURRING_PAYMENT_INTENT_EXPIRED
+            - RECURRING_PAYMENT_INTENT_HASH_MISMATCH
+            - RECURRING_PAYMENT_INTENT_ALREADY_EXECUTED
+            - RECURRING_PAYMENT_ACTION_NOT_FOUND
+            - INVESTMENT_PRODUCT_NOT_FOUND
+            - INVESTMENT_PRODUCT_UNAVAILABLE
+            - RISK_PROFILE_NOT_FOUND
+            - RISK_PROFILE_EXPIRED
+            - SUITABILITY_CHECK_NOT_FOUND
+            - SUITABILITY_CHECK_EXPIRED
+            - SUITABILITY_CHECK_MISMATCH
+            - PRODUCT_NOT_SUITABLE
+            - INVESTMENT_AMOUNT_BELOW_MINIMUM
+            - INVESTMENT_INTENT_NOT_FOUND
+            - INVESTMENT_INTENT_EXPIRED
+            - INVESTMENT_INTENT_HASH_MISMATCH
+            - INVESTMENT_INTENT_ALREADY_EXECUTED
+            - INVESTMENT_STATE_CHANGED
+            - INVESTMENT_ORDER_NOT_FOUND
+            - INVALID_CREDENTIALS
+            - UNAUTHENTICATED
+            - SESSION_EXPIRED
+            - SESSION_REVOKED
+            - STEP_UP_CHALLENGE_NOT_FOUND
+            - STEP_UP_CHALLENGE_EXPIRED
+            - STEP_UP_CHALLENGE_FAILED
+            - INVALID_STEP_UP_CODE
+            - ACTION_AUTHORIZATION_NOT_FOUND
+            - ACTION_AUTHORIZATION_EXPIRED
+            - ACTION_AUTHORIZATION_CONSUMED
+            - ACTION_AUTHORIZATION_MISMATCH
+            - INSUFFICIENT_AUTH_ASSURANCE
+            - RECIPIENT_INACTIVE
+            - RECIPIENT_ALREADY_EXISTS
+            - RECIPIENT_STATE_CHANGED
+            - RECIPIENT_INTENT_NOT_FOUND
+            - RECIPIENT_INTENT_EXPIRED
+            - RECIPIENT_INTENT_ALREADY_EXECUTED
+            - RECIPIENT_INTENT_HASH_MISMATCH
+            - TRANSFER_SESSION_MISMATCH
+            - INVALID_DESTINATION
+            - SCHEDULE_NOT_FOUND
+            - SCHEDULE_STATE_CHANGED
+            - SCHEDULE_ALREADY_DUE
+            - INVALID_SCHEDULE_TIME
+            - SCHEDULE_INTENT_NOT_FOUND
+            - SCHEDULE_INTENT_HASH_MISMATCH
+            - SCHEDULE_INTENT_UNAVAILABLE
+            - SCHEDULE_TERMS_INVALID
+        message:
+          type: string
+          description: Safe human-readable message; no sensitive identifiers or internal details.
+    SpendingComparisonPeriod:
+      type: object
+      additionalProperties: false
+      required:
+        - periodStart
+        - periodEnd
+        - amount
+      properties:
+        periodStart:
+          $ref: "#/components/schemas/Timestamp"
+        periodEnd:
+          allOf:
+            - $ref: "#/components/schemas/Timestamp"
+          description:
+            Exclusive end; comparison uses the same local day and time in the previous month,
+            clamped to its month end when needed.
+        amount:
+          $ref: "#/components/schemas/Money"
+    SpendingPeriod:
+      type: object
+      additionalProperties: false
+      required:
+        - from
+        - to
+      properties:
+        from:
+          $ref: "#/components/schemas/Timestamp"
+          description: Inclusive offset timestamp.
+        to:
+          $ref: "#/components/schemas/Timestamp"
+          description: Exclusive offset timestamp.
+    SpendingSummary:
+      type: object
+      additionalProperties: false
+      required:
+        - period
+        - comparisonPeriod
+        - currency
+        - accountIds
+        - totalSpend
+        - comparisonTotalSpend
+        - absoluteChange
+        - percentageChange
+        - categoryBreakdown
+        - trend
+        - topMerchants
+        - transactionCount
+        - asOf
+      properties:
+        period:
+          $ref: "#/components/schemas/SpendingPeriod"
+        comparisonPeriod:
+          $ref: "#/components/schemas/SpendingPeriod"
+        currency:
+          type: string
+        accountIds:
+          type: array
+          items:
+            type: string
+        totalSpend:
+          $ref: "#/components/schemas/Money"
+        comparisonTotalSpend:
+          $ref: "#/components/schemas/Money"
+        absoluteChange:
+          $ref: "#/components/schemas/Money"
+        percentageChange:
+          type: string
+          pattern: ^-?[0-9]+\.[0-9]{2}$
+          nullable: true
+          description: Rounded half away from zero; null for a zero comparison total.
+        categoryBreakdown:
+          type: array
+          items:
+            $ref: "#/components/schemas/SpendingCategoryBreakdown"
+        trend:
+          type: array
+          items:
+            $ref: "#/components/schemas/SpendingTrendPoint"
+        topMerchants:
+          type: array
+          items:
+            $ref: "#/components/schemas/SpendingMerchantBreakdown"
+        transactionCount:
+          type: integer
+          minimum: 0
+        asOf:
+          $ref: "#/components/schemas/Timestamp"
+    TransactionSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Opaque ID.
+        accountId:
+          type: string
+          description: Opaque owning account ID.
+        title:
+          type: string
+        amount:
+          allOf:
+            - $ref: "#/components/schemas/Money"
+            - type: object
+              properties:
+                amount:
+                  type: string
+                  pattern: ^(0|[1-9][0-9]*)\.[0-9]{2}$
+          description: Non-negative magnitude; direction determines debit or credit. Never a signed string.
+        direction:
+          $ref: "#/components/schemas/TransactionDirection"
+        status:
+          $ref: "#/components/schemas/TransactionStatus"
+        type:
+          $ref: "#/components/schemas/TransactionType"
+        category:
+          $ref: "#/components/schemas/TransactionCategory"
+        occurredAt:
+          $ref: "#/components/schemas/Timestamp"
+        bookedAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+          description:
+            Posting timestamp; null for unposted PENDING/FAILED/CANCELLED. REVERSED retains
+            original posting time.
+          example: 2026-09-27 10:30:00+08:00
+          nullable: true
+        merchant:
+          $ref: "#/components/schemas/MerchantSummary"
+        counterparty:
+          $ref: "#/components/schemas/CounterpartySummary"
+        reference:
+          type: string
+        cardId:
+          type: string
+          description: Optional opaque card attribution; historical records may be unattributed.
+        cardMaskedNumber:
+          type: string
+          pattern: ^••[0-9]{4}$
+          description: Server-masked display identifier only; never PAN, CVV or PIN.
+      required:
+        - id
+        - accountId
+        - title
+        - amount
+        - direction
+        - status
+        - type
+        - category
+        - occurredAt
+        - bookedAt
+      description:
+        Merchant card purchases use merchant; bank transfers use counterparty. These are distinct
+        fields, never a combined party field.
+    CardSummary:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - displayName
+        - maskedNumber
+        - scheme
+        - type
+        - status
+        - linkedAccount
+      properties:
+        id:
+          type: string
+        displayName:
+          type: string
+        maskedNumber:
+          type: string
+          pattern: ^••[0-9]{4}$
+          description: Server-masked display identifier only; never PAN, CVV or PIN.
+        scheme:
+          $ref: "#/components/schemas/CardScheme"
+        type:
+          $ref: "#/components/schemas/CardType"
+        status:
+          $ref: "#/components/schemas/CardStatus"
+        linkedAccount:
+          $ref: "#/components/schemas/CardLinkedAccount"
+    UpcomingPayment:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - title
+        - dueAt
+        - amount
+        - type
+      properties:
+        id:
+          type: string
+          description: Opaque identifier.
+        title:
+          type: string
+        dueAt:
+          $ref: "#/components/schemas/Timestamp"
+        amount:
+          $ref: "#/components/schemas/Money"
+        type:
+          type: string
+          enum:
+            - RECURRING
+            - CARD_BILL
+    HoldingSummary:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - name
+        - value
+      properties:
+        id:
+          type: string
+          description: Opaque identifier.
+        name:
+          type: string
+        value:
+          $ref: "#/components/schemas/Money"
+    WealthSummary:
+      type: object
+      additionalProperties: false
+      required:
+        - total
+        - monthlyChange
+        - monthlyChangePercent
+        - holdings
+      properties:
+        total:
+          $ref: "#/components/schemas/Money"
+        monthlyChange:
+          $ref: "#/components/schemas/Money"
+        monthlyChangePercent:
+          type: string
+          nullable: true
+          pattern: ^-?[0-9]+\.[0-9]{2}$
+        holdings:
+          type: array
+          items:
+            $ref: "#/components/schemas/HoldingSummary"
+    TransactionStatus:
+      type: string
+      enum:
+        - PENDING
+        - COMPLETED
+        - FAILED
+        - REVERSED
+        - CANCELLED
+    TransactionDirection:
+      type: string
+      enum:
+        - CREDIT
+        - DEBIT
+    TransactionType:
+      type: string
+      enum:
+        - CARD_PAYMENT
+        - BANK_TRANSFER
+        - SALARY
+        - DIRECT_DEBIT
+        - CASH_WITHDRAWAL
+        - FEE
+        - INTEREST
+        - FX_EXCHANGE
+        - INVESTMENT_PURCHASE
+    TransactionCategory:
+      type: string
+      enum:
+        - DINING
+        - GROCERIES
+        - SHOPPING
+        - TRANSPORT
+        - ENTERTAINMENT
+        - SUBSCRIPTIONS
+        - HOUSING
+        - INCOME
+        - TRANSFER
+        - TRAVEL
+        - HEALTH
+        - OTHER
+        - INVESTMENT
+    MerchantSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        maskedCardNumber:
+          type: string
+          pattern: ^•••• [0-9]{4}$
+        location:
+          type: string
+      required:
+        - id
+        - name
+      additionalProperties: false
+    CounterpartySummary:
+      type: object
+      properties:
+        name:
+          type: string
+        maskedAccountNumber:
+          type: string
+          pattern: ^•••• [0-9]{4}$
+      required:
+        - name
+        - maskedAccountNumber
+      additionalProperties: false
+    TransactionDetail:
+      allOf:
+        - $ref: "#/components/schemas/TransactionSummary"
+        - type: object
+          properties:
+            account:
+              $ref: "#/components/schemas/AccountSummary"
+            reference:
+              type: string
+              description: Non-sensitive payment reference.
+          required:
+            - account
+    TransactionPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransactionSummary"
+        nextCursor:
+          type: string
+          nullable: true
+          description: Opaque token; null when hasMore is false.
+        hasMore:
+          type: boolean
+      required:
+        - items
+        - nextCursor
+        - hasMore
+      additionalProperties: false
+    RecipientSummary:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - displayName
+        - bankName
+        - maskedAccountNumber
+        - currency
+      properties:
+        id:
+          type: string
+        displayName:
+          type: string
+        bankName:
+          type: string
+        maskedAccountNumber:
+          type: string
+        currency:
+          type: string
+          enum:
+            - CNY
+            - USD
+        destinationRef:
+          type: string
+        status:
+          $ref: "#/components/schemas/RecipientStatus"
+        verificationStatus:
+          type: string
+          enum:
+            - UNVERIFIED
+        createdAt:
+          $ref: "#/components/schemas/Timestamp"
+        version:
+          type: integer
+          minimum: 0
+    TransferIntentStatus:
+      type: string
+      enum:
+        - PREPARED
+        - EXECUTED
+        - EXPIRED
+    TransferStatus:
+      type: string
+      enum:
+        - COMPLETED
+    CreateTransferIntentRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - sourceAccountId
+        - recipientId
+        - amount
+      properties:
+        sourceAccountId:
+          type: string
+        recipientId:
+          type: string
+        amount:
+          $ref: "#/components/schemas/TransferAmount"
+        note:
+          type: string
+          maxLength: 140
+    TransferIntent:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - status
+        - sourceAccount
+        - recipient
+        - amount
+        - fee
+        - totalDebit
+        - projectedAvailableBalance
+        - note
+        - intentHash
+        - createdAt
+        - expiresAt
+      properties:
+        id:
+          type: string
+        status:
+          $ref: "#/components/schemas/TransferIntentStatus"
+        sourceAccount:
+          $ref: "#/components/schemas/AccountSummary"
+        recipient:
+          $ref: "#/components/schemas/RecipientSummary"
+        amount:
+          $ref: "#/components/schemas/TransferAmount"
+        fee:
+          $ref: "#/components/schemas/Money"
+        totalDebit:
+          $ref: "#/components/schemas/Money"
+        projectedAvailableBalance:
+          $ref: "#/components/schemas/Money"
+        note:
+          type: string
+        intentHash:
+          type: string
+        createdAt:
+          $ref: "#/components/schemas/Timestamp"
+        expiresAt:
+          $ref: "#/components/schemas/Timestamp"
+        authorizationRequirement:
+          type: string
+          enum:
+            - CONFIRMATION
+        policyVersion:
+          type: string
+      description:
+        Immutable prepared terms. Only lifecycle status may change; hash binds the terms, including
+        snapshots and expiry, not status.
+    ExecuteTransferRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - intentId
+        - intentHash
+      properties:
+        intentId:
+          type: string
+        intentHash:
+          type: string
+        actionAuthorizationId:
+          type: string
+          minLength: 1
+          maxLength: 255
+    TransferReceipt:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - status
+        - intentId
+        - sourceAccount
+        - recipient
+        - amount
+        - fee
+        - totalDebit
+        - note
+        - reference
+        - transactionId
+        - createdAt
+        - completedAt
+      properties:
+        id:
+          type: string
+        status:
+          $ref: "#/components/schemas/TransferStatus"
+        intentId:
+          type: string
+        sourceAccount:
+          $ref: "#/components/schemas/AccountSummary"
+        recipient:
+          $ref: "#/components/schemas/RecipientSummary"
+        amount:
+          $ref: "#/components/schemas/TransferAmount"
+        fee:
+          $ref: "#/components/schemas/Money"
+        totalDebit:
+          $ref: "#/components/schemas/Money"
+        note:
+          type: string
+        reference:
+          type: string
+        transactionId:
+          type: string
+        createdAt:
+          $ref: "#/components/schemas/Timestamp"
+        completedAt:
+          $ref: "#/components/schemas/Timestamp"
+    RecipientsResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/RecipientSummary"
+    TransferAmount:
+      allOf:
+        - $ref: "#/components/schemas/Money"
+        - type: object
+          properties:
+            amount:
+              type: string
+              pattern: ^(0|[1-9][0-9]{0,11})\.[0-9]{2}$
+              not:
+                enum:
+                  - "0.00"
+              description: Positive domestic transfer amount, at most 12 whole digits and exactly 2 decimals.
+            currency:
+              type: string
+              enum:
+                - CNY
+    CardStatus:
+      type: string
+      enum:
+        - ACTIVE
+        - FROZEN
+        - EXPIRED
+        - CANCELLED
+    CardType:
+      type: string
+      enum:
+        - DEBIT
+        - CREDIT
+        - VIRTUAL
+    CardScheme:
+      type: string
+      enum:
+        - VISA
+        - MASTERCARD
+    CardControls:
+      type: object
+      additionalProperties: false
+      required:
+        - onlinePayments
+        - internationalPayments
+        - atmWithdrawals
+        - contactless
+      properties:
+        onlinePayments:
+          type: boolean
+        internationalPayments:
+          type: boolean
+        atmWithdrawals:
+          type: boolean
+        contactless:
+          type: boolean
+    CardLinkedAccount:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - displayName
+        - maskedAccountNumber
+      properties:
+        id:
+          type: string
+        displayName:
+          type: string
+        maskedAccountNumber:
+          type: string
+    CardDetail:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - displayName
+        - maskedNumber
+        - scheme
+        - type
+        - status
+        - linkedAccount
+        - controls
+        - version
+        - updatedAt
+      properties:
+        id:
+          type: string
+        displayName:
+          type: string
+        maskedNumber:
+          type: string
+          pattern: ^••[0-9]{4}$
+          description: Server-masked display identifier only; never PAN, CVV or PIN.
+        scheme:
+          $ref: "#/components/schemas/CardScheme"
+        type:
+          $ref: "#/components/schemas/CardType"
+        status:
+          $ref: "#/components/schemas/CardStatus"
+        linkedAccount:
+          $ref: "#/components/schemas/CardLinkedAccount"
+        controls:
+          $ref: "#/components/schemas/CardControls"
+        version:
+          type: integer
+          minimum: 0
+        updatedAt:
+          $ref: "#/components/schemas/Timestamp"
+    CardsResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CardSummary"
+    CardActionType:
+      type: string
+      enum:
+        - FREEZE
+        - UNFREEZE
+        - UPDATE_CONTROLS
+    RiskDirection:
+      type: string
+      enum:
+        - PROTECTIVE
+        - NEUTRAL
+        - RISK_INCREASING
+    AuthorizationRequirement:
+      type: string
+      enum:
+        - CONFIRMATION
+        - STEP_UP_AUTH
+    CardActionIntentStatus:
+      type: string
+      enum:
+        - PREPARED
+        - EXECUTED
+        - EXPIRED
+    CardState:
+      type: object
+      additionalProperties: false
+      required:
+        - status
+        - controls
+        - version
+      properties:
+        status:
+          $ref: "#/components/schemas/CardStatus"
+        controls:
+          $ref: "#/components/schemas/CardControls"
+        version:
+          type: integer
+          minimum: 0
+    CreateCardActionIntentRequest:
+      oneOf:
+        - type: object
+          additionalProperties: false
+          required:
+            - cardId
+            - actionType
+          properties:
+            cardId:
+              type: string
+            actionType:
+              type: string
+              enum:
+                - FREEZE
+                - UNFREEZE
+        - type: object
+          additionalProperties: false
+          required:
+            - cardId
+            - actionType
+            - controls
+          properties:
+            cardId:
+              type: string
+            actionType:
+              type: string
+              enum:
+                - UPDATE_CONTROLS
+            controls:
+              $ref: "#/components/schemas/CardControls"
+    CardActionIntent:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - status
+        - actionType
+        - card
+        - before
+        - after
+        - riskDirection
+        - authorizationRequirement
+        - intentHash
+        - createdAt
+        - expiresAt
+      properties:
+        id:
+          type: string
+        status:
+          $ref: "#/components/schemas/CardActionIntentStatus"
+        actionType:
+          $ref: "#/components/schemas/CardActionType"
+        card:
+          $ref: "#/components/schemas/CardSummary"
+        before:
+          $ref: "#/components/schemas/CardState"
+        after:
+          $ref: "#/components/schemas/CardState"
+        riskDirection:
+          $ref: "#/components/schemas/RiskDirection"
+        authorizationRequirement:
+          $ref: "#/components/schemas/AuthorizationRequirement"
+        intentHash:
+          type: string
+        createdAt:
+          $ref: "#/components/schemas/Timestamp"
+        expiresAt:
+          $ref: "#/components/schemas/Timestamp"
+      description:
+        Immutable terms and exact before/after snapshot. Only lifecycle status changes. STEP_UP_AUTH
+        intents cannot execute in M5.
+    ExecuteCardActionRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - intentId
+        - intentHash
+      properties:
+        intentId:
+          type: string
+        intentHash:
+          type: string
+        actionAuthorizationId:
+          type: string
+    CardActionReceipt:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - intentId
+        - status
+        - actionType
+        - card
+        - before
+        - after
+        - riskDirection
+        - authorizationRequirement
+        - reference
+        - createdAt
+        - completedAt
+      properties:
+        id:
+          type: string
+        intentId:
+          type: string
+        status:
+          type: string
+          enum:
+            - COMPLETED
+        actionType:
+          $ref: "#/components/schemas/CardActionType"
+        card:
+          $ref: "#/components/schemas/CardSummary"
+        before:
+          $ref: "#/components/schemas/CardState"
+        after:
+          $ref: "#/components/schemas/CardState"
+        riskDirection:
+          $ref: "#/components/schemas/RiskDirection"
+        authorizationRequirement:
+          $ref: "#/components/schemas/AuthorizationRequirement"
+        reference:
+          type: string
+        createdAt:
+          $ref: "#/components/schemas/Timestamp"
+        completedAt:
+          $ref: "#/components/schemas/Timestamp"
+    OverviewSpendingSummary:
+      type: object
+      additionalProperties: false
+      required:
+        - currentPeriod
+        - comparisonPeriod
+        - changePercent
+        - trend
+      properties:
+        currentPeriod:
+          $ref: "#/components/schemas/SpendingComparisonPeriod"
+        comparisonPeriod:
+          $ref: "#/components/schemas/SpendingComparisonPeriod"
+        changePercent:
+          type: string
+          nullable: true
+          pattern: ^-?[0-9]+\.[0-9]{2}$
+          description:
+            Current MTD vs previous-month same-day range, two decimal places; null when comparison
+            amount is zero. Windows are explicit in currentPeriod and comparisonPeriod.
+        trend:
+          type: array
+          maxItems: 6
+          items:
+            $ref: "#/components/schemas/OverviewSpendingTrendPoint"
+    OverviewSpendingTrendPoint:
+      type: object
+      additionalProperties: false
+      required:
+        - periodStart
+        - amount
+      properties:
+        periodStart:
+          $ref: "#/components/schemas/Timestamp"
+        amount:
+          $ref: "#/components/schemas/Money"
+    SpendingCategoryBreakdown:
+      type: object
+      additionalProperties: false
+      required:
+        - category
+        - amount
+        - percentage
+        - transactionCount
+      properties:
+        category:
+          $ref: "#/components/schemas/TransactionCategory"
+        amount:
+          $ref: "#/components/schemas/Money"
+        percentage:
+          type: string
+          pattern: ^-?[0-9]+\.[0-9]{2}$
+        transactionCount:
+          type: integer
+          minimum: 0
+    SpendingTrendPoint:
+      type: object
+      additionalProperties: false
+      required:
+        - period
+        - amount
+        - transactionCount
+      properties:
+        period:
+          $ref: "#/components/schemas/SpendingPeriod"
+        amount:
+          $ref: "#/components/schemas/Money"
+        transactionCount:
+          type: integer
+          minimum: 0
+    SpendingMerchantBreakdown:
+      type: object
+      additionalProperties: false
+      required:
+        - merchantId
+        - merchantName
+        - amount
+        - transactionCount
+      properties:
+        merchantId:
+          type: string
+        merchantName:
+          type: string
+        amount:
+          $ref: "#/components/schemas/Money"
+        transactionCount:
+          type: integer
+          minimum: 1
+    RecurringPaymentType:
+      type: string
+      enum:
+        - CARD_SUBSCRIPTION
+        - DIRECT_DEBIT
+        - STANDING_ORDER
+        - DETECTED_RECURRING_PAYMENT
+    RecurringPaymentStatus:
+      type: string
+      enum:
+        - ACTIVE
+        - STOPPED
+        - ENDED
+    RecurringPaymentFrequency:
+      type: string
+      enum:
+        - WEEKLY
+        - MONTHLY
+        - QUARTERLY
+        - YEARLY
+        - IRREGULAR
+    RecurringPaymentSource:
+      type: string
+      enum:
+        - BANK_MANAGED
+        - DETECTED_PATTERN
+    RecurringPaymentManagementCapability:
+      type: string
+      enum:
+        - STOP_FUTURE_PAYMENTS
+        - NONE
+    RecurringDetectionProvenance:
+      type: object
+      additionalProperties: false
+      required:
+        - matchedTransactionIds
+        - observedOccurrences
+        - firstObservedAt
+        - lastObservedAt
+      properties:
+        matchedTransactionIds:
+          type: array
+          items:
+            type: string
+          minItems: 2
+        observedOccurrences:
+          type: integer
+          minimum: 2
+        firstObservedAt:
+          $ref: "#/components/schemas/Timestamp"
+        lastObservedAt:
+          $ref: "#/components/schemas/Timestamp"
+    RecurringPaymentSummary:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - displayName
+        - type
+        - status
+        - frequency
+        - source
+        - sourceAccountId
+        - usualAmount
+        - nextExpectedAt
+        - lastPaidAt
+        - managementCapability
+      properties:
+        id:
+          type: string
+        displayName:
+          type: string
+        type:
+          $ref: "#/components/schemas/RecurringPaymentType"
+        status:
+          $ref: "#/components/schemas/RecurringPaymentStatus"
+        frequency:
+          $ref: "#/components/schemas/RecurringPaymentFrequency"
+        source:
+          $ref: "#/components/schemas/RecurringPaymentSource"
+        sourceAccountId:
+          type: string
+        cardId:
+          type: string
+        merchant:
+          $ref: "#/components/schemas/MerchantSummary"
+        usualAmount:
+          $ref: "#/components/schemas/Money"
+        nextExpectedAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+          description: ISO 8601 timestamp with mandatory UTC offset (Z is +00:00).
+          example: 2026-09-27 10:30:00+08:00
+          nullable: true
+        lastPaidAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+          description: ISO 8601 timestamp with mandatory UTC offset (Z is +00:00).
+          example: 2026-09-27 10:30:00+08:00
+          nullable: true
+        managementCapability:
+          $ref: "#/components/schemas/RecurringPaymentManagementCapability"
+    RecurringPaymentDetail:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - displayName
+        - type
+        - status
+        - frequency
+        - source
+        - sourceAccountId
+        - usualAmount
+        - nextExpectedAt
+        - lastPaidAt
+        - managementCapability
+        - transactionHistory
+        - version
+      properties:
+        id:
+          type: string
+        displayName:
+          type: string
+        type:
+          $ref: "#/components/schemas/RecurringPaymentType"
+        status:
+          $ref: "#/components/schemas/RecurringPaymentStatus"
+        frequency:
+          $ref: "#/components/schemas/RecurringPaymentFrequency"
+        source:
+          $ref: "#/components/schemas/RecurringPaymentSource"
+        sourceAccountId:
+          type: string
+        cardId:
+          type: string
+        merchant:
+          $ref: "#/components/schemas/MerchantSummary"
+        usualAmount:
+          $ref: "#/components/schemas/Money"
+        nextExpectedAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+          description: ISO 8601 timestamp with mandatory UTC offset (Z is +00:00).
+          example: 2026-09-27 10:30:00+08:00
+          nullable: true
+        lastPaidAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+          description: ISO 8601 timestamp with mandatory UTC offset (Z is +00:00).
+          example: 2026-09-27 10:30:00+08:00
+          nullable: true
+        managementCapability:
+          $ref: "#/components/schemas/RecurringPaymentManagementCapability"
+        transactionHistory:
+          type: array
+          items:
+            type: string
+          description: Transaction IDs; follow Transaction Domain for details.
+        detectionProvenance:
+          $ref: "#/components/schemas/RecurringDetectionProvenance"
+        version:
+          type: integer
+          minimum: 0
+    RecurringPaymentsResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/RecurringPaymentSummary"
+    RecurringPaymentState:
+      type: object
+      additionalProperties: false
+      required:
+        - status
+        - nextExpectedAt
+        - managementCapability
+        - version
+      properties:
+        status:
+          $ref: "#/components/schemas/RecurringPaymentStatus"
+        nextExpectedAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+          description: ISO 8601 timestamp with mandatory UTC offset (Z is +00:00).
+          example: 2026-09-27 10:30:00+08:00
+          nullable: true
+        managementCapability:
+          $ref: "#/components/schemas/RecurringPaymentManagementCapability"
+        version:
+          type: integer
+          minimum: 0
+    RecurringPaymentActionType:
+      type: string
+      enum:
+        - STOP_FUTURE_PAYMENTS
+    RecurringPaymentActionIntentStatus:
+      type: string
+      enum:
+        - PREPARED
+        - EXECUTED
+        - EXPIRED
+    RecurringPaymentActionIntent:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - actionType
+        - recurringPayment
+        - before
+        - after
+        - effectDescription
+        - intentHash
+        - createdAt
+        - expiresAt
+        - authorizationRequirement
+        - status
+      properties:
+        id:
+          type: string
+        actionType:
+          $ref: "#/components/schemas/RecurringPaymentActionType"
+        recurringPayment:
+          $ref: "#/components/schemas/RecurringPaymentDetail"
+        before:
+          $ref: "#/components/schemas/RecurringPaymentState"
+        after:
+          $ref: "#/components/schemas/RecurringPaymentState"
+        effectDescription:
+          type: string
+        intentHash:
+          type: string
+        createdAt:
+          $ref: "#/components/schemas/Timestamp"
+        expiresAt:
+          $ref: "#/components/schemas/Timestamp"
+        authorizationRequirement:
+          type: string
+          enum:
+            - CONFIRMATION
+        status:
+          $ref: "#/components/schemas/RecurringPaymentActionIntentStatus"
+    RecurringPaymentActionReceipt:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - intentId
+        - actionType
+        - status
+        - recurringPayment
+        - before
+        - after
+        - effectDescription
+        - authorizationRequirement
+        - effectiveAt
+        - reference
+      properties:
+        id:
+          type: string
+        intentId:
+          type: string
+        actionType:
+          $ref: "#/components/schemas/RecurringPaymentActionType"
+        status:
+          type: string
+          enum:
+            - COMPLETED
+        recurringPayment:
+          $ref: "#/components/schemas/RecurringPaymentSummary"
+        before:
+          $ref: "#/components/schemas/RecurringPaymentState"
+        after:
+          $ref: "#/components/schemas/RecurringPaymentState"
+        effectDescription:
+          type: string
+        authorizationRequirement:
+          type: string
+          enum:
+            - CONFIRMATION
+        effectiveAt:
+          $ref: "#/components/schemas/Timestamp"
+        reference:
+          type: string
+    CreateRecurringPaymentActionIntentRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - recurringPaymentId
+        - actionType
+      properties:
+        recurringPaymentId:
+          type: string
+        actionType:
+          $ref: "#/components/schemas/RecurringPaymentActionType"
+    ExecuteRecurringPaymentActionRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - intentId
+        - intentHash
+      properties:
+        intentId:
+          type: string
+        intentHash:
+          type: string
+    RiskLevel:
+      type: string
+      enum:
+        - R1
+        - R2
+        - R3
+        - R4
+        - R5
+    InvestmentProductType:
+      type: string
+      enum:
+        - MONEY_MARKET
+        - BOND_FUND
+        - BALANCED_FUND
+        - EQUITY_FUND
+    InvestmentProductSummary:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - displayName
+        - type
+        - riskLevel
+        - currency
+        - minimumInvestment
+        - status
+        - dataSource
+      properties:
+        id:
+          type: string
+        displayName:
+          type: string
+        type:
+          $ref: "#/components/schemas/InvestmentProductType"
+        riskLevel:
+          $ref: "#/components/schemas/RiskLevel"
+        currency:
+          type: string
+          enum:
+            - CNY
+            - USD
+        minimumInvestment:
+          $ref: "#/components/schemas/Money"
+        status:
+          type: string
+          enum:
+            - AVAILABLE
+            - UNAVAILABLE
+        dataSource:
+          type: string
+          enum:
+            - SIMULATED
+    InvestmentProductDetail:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - displayName
+        - type
+        - riskLevel
+        - currency
+        - minimumInvestment
+        - status
+        - dataSource
+        - fees
+        - indicativeYield
+        - performanceSummary
+        - liquidity
+        - description
+        - disclaimer
+        - version
+      properties:
+        id:
+          type: string
+        displayName:
+          type: string
+        type:
+          $ref: "#/components/schemas/InvestmentProductType"
+        riskLevel:
+          $ref: "#/components/schemas/RiskLevel"
+        currency:
+          type: string
+          enum:
+            - CNY
+            - USD
+        minimumInvestment:
+          $ref: "#/components/schemas/Money"
+        status:
+          type: string
+          enum:
+            - AVAILABLE
+            - UNAVAILABLE
+        dataSource:
+          type: string
+          enum:
+            - SIMULATED
+        fees:
+          $ref: "#/components/schemas/Money"
+        indicativeYield:
+          type: string
+          pattern: ^-?[0-9]+\.[0-9]{2}$
+        performanceSummary:
+          type: string
+        liquidity:
+          type: string
+        description:
+          type: string
+        disclaimer:
+          type: string
+        version:
+          type: integer
+          minimum: 0
+    InvestmentProductsResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/InvestmentProductSummary"
+    PortfolioPosition:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - displayName
+        - type
+        - currentValue
+        - investedAmount
+        - gainLoss
+      properties:
+        id:
+          type: string
+        productId:
+          type: string
+        displayName:
+          type: string
+        type:
+          $ref: "#/components/schemas/InvestmentProductType"
+        currentValue:
+          $ref: "#/components/schemas/Money"
+        investedAmount:
+          $ref: "#/components/schemas/Money"
+        gainLoss:
+          $ref: "#/components/schemas/Money"
+    PortfolioSummary:
+      type: object
+      additionalProperties: false
+      required:
+        - currency
+        - totalValue
+        - investedAmount
+        - gainLoss
+        - monthlyChange
+        - monthlyChangePercent
+        - monthlyNetContributions
+        - performanceSummary
+        - valuationBasis
+        - dataSource
+        - asOf
+        - positions
+        - version
+      properties:
+        currency:
+          type: string
+          enum:
+            - CNY
+        totalValue:
+          $ref: "#/components/schemas/Money"
+        investedAmount:
+          $ref: "#/components/schemas/Money"
+        gainLoss:
+          $ref: "#/components/schemas/Money"
+        monthlyChange:
+          $ref: "#/components/schemas/Money"
+        monthlyChangePercent:
+          type: string
+          pattern: ^-?[0-9]+\.[0-9]{2}$
+          nullable: true
+        monthlyNetContributions:
+          $ref: "#/components/schemas/Money"
+        performanceSummary:
+          type: string
+        valuationBasis:
+          type: string
+          enum:
+            - SIMULATED_COST_ADDITION
+        dataSource:
+          type: string
+          enum:
+            - SIMULATED
+        asOf:
+          $ref: "#/components/schemas/Timestamp"
+        positions:
+          type: array
+          items:
+            $ref: "#/components/schemas/PortfolioPosition"
+        version:
+          type: integer
+          minimum: 0
+    UserRiskProfile:
+      type: object
+      additionalProperties: false
+      required:
+        - userId
+        - displayName
+        - riskLevel
+        - version
+        - assessedAt
+        - expiresAt
+        - dataSource
+      properties:
+        userId:
+          type: string
+        displayName:
+          type: string
+        riskLevel:
+          $ref: "#/components/schemas/RiskLevel"
+        version:
+          type: integer
+          minimum: 0
+        assessedAt:
+          $ref: "#/components/schemas/Timestamp"
+        expiresAt:
+          $ref: "#/components/schemas/Timestamp"
+        dataSource:
+          type: string
+          enum:
+            - SIMULATED
+    SuitabilityResult:
+      type: string
+      enum:
+        - SUITABLE
+        - NOT_SUITABLE
+    SuitabilityCheck:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - productId
+        - userId
+        - userRiskLevel
+        - productRiskLevel
+        - productVersion
+        - riskProfileVersion
+        - result
+        - reasons
+        - createdAt
+        - expiresAt
+      properties:
+        id:
+          type: string
+        productId:
+          type: string
+        userId:
+          type: string
+        userRiskLevel:
+          $ref: "#/components/schemas/RiskLevel"
+        productRiskLevel:
+          $ref: "#/components/schemas/RiskLevel"
+        productVersion:
+          type: integer
+          minimum: 0
+        riskProfileVersion:
+          type: integer
+          minimum: 0
+        result:
+          $ref: "#/components/schemas/SuitabilityResult"
+        reasons:
+          type: array
+          items:
+            type: string
+          minItems: 1
+        createdAt:
+          $ref: "#/components/schemas/Timestamp"
+        expiresAt:
+          $ref: "#/components/schemas/Timestamp"
+    CreateSuitabilityCheckRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - productId
+      properties:
+        productId:
+          type: string
+    CreateInvestmentOrderIntentRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - productId
+        - sourceAccountId
+        - amount
+        - suitabilityCheckId
+      properties:
+        productId:
+          type: string
+        sourceAccountId:
+          type: string
+        amount:
+          $ref: "#/components/schemas/Money"
+        suitabilityCheckId:
+          type: string
+    ExecuteInvestmentOrderRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - intentId
+        - intentHash
+      properties:
+        intentId:
+          type: string
+        intentHash:
+          type: string
+    InvestmentOrderIntentStatus:
+      type: string
+      enum:
+        - PREPARED
+        - EXECUTED
+        - EXPIRED
+    InvestmentOrderStatus:
+      type: string
+      enum:
+        - COMPLETED
+    InvestmentOrderIntent:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - product
+        - sourceAccount
+        - amount
+        - fees
+        - totalDebit
+        - suitabilityCheckId
+        - suitability
+        - projectedAvailableBalance
+        - intentHash
+        - createdAt
+        - expiresAt
+        - status
+        - authorizationRequirement
+      properties:
+        id:
+          type: string
+        product:
+          $ref: "#/components/schemas/InvestmentProductDetail"
+        sourceAccount:
+          $ref: "#/components/schemas/AccountSummary"
+        amount:
+          $ref: "#/components/schemas/Money"
+        fees:
+          $ref: "#/components/schemas/Money"
+        totalDebit:
+          $ref: "#/components/schemas/Money"
+        suitabilityCheckId:
+          type: string
+        suitability:
+          $ref: "#/components/schemas/SuitabilityCheck"
+        projectedAvailableBalance:
+          $ref: "#/components/schemas/Money"
+        intentHash:
+          type: string
+        createdAt:
+          $ref: "#/components/schemas/Timestamp"
+        expiresAt:
+          $ref: "#/components/schemas/Timestamp"
+        status:
+          $ref: "#/components/schemas/InvestmentOrderIntentStatus"
+        authorizationRequirement:
+          type: string
+          enum:
+            - CONFIRMATION
+    InvestmentOrderReceipt:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - intentId
+        - status
+        - product
+        - sourceAccount
+        - amount
+        - fees
+        - totalDebit
+        - suitabilityCheckId
+        - reference
+        - completedAt
+        - transactionId
+        - positionId
+        - dataSource
+      properties:
+        id:
+          type: string
+        intentId:
+          type: string
+        status:
+          $ref: "#/components/schemas/InvestmentOrderStatus"
+        product:
+          $ref: "#/components/schemas/InvestmentProductSummary"
+        sourceAccount:
+          $ref: "#/components/schemas/AccountSummary"
+        amount:
+          $ref: "#/components/schemas/Money"
+        fees:
+          $ref: "#/components/schemas/Money"
+        totalDebit:
+          $ref: "#/components/schemas/Money"
+        suitabilityCheckId:
+          type: string
+        reference:
+          type: string
+        completedAt:
+          $ref: "#/components/schemas/Timestamp"
+        transactionId:
+          type: string
+        positionId:
+          type: string
+        dataSource:
+          type: string
+          enum:
+            - SIMULATED
+    SessionStatus:
+      type: string
+      enum:
+        - ACTIVE
+        - EXPIRED
+        - REVOKED
+    AssuranceLevel:
+      type: string
+      enum:
+        - AAL1
+        - AAL2
+    LoginRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          writeOnly: true
+    LogoutResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - REVOKED
+    StepUpChallengeStatus:
+      type: string
+      enum:
+        - PENDING
+        - VERIFIED
+        - FAILED
+        - EXPIRED
+        - CANCELLED
+    StepUpMethod:
+      type: string
+      enum:
+        - DEMO_SECURITY_CODE
+    AuthorizationStatus:
+      type: string
+      enum:
+        - ACTIVE
+        - CONSUMED
+        - EXPIRED
+        - REVOKED
+    CreateStepUpChallengeRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - resourceType
+        - resourceId
+        - resourceHash
+      properties:
+        resourceType:
+          type: string
+          enum:
+            - CARD_ACTION_INTENT
+            - TRANSFER_INTENT
+            - SCHEDULE_ACTION_INTENT
+        resourceId:
+          type: string
+        resourceHash:
+          type: string
+    StepUpChallenge:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - resourceType
+        - resourceId
+        - resourceHash
+        - method
+        - status
+        - createdAt
+        - expiresAt
+        - attemptsRemaining
+      properties:
+        id:
+          type: string
+        resourceType:
+          type: string
+          enum:
+            - CARD_ACTION_INTENT
+            - TRANSFER_INTENT
+            - SCHEDULE_ACTION_INTENT
+        resourceId:
+          type: string
+        resourceHash:
+          type: string
+        method:
+          $ref: "#/components/schemas/StepUpMethod"
+        status:
+          $ref: "#/components/schemas/StepUpChallengeStatus"
+        createdAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+        expiresAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+        attemptsRemaining:
+          type: integer
+          minimum: 0
+        actionAuthorizationId:
+          type: string
+    VerifyStepUpRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - code
+      properties:
+        code:
+          type: string
+          writeOnly: true
+    ActionAuthorization:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - resourceType
+        - resourceId
+        - resourceHash
+        - assuranceLevel
+        - status
+        - issuedAt
+        - expiresAt
+        - consumedAt
+      properties:
+        id:
+          type: string
+        resourceType:
+          type: string
+          enum:
+            - CARD_ACTION_INTENT
+            - TRANSFER_INTENT
+            - SCHEDULE_ACTION_INTENT
+        resourceId:
+          type: string
+        resourceHash:
+          type: string
+        assuranceLevel:
+          $ref: "#/components/schemas/AssuranceLevel"
+        status:
+          $ref: "#/components/schemas/AuthorizationStatus"
+        issuedAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+        expiresAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+        consumedAt:
+          type: string
+          format: date-time
+          nullable: true
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+    StepUpVerificationResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - challenge
+        - authorization
+      properties:
+        challenge:
+          $ref: "#/components/schemas/StepUpChallenge"
+        authorization:
+          $ref: "#/components/schemas/ActionAuthorization"
+    SecurityEvent:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - type
+        - occurredAt
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+            - LOGIN_SUCCESS
+            - LOGIN_FAILURE
+            - LOGOUT
+            - STEP_UP_CREATED
+            - STEP_UP_FAILED
+            - STEP_UP_VERIFIED
+            - AUTHORIZATION_ISSUED
+            - AUTHORIZATION_CONSUMED
+        occurredAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+        sessionId:
+          type: string
+        resourceId:
+          type: string
+      x-internal-model: true
+      description:
+        Internal simulator audit event used by the store; deliberately not exposed by any endpoint.
+        Never contains submitted credentials or verification codes.
+    RecipientStatus:
+      type: string
+      enum:
+        - ACTIVE
+        - INACTIVE
+    RecipientActionType:
+      type: string
+      enum:
+        - CREATE
+        - DEACTIVATE
+    PrepareRecipientActionRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - actionType
+      properties:
+        actionType:
+          $ref: "#/components/schemas/RecipientActionType"
+        destinationRef:
+          type: string
+          maxLength: 100
+        recipientId:
+          type: string
+          maxLength: 255
+    RecipientActionIntent:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - actionType
+        - recipient
+        - intentHash
+        - createdAt
+        - expiresAt
+        - status
+        - authorizationRequirement
+      properties:
+        id:
+          type: string
+        actionType:
+          $ref: "#/components/schemas/RecipientActionType"
+        recipient:
+          $ref: "#/components/schemas/RecipientSummary"
+        intentHash:
+          type: string
+        createdAt:
+          $ref: "#/components/schemas/Timestamp"
+        expiresAt:
+          $ref: "#/components/schemas/Timestamp"
+        status:
+          $ref: "#/components/schemas/TransferIntentStatus"
+        authorizationRequirement:
+          type: string
+          enum:
+            - CONFIRMATION
+    ExecuteRecipientActionRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - intentId
+        - intentHash
+      properties:
+        intentId:
+          type: string
+        intentHash:
+          type: string
+    ScheduledPaymentStatus:
+      type: string
+      enum:
+        - SCHEDULED
+        - EXECUTED
+        - CANCELLED
+        - FAILED
+    ScheduleActionType:
+      type: string
+      enum:
+        - CREATE
+        - AMEND
+        - CANCEL
+    ScheduledPayment:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - sourceAccount
+        - recipient
+        - amount
+        - fee
+        - totalDebit
+        - dueAt
+        - status
+        - version
+        - createdAt
+        - updatedAt
+        - note
+      properties:
+        id:
+          type: string
+        sourceAccount:
+          $ref: "#/components/schemas/AccountSummary"
+        recipient:
+          $ref: "#/components/schemas/RecipientSummary"
+        amount:
+          $ref: "#/components/schemas/Money"
+        fee:
+          $ref: "#/components/schemas/Money"
+        totalDebit:
+          $ref: "#/components/schemas/Money"
+        dueAt:
+          $ref: "#/components/schemas/Timestamp"
+        status:
+          $ref: "#/components/schemas/ScheduledPaymentStatus"
+        version:
+          type: integer
+          minimum: 0
+        createdAt:
+          $ref: "#/components/schemas/Timestamp"
+        updatedAt:
+          $ref: "#/components/schemas/Timestamp"
+        note:
+          type: string
+          maxLength: 140
+        transferId:
+          type: string
+        transactionId:
+          type: string
+        executedAt:
+          $ref: "#/components/schemas/Timestamp"
+        failureReason:
+          type: string
+    ScheduledPaymentsResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ScheduledPayment"
+    PrepareScheduleActionRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - actionType
+      properties:
+        actionType:
+          $ref: "#/components/schemas/ScheduleActionType"
+        scheduleId:
+          type: string
+        expectedVersion:
+          type: integer
+          minimum: 0
+        sourceAccountId:
+          type: string
+        recipientId:
+          type: string
+        amount:
+          $ref: "#/components/schemas/Money"
+        dueAt:
+          $ref: "#/components/schemas/Timestamp"
+        note:
+          type: string
+          maxLength: 140
+      description:
+        CREATE requires sourceAccountId, recipientId, amount and dueAt; AMEND additionally
+        requires scheduleId and expectedVersion and cannot change source account; CANCEL accepts only
+        actionType, scheduleId and expectedVersion. dueAt is strictly future; UI uses Asia/Shanghai +08:00.
+        No reservation.
+    ScheduleActionIntent:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - actionType
+        - schedule
+        - intentHash
+        - createdAt
+        - expiresAt
+        - status
+        - authorizationRequirement
+        - policyVersion
+      properties:
+        id:
+          type: string
+        actionType:
+          $ref: "#/components/schemas/ScheduleActionType"
+        schedule:
+          $ref: "#/components/schemas/ScheduledPayment"
+        intentHash:
+          type: string
+        createdAt:
+          $ref: "#/components/schemas/Timestamp"
+        expiresAt:
+          $ref: "#/components/schemas/Timestamp"
+        status:
+          $ref: "#/components/schemas/TransferIntentStatus"
+        authorizationRequirement:
+          type: string
+          enum:
+            - CONFIRMATION
+        policyVersion:
+          type: string
+    ExecuteScheduleActionRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - intentId
+        - intentHash
+      properties:
+        intentId:
+          type: string
+        intentHash:
+          type: string
+        actionAuthorizationId:
+          type: string
+          minLength: 1
+          maxLength: 255
+x-authentication:
+  mode: SESSION
+  description:
+    All Customer operations require a valid session except login. MSW resolves the current
+    session internally. Production credential transport is deferred to M12/M16; no bearer or cookie protocol
+    is claimed by this simulator.

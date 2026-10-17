@@ -1,0 +1,1273 @@
+{
+  "customerId": "usr_aster_alex",
+  "displayName": "Alex Chen",
+  "asOf": "2026-09-27T10:30:00+08:00",
+  "accounts": [
+    {
+      "id": "acc_current",
+      "displayName": "CNY Current",
+      "type": "CURRENT",
+      "status": "ACTIVE",
+      "currency": "CNY",
+      "maskedAccountNumber": "•••• 1048",
+      "balance": {
+        "currency": "CNY",
+        "amount": "23842.31"
+      },
+      "pendingAmount": {
+        "currency": "CNY",
+        "amount": "32.00"
+      },
+      "availableBalance": {
+        "amount": "23810.31",
+        "currency": "CNY"
+      },
+      "openedAt": "2022-03-15T09:00:00+08:00"
+    },
+    {
+      "id": "acc_savings",
+      "displayName": "Savings",
+      "type": "SAVINGS",
+      "status": "ACTIVE",
+      "currency": "CNY",
+      "maskedAccountNumber": "•••• 2086",
+      "balance": {
+        "currency": "CNY",
+        "amount": "8200.00"
+      },
+      "pendingAmount": {
+        "currency": "CNY",
+        "amount": "0.00"
+      },
+      "availableBalance": {
+        "amount": "8200.00",
+        "currency": "CNY"
+      },
+      "openedAt": "2023-06-01T09:00:00+08:00"
+    },
+    {
+      "id": "acc_usd",
+      "displayName": "USD",
+      "type": "MULTI_CURRENCY",
+      "status": "ACTIVE",
+      "currency": "USD",
+      "maskedAccountNumber": "•••• 3052",
+      "balance": {
+        "currency": "USD",
+        "amount": "621.32"
+      },
+      "pendingAmount": {
+        "currency": "USD",
+        "amount": "0.00"
+      },
+      "availableBalance": {
+        "amount": "621.32",
+        "currency": "USD"
+      },
+      "baseCurrencyEquivalent": {
+        "value": {
+          "amount": "4411.37",
+          "currency": "CNY"
+        },
+        "sourceCurrency": "USD",
+        "exchangeRate": "7.10",
+        "conversionAsOf": "2026-09-27T10:00:00+08:00",
+        "conversionSource": "DEMO_RATE"
+      },
+      "openedAt": "2024-01-10T09:00:00+08:00"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "txn_coffee",
+      "accountId": "acc_current",
+      "title": "Starbucks",
+      "amount": {
+        "amount": "32.00",
+        "currency": "CNY"
+      },
+      "category": "DINING",
+      "occurredAt": "2026-09-27T09:15:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "PENDING",
+      "bookedAt": null,
+      "merchant": {
+        "id": "merchant_starbucks",
+        "name": "Starbucks",
+        "maskedCardNumber": "•••• 8821",
+        "location": "Shanghai, CN"
+      },
+      "cardId": "card_aster_debit",
+      "cardMaskedNumber": "••8821"
+    },
+    {
+      "id": "txn_groceries",
+      "accountId": "acc_current",
+      "title": "Fresh Market",
+      "amount": {
+        "amount": "186.50",
+        "currency": "CNY"
+      },
+      "category": "GROCERIES",
+      "occurredAt": "2026-09-26T18:42:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-09-26T18:42:00+08:00",
+      "merchant": {
+        "id": "merchant_fresh_market",
+        "name": "Fresh Market",
+        "maskedCardNumber": "•••• 8821",
+        "location": "Shanghai, CN"
+      },
+      "cardId": "card_aster_debit",
+      "cardMaskedNumber": "••8821"
+    },
+    {
+      "id": "txn_metro",
+      "accountId": "acc_current",
+      "title": "Metro Transit",
+      "amount": {
+        "amount": "18.00",
+        "currency": "CNY"
+      },
+      "category": "TRANSPORT",
+      "occurredAt": "2026-09-26T08:10:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-09-26T08:10:00+08:00",
+      "merchant": {
+        "id": "merchant_metro_transit",
+        "name": "Metro Transit",
+        "maskedCardNumber": "•••• 8821",
+        "location": "Shanghai, CN"
+      },
+      "cardId": "card_aster_debit",
+      "cardMaskedNumber": "••8821"
+    },
+    {
+      "id": "txn_salary",
+      "accountId": "acc_current",
+      "title": "Monthly salary",
+      "amount": {
+        "amount": "12000.00",
+        "currency": "CNY"
+      },
+      "category": "INCOME",
+      "occurredAt": "2026-09-25T09:00:00+08:00",
+      "type": "SALARY",
+      "direction": "CREDIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-09-25T09:00:00+08:00"
+    },
+    {
+      "id": "txn_rec_rent",
+      "accountId": "acc_current",
+      "title": "Rent",
+      "amount": {
+        "amount": "3000.00",
+        "currency": "CNY"
+      },
+      "category": "HOUSING",
+      "occurredAt": "2026-09-01T09:00:00+08:00",
+      "type": "DIRECT_DEBIT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-09-01T09:00:00+08:00"
+    },
+    {
+      "id": "txn_rec_netflix",
+      "accountId": "acc_current",
+      "title": "Netflix",
+      "amount": {
+        "amount": "88.00",
+        "currency": "CNY"
+      },
+      "category": "SUBSCRIPTIONS",
+      "occurredAt": "2026-09-03T09:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-09-03T09:00:00+08:00",
+      "merchant": {
+        "id": "merchant_netflix",
+        "name": "Netflix",
+        "maskedCardNumber": "•••• 8821",
+        "location": "Shanghai, CN"
+      },
+      "cardId": "card_aster_debit",
+      "cardMaskedNumber": "••8821"
+    },
+    {
+      "id": "txn_rec_spotify",
+      "accountId": "acc_current",
+      "title": "Spotify",
+      "amount": {
+        "amount": "65.00",
+        "currency": "CNY"
+      },
+      "category": "SUBSCRIPTIONS",
+      "occurredAt": "2026-09-05T09:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-09-05T09:00:00+08:00",
+      "merchant": {
+        "id": "merchant_spotify",
+        "name": "Spotify",
+        "maskedCardNumber": "•••• 8821",
+        "location": "Shanghai, CN"
+      },
+      "cardId": "card_aster_debit",
+      "cardMaskedNumber": "••8821"
+    },
+    {
+      "id": "txn_rec_adobe",
+      "accountId": "acc_current",
+      "title": "Adobe",
+      "amount": {
+        "amount": "238.00",
+        "currency": "CNY"
+      },
+      "category": "SUBSCRIPTIONS",
+      "occurredAt": "2026-09-24T09:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-09-24T09:00:00+08:00",
+      "merchant": {
+        "id": "merchant_adobe",
+        "name": "Adobe",
+        "maskedCardNumber": "•••• 8821",
+        "location": "Shanghai, CN"
+      },
+      "cardId": "card_aster_debit",
+      "cardMaskedNumber": "••8821"
+    },
+    {
+      "id": "txn_rec_chatgpt",
+      "accountId": "acc_current",
+      "title": "ChatGPT",
+      "amount": {
+        "amount": "145.00",
+        "currency": "CNY"
+      },
+      "category": "SUBSCRIPTIONS",
+      "occurredAt": "2026-09-10T09:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-09-10T09:00:00+08:00",
+      "merchant": {
+        "id": "merchant_chatgpt",
+        "name": "ChatGPT",
+        "maskedCardNumber": "•••• 8821",
+        "location": "Shanghai, CN"
+      },
+      "cardId": "card_aster_debit",
+      "cardMaskedNumber": "••8821"
+    },
+    {
+      "id": "txn_early_groceries",
+      "accountId": "acc_current",
+      "title": "Weekly groceries",
+      "amount": {
+        "amount": "595.50",
+        "currency": "CNY"
+      },
+      "category": "GROCERIES",
+      "occurredAt": "2026-09-20T14:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-09-20T14:00:00+08:00",
+      "merchant": {
+        "id": "merchant_weekly_groceries",
+        "name": "Weekly groceries",
+        "maskedCardNumber": "•••• 8821",
+        "location": "Shanghai, CN"
+      },
+      "cardId": "card_aster_debit",
+      "cardMaskedNumber": "••8821"
+    },
+    {
+      "id": "txn_dinner",
+      "accountId": "acc_current",
+      "title": "Family dinner",
+      "amount": {
+        "amount": "420.00",
+        "currency": "CNY"
+      },
+      "category": "DINING",
+      "occurredAt": "2026-09-18T19:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-09-18T19:00:00+08:00",
+      "merchant": {
+        "id": "merchant_family_dinner",
+        "name": "Family dinner",
+        "maskedCardNumber": "•••• 8821",
+        "location": "Shanghai, CN"
+      },
+      "cardId": "card_aster_debit",
+      "cardMaskedNumber": "••8821"
+    },
+    {
+      "id": "txn_transport",
+      "accountId": "acc_current",
+      "title": "Transport pass",
+      "amount": {
+        "amount": "212.00",
+        "currency": "CNY"
+      },
+      "category": "TRANSPORT",
+      "occurredAt": "2026-09-02T08:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-09-02T08:00:00+08:00",
+      "merchant": {
+        "id": "merchant_transport_pass",
+        "name": "Transport pass",
+        "maskedCardNumber": "•••• 8821",
+        "location": "Shanghai, CN"
+      },
+      "cardId": "card_aster_debit",
+      "cardMaskedNumber": "••8821"
+    },
+    {
+      "id": "txn_history_0_00",
+      "accountId": "acc_current",
+      "title": "Bookshop",
+      "amount": {
+        "amount": "68.00",
+        "currency": "CNY"
+      },
+      "category": "SHOPPING",
+      "occurredAt": "2026-08-24T12:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-24T12:00:00+08:00",
+      "merchant": {
+        "id": "merchant_bookshop",
+        "name": "Bookshop",
+        "maskedCardNumber": "•••• 8821",
+        "location": "Shanghai, CN"
+      },
+      "cardId": "card_aster_debit",
+      "cardMaskedNumber": "••8821"
+    },
+    {
+      "id": "txn_history_0_01",
+      "accountId": "acc_current",
+      "title": "Cinema",
+      "amount": {
+        "amount": "95.00",
+        "currency": "CNY"
+      },
+      "category": "ENTERTAINMENT",
+      "occurredAt": "2026-08-24T12:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "FAILED",
+      "bookedAt": null,
+      "merchant": {
+        "id": "merchant_cinema",
+        "name": "Cinema",
+        "maskedCardNumber": "•••• 8821",
+        "location": "Shanghai, CN"
+      },
+      "cardId": "card_aster_debit",
+      "cardMaskedNumber": "••8821"
+    },
+    {
+      "id": "txn_history_0_02",
+      "accountId": "acc_current",
+      "title": "City Pharmacy",
+      "amount": {
+        "amount": "42.50",
+        "currency": "CNY"
+      },
+      "category": "HEALTH",
+      "occurredAt": "2026-08-23T12:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "CANCELLED",
+      "bookedAt": null,
+      "merchant": {
+        "id": "merchant_city_pharmacy",
+        "name": "City Pharmacy",
+        "maskedCardNumber": "•••• 8821",
+        "location": "Shanghai, CN"
+      },
+      "cardId": "card_aster_debit",
+      "cardMaskedNumber": "••8821"
+    },
+    {
+      "id": "txn_history_0_03",
+      "accountId": "acc_current",
+      "title": "Airport Express",
+      "amount": {
+        "amount": "50.00",
+        "currency": "CNY"
+      },
+      "category": "TRAVEL",
+      "occurredAt": "2026-08-23T12:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "REVERSED",
+      "bookedAt": "2026-08-23T12:00:00+08:00",
+      "merchant": {
+        "id": "merchant_airport_express",
+        "name": "Airport Express",
+        "maskedCardNumber": "•••• 8821",
+        "location": "Shanghai, CN"
+      },
+      "cardId": "card_aster_debit",
+      "cardMaskedNumber": "••8821"
+    },
+    {
+      "id": "txn_history_0_04",
+      "accountId": "acc_current",
+      "title": "ATM withdrawal",
+      "amount": {
+        "amount": "200.00",
+        "currency": "CNY"
+      },
+      "category": "OTHER",
+      "occurredAt": "2026-08-22T12:00:00+08:00",
+      "type": "CASH_WITHDRAWAL",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-22T12:00:00+08:00"
+    },
+    {
+      "id": "txn_history_0_05",
+      "accountId": "acc_current",
+      "title": "Service fee",
+      "amount": {
+        "amount": "5.00",
+        "currency": "CNY"
+      },
+      "category": "OTHER",
+      "occurredAt": "2026-08-22T12:00:00+08:00",
+      "type": "FEE",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-22T12:00:00+08:00"
+    },
+    {
+      "id": "txn_history_0_06",
+      "accountId": "acc_current",
+      "title": "Interest credit",
+      "amount": {
+        "amount": "12.00",
+        "currency": "CNY"
+      },
+      "category": "INCOME",
+      "occurredAt": "2026-08-21T12:00:00+08:00",
+      "type": "INTEREST",
+      "direction": "CREDIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-21T12:00:00+08:00"
+    },
+    {
+      "id": "txn_history_0_07",
+      "accountId": "acc_current",
+      "title": "From Jamie Lee",
+      "amount": {
+        "amount": "150.00",
+        "currency": "CNY"
+      },
+      "category": "TRANSFER",
+      "occurredAt": "2026-08-21T12:00:00+08:00",
+      "type": "BANK_TRANSFER",
+      "direction": "CREDIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-21T12:00:00+08:00",
+      "counterparty": {
+        "name": "Jamie Lee",
+        "maskedAccountNumber": "•••• 6702"
+      }
+    },
+    {
+      "id": "txn_history_0_08",
+      "accountId": "acc_current",
+      "title": "To Morgan Wu",
+      "amount": {
+        "amount": "100.00",
+        "currency": "CNY"
+      },
+      "category": "TRANSFER",
+      "occurredAt": "2026-08-20T12:00:00+08:00",
+      "type": "BANK_TRANSFER",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-20T12:00:00+08:00",
+      "counterparty": {
+        "name": "Morgan Wu",
+        "maskedAccountNumber": "•••• 6702"
+      }
+    },
+    {
+      "id": "txn_history_0_09",
+      "accountId": "acc_current",
+      "title": "Currency exchange",
+      "amount": {
+        "amount": "120.00",
+        "currency": "CNY"
+      },
+      "category": "TRANSFER",
+      "occurredAt": "2026-08-20T12:00:00+08:00",
+      "type": "FX_EXCHANGE",
+      "direction": "CREDIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-20T12:00:00+08:00"
+    },
+    {
+      "id": "txn_history_0_10",
+      "accountId": "acc_current",
+      "title": "Starbucks",
+      "amount": {
+        "amount": "38.00",
+        "currency": "CNY"
+      },
+      "category": "DINING",
+      "occurredAt": "2026-08-19T12:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-19T12:00:00+08:00",
+      "merchant": {
+        "id": "merchant_starbucks",
+        "name": "Starbucks",
+        "maskedCardNumber": "•••• 8821",
+        "location": "Shanghai, CN"
+      },
+      "cardId": "card_aster_debit",
+      "cardMaskedNumber": "••8821"
+    },
+    {
+      "id": "txn_history_0_11",
+      "accountId": "acc_current",
+      "title": "Fresh Market",
+      "amount": {
+        "amount": "76.00",
+        "currency": "CNY"
+      },
+      "category": "GROCERIES",
+      "occurredAt": "2026-08-19T12:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-19T12:00:00+08:00",
+      "merchant": {
+        "id": "merchant_fresh_market",
+        "name": "Fresh Market",
+        "maskedCardNumber": "•••• 8821",
+        "location": "Shanghai, CN"
+      },
+      "cardId": "card_aster_debit",
+      "cardMaskedNumber": "••8821"
+    },
+    {
+      "id": "txn_history_1_00",
+      "accountId": "acc_savings",
+      "title": "Bookshop",
+      "amount": {
+        "amount": "68.00",
+        "currency": "CNY"
+      },
+      "category": "SHOPPING",
+      "occurredAt": "2026-08-24T12:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-24T12:00:00+08:00",
+      "merchant": {
+        "id": "merchant_bookshop",
+        "name": "Bookshop",
+        "location": "Shanghai, CN"
+      }
+    },
+    {
+      "id": "txn_history_1_01",
+      "accountId": "acc_savings",
+      "title": "Cinema",
+      "amount": {
+        "amount": "95.00",
+        "currency": "CNY"
+      },
+      "category": "ENTERTAINMENT",
+      "occurredAt": "2026-08-24T12:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "FAILED",
+      "bookedAt": null,
+      "merchant": {
+        "id": "merchant_cinema",
+        "name": "Cinema",
+        "location": "Shanghai, CN"
+      }
+    },
+    {
+      "id": "txn_history_1_02",
+      "accountId": "acc_savings",
+      "title": "City Pharmacy",
+      "amount": {
+        "amount": "42.50",
+        "currency": "CNY"
+      },
+      "category": "HEALTH",
+      "occurredAt": "2026-08-23T12:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "CANCELLED",
+      "bookedAt": null,
+      "merchant": {
+        "id": "merchant_city_pharmacy",
+        "name": "City Pharmacy",
+        "location": "Shanghai, CN"
+      }
+    },
+    {
+      "id": "txn_history_1_03",
+      "accountId": "acc_savings",
+      "title": "Airport Express",
+      "amount": {
+        "amount": "50.00",
+        "currency": "CNY"
+      },
+      "category": "TRAVEL",
+      "occurredAt": "2026-08-23T12:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "REVERSED",
+      "bookedAt": "2026-08-23T12:00:00+08:00",
+      "merchant": {
+        "id": "merchant_airport_express",
+        "name": "Airport Express",
+        "location": "Shanghai, CN"
+      }
+    },
+    {
+      "id": "txn_history_1_04",
+      "accountId": "acc_savings",
+      "title": "ATM withdrawal",
+      "amount": {
+        "amount": "200.00",
+        "currency": "CNY"
+      },
+      "category": "OTHER",
+      "occurredAt": "2026-08-22T12:00:00+08:00",
+      "type": "CASH_WITHDRAWAL",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-22T12:00:00+08:00"
+    },
+    {
+      "id": "txn_history_1_05",
+      "accountId": "acc_savings",
+      "title": "Service fee",
+      "amount": {
+        "amount": "5.00",
+        "currency": "CNY"
+      },
+      "category": "OTHER",
+      "occurredAt": "2026-08-22T12:00:00+08:00",
+      "type": "FEE",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-22T12:00:00+08:00"
+    },
+    {
+      "id": "txn_history_1_06",
+      "accountId": "acc_savings",
+      "title": "Interest credit",
+      "amount": {
+        "amount": "12.00",
+        "currency": "CNY"
+      },
+      "category": "INCOME",
+      "occurredAt": "2026-08-21T12:00:00+08:00",
+      "type": "INTEREST",
+      "direction": "CREDIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-21T12:00:00+08:00"
+    },
+    {
+      "id": "txn_history_1_07",
+      "accountId": "acc_savings",
+      "title": "From Jamie Lee",
+      "amount": {
+        "amount": "150.00",
+        "currency": "CNY"
+      },
+      "category": "TRANSFER",
+      "occurredAt": "2026-08-21T12:00:00+08:00",
+      "type": "BANK_TRANSFER",
+      "direction": "CREDIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-21T12:00:00+08:00",
+      "counterparty": {
+        "name": "Jamie Lee",
+        "maskedAccountNumber": "•••• 6702"
+      }
+    },
+    {
+      "id": "txn_history_1_08",
+      "accountId": "acc_savings",
+      "title": "To Morgan Wu",
+      "amount": {
+        "amount": "100.00",
+        "currency": "CNY"
+      },
+      "category": "TRANSFER",
+      "occurredAt": "2026-08-20T12:00:00+08:00",
+      "type": "BANK_TRANSFER",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-20T12:00:00+08:00",
+      "counterparty": {
+        "name": "Morgan Wu",
+        "maskedAccountNumber": "•••• 6702"
+      }
+    },
+    {
+      "id": "txn_history_1_09",
+      "accountId": "acc_savings",
+      "title": "Currency exchange",
+      "amount": {
+        "amount": "120.00",
+        "currency": "CNY"
+      },
+      "category": "TRANSFER",
+      "occurredAt": "2026-08-20T12:00:00+08:00",
+      "type": "FX_EXCHANGE",
+      "direction": "CREDIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-20T12:00:00+08:00"
+    },
+    {
+      "id": "txn_history_1_10",
+      "accountId": "acc_savings",
+      "title": "Starbucks",
+      "amount": {
+        "amount": "38.00",
+        "currency": "CNY"
+      },
+      "category": "DINING",
+      "occurredAt": "2026-08-19T12:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-19T12:00:00+08:00",
+      "merchant": {
+        "id": "merchant_starbucks",
+        "name": "Starbucks",
+        "location": "Shanghai, CN"
+      }
+    },
+    {
+      "id": "txn_history_1_11",
+      "accountId": "acc_savings",
+      "title": "Fresh Market",
+      "amount": {
+        "amount": "76.00",
+        "currency": "CNY"
+      },
+      "category": "GROCERIES",
+      "occurredAt": "2026-08-19T12:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-19T12:00:00+08:00",
+      "merchant": {
+        "id": "merchant_fresh_market",
+        "name": "Fresh Market",
+        "location": "Shanghai, CN"
+      }
+    },
+    {
+      "id": "txn_history_2_00",
+      "accountId": "acc_usd",
+      "title": "Bookshop",
+      "amount": {
+        "amount": "68.00",
+        "currency": "USD"
+      },
+      "category": "SHOPPING",
+      "occurredAt": "2026-08-24T12:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-24T12:00:00+08:00",
+      "merchant": {
+        "id": "merchant_bookshop",
+        "name": "Bookshop",
+        "location": "Shanghai, CN"
+      }
+    },
+    {
+      "id": "txn_history_2_01",
+      "accountId": "acc_usd",
+      "title": "Cinema",
+      "amount": {
+        "amount": "95.00",
+        "currency": "USD"
+      },
+      "category": "ENTERTAINMENT",
+      "occurredAt": "2026-08-24T12:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "FAILED",
+      "bookedAt": null,
+      "merchant": {
+        "id": "merchant_cinema",
+        "name": "Cinema",
+        "location": "Shanghai, CN"
+      }
+    },
+    {
+      "id": "txn_history_2_02",
+      "accountId": "acc_usd",
+      "title": "City Pharmacy",
+      "amount": {
+        "amount": "42.50",
+        "currency": "USD"
+      },
+      "category": "HEALTH",
+      "occurredAt": "2026-08-23T12:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "CANCELLED",
+      "bookedAt": null,
+      "merchant": {
+        "id": "merchant_city_pharmacy",
+        "name": "City Pharmacy",
+        "location": "Shanghai, CN"
+      }
+    },
+    {
+      "id": "txn_history_2_03",
+      "accountId": "acc_usd",
+      "title": "Airport Express",
+      "amount": {
+        "amount": "50.00",
+        "currency": "USD"
+      },
+      "category": "TRAVEL",
+      "occurredAt": "2026-08-23T12:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "REVERSED",
+      "bookedAt": "2026-08-23T12:00:00+08:00",
+      "merchant": {
+        "id": "merchant_airport_express",
+        "name": "Airport Express",
+        "location": "Shanghai, CN"
+      }
+    },
+    {
+      "id": "txn_history_2_04",
+      "accountId": "acc_usd",
+      "title": "ATM withdrawal",
+      "amount": {
+        "amount": "200.00",
+        "currency": "USD"
+      },
+      "category": "OTHER",
+      "occurredAt": "2026-08-22T12:00:00+08:00",
+      "type": "CASH_WITHDRAWAL",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-22T12:00:00+08:00"
+    },
+    {
+      "id": "txn_history_2_05",
+      "accountId": "acc_usd",
+      "title": "Service fee",
+      "amount": {
+        "amount": "5.00",
+        "currency": "USD"
+      },
+      "category": "OTHER",
+      "occurredAt": "2026-08-22T12:00:00+08:00",
+      "type": "FEE",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-22T12:00:00+08:00"
+    },
+    {
+      "id": "txn_history_2_06",
+      "accountId": "acc_usd",
+      "title": "Interest credit",
+      "amount": {
+        "amount": "12.00",
+        "currency": "USD"
+      },
+      "category": "INCOME",
+      "occurredAt": "2026-08-21T12:00:00+08:00",
+      "type": "INTEREST",
+      "direction": "CREDIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-21T12:00:00+08:00"
+    },
+    {
+      "id": "txn_history_2_07",
+      "accountId": "acc_usd",
+      "title": "From Jamie Lee",
+      "amount": {
+        "amount": "150.00",
+        "currency": "USD"
+      },
+      "category": "TRANSFER",
+      "occurredAt": "2026-08-21T12:00:00+08:00",
+      "type": "BANK_TRANSFER",
+      "direction": "CREDIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-21T12:00:00+08:00",
+      "counterparty": {
+        "name": "Jamie Lee",
+        "maskedAccountNumber": "•••• 6702"
+      }
+    },
+    {
+      "id": "txn_history_2_08",
+      "accountId": "acc_usd",
+      "title": "To Morgan Wu",
+      "amount": {
+        "amount": "100.00",
+        "currency": "USD"
+      },
+      "category": "TRANSFER",
+      "occurredAt": "2026-08-20T12:00:00+08:00",
+      "type": "BANK_TRANSFER",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-20T12:00:00+08:00",
+      "counterparty": {
+        "name": "Morgan Wu",
+        "maskedAccountNumber": "•••• 6702"
+      }
+    },
+    {
+      "id": "txn_history_2_09",
+      "accountId": "acc_usd",
+      "title": "Currency exchange",
+      "amount": {
+        "amount": "120.00",
+        "currency": "USD"
+      },
+      "category": "TRANSFER",
+      "occurredAt": "2026-08-20T12:00:00+08:00",
+      "type": "FX_EXCHANGE",
+      "direction": "CREDIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-20T12:00:00+08:00"
+    },
+    {
+      "id": "txn_history_2_10",
+      "accountId": "acc_usd",
+      "title": "Starbucks",
+      "amount": {
+        "amount": "38.00",
+        "currency": "USD"
+      },
+      "category": "DINING",
+      "occurredAt": "2026-08-19T12:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-19T12:00:00+08:00",
+      "merchant": {
+        "id": "merchant_starbucks",
+        "name": "Starbucks",
+        "location": "Shanghai, CN"
+      }
+    },
+    {
+      "id": "txn_history_2_11",
+      "accountId": "acc_usd",
+      "title": "Fresh Market",
+      "amount": {
+        "amount": "76.00",
+        "currency": "USD"
+      },
+      "category": "GROCERIES",
+      "occurredAt": "2026-08-19T12:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-19T12:00:00+08:00",
+      "merchant": {
+        "id": "merchant_fresh_market",
+        "name": "Fresh Market",
+        "location": "Shanghai, CN"
+      }
+    },
+    {
+      "id": "txn_aug_rec_rent",
+      "accountId": "acc_current",
+      "title": "Rent",
+      "amount": {
+        "amount": "3000.00",
+        "currency": "CNY"
+      },
+      "category": "HOUSING",
+      "occurredAt": "2026-08-01T09:00:00+08:00",
+      "type": "DIRECT_DEBIT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-01T09:00:00+08:00"
+    },
+    {
+      "id": "txn_aug_rec_netflix",
+      "accountId": "acc_current",
+      "title": "Netflix",
+      "amount": {
+        "amount": "88.00",
+        "currency": "CNY"
+      },
+      "category": "SUBSCRIPTIONS",
+      "occurredAt": "2026-08-03T09:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-03T09:00:00+08:00",
+      "merchant": {
+        "id": "merchant_netflix",
+        "name": "Netflix",
+        "maskedCardNumber": "•••• 8821",
+        "location": "Shanghai, CN"
+      },
+      "cardId": "card_aster_debit",
+      "cardMaskedNumber": "••8821"
+    },
+    {
+      "id": "txn_aug_rec_spotify",
+      "accountId": "acc_current",
+      "title": "Spotify",
+      "amount": {
+        "amount": "65.00",
+        "currency": "CNY"
+      },
+      "category": "SUBSCRIPTIONS",
+      "occurredAt": "2026-08-05T09:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-05T09:00:00+08:00",
+      "merchant": {
+        "id": "merchant_spotify",
+        "name": "Spotify",
+        "maskedCardNumber": "•••• 8821",
+        "location": "Shanghai, CN"
+      },
+      "cardId": "card_aster_debit",
+      "cardMaskedNumber": "••8821"
+    },
+    {
+      "id": "txn_aug_rec_adobe",
+      "accountId": "acc_current",
+      "title": "Adobe",
+      "amount": {
+        "amount": "238.00",
+        "currency": "CNY"
+      },
+      "category": "SUBSCRIPTIONS",
+      "occurredAt": "2026-08-24T09:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-24T09:00:00+08:00",
+      "merchant": {
+        "id": "merchant_adobe",
+        "name": "Adobe",
+        "maskedCardNumber": "•••• 8821",
+        "location": "Shanghai, CN"
+      },
+      "cardId": "card_aster_debit",
+      "cardMaskedNumber": "••8821"
+    },
+    {
+      "id": "txn_aug_rec_chatgpt",
+      "accountId": "acc_current",
+      "title": "ChatGPT",
+      "amount": {
+        "amount": "145.00",
+        "currency": "CNY"
+      },
+      "category": "SUBSCRIPTIONS",
+      "occurredAt": "2026-08-10T09:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-10T09:00:00+08:00",
+      "merchant": {
+        "id": "merchant_chatgpt",
+        "name": "ChatGPT",
+        "maskedCardNumber": "•••• 8821",
+        "location": "Shanghai, CN"
+      },
+      "cardId": "card_aster_debit",
+      "cardMaskedNumber": "••8821"
+    },
+    {
+      "id": "txn_aug_household",
+      "accountId": "acc_current",
+      "title": "Home supplies",
+      "amount": {
+        "amount": "890.00",
+        "currency": "CNY"
+      },
+      "category": "SHOPPING",
+      "occurredAt": "2026-08-15T12:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-15T12:00:00+08:00",
+      "merchant": {
+        "id": "merchant_home_supplies",
+        "name": "Home supplies",
+        "maskedCardNumber": "•••• 8821",
+        "location": "Shanghai, CN"
+      },
+      "cardId": "card_aster_debit",
+      "cardMaskedNumber": "••8821"
+    },
+    {
+      "id": "txn_aug_late",
+      "accountId": "acc_current",
+      "title": "Home supplies",
+      "amount": {
+        "amount": "600.00",
+        "currency": "CNY"
+      },
+      "category": "SHOPPING",
+      "occurredAt": "2026-08-28T12:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-08-28T12:00:00+08:00",
+      "merchant": {
+        "id": "merchant_home_supplies",
+        "name": "Home supplies",
+        "maskedCardNumber": "•••• 8821",
+        "location": "Shanghai, CN"
+      },
+      "cardId": "card_aster_debit",
+      "cardMaskedNumber": "••8821"
+    },
+    {
+      "id": "txn_jul_bookshop",
+      "accountId": "acc_current",
+      "title": "Bookshop",
+      "amount": {
+        "amount": "68.00",
+        "currency": "CNY"
+      },
+      "category": "SHOPPING",
+      "occurredAt": "2026-07-24T12:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-07-24T12:00:00+08:00",
+      "merchant": {
+        "id": "merchant_bookshop",
+        "name": "Bookshop",
+        "maskedCardNumber": "•••• 8821",
+        "location": "Shanghai, CN"
+      },
+      "cardId": "card_aster_debit",
+      "cardMaskedNumber": "••8821"
+    },
+    {
+      "id": "txn_jun_bookshop",
+      "accountId": "acc_current",
+      "title": "Bookshop",
+      "amount": {
+        "amount": "68.00",
+        "currency": "CNY"
+      },
+      "category": "SHOPPING",
+      "occurredAt": "2026-06-24T12:00:00+08:00",
+      "type": "CARD_PAYMENT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-06-24T12:00:00+08:00",
+      "merchant": {
+        "id": "merchant_bookshop",
+        "name": "Bookshop",
+        "maskedCardNumber": "•••• 8821",
+        "location": "Shanghai, CN"
+      },
+      "cardId": "card_aster_debit",
+      "cardMaskedNumber": "••8821"
+    },
+    {
+      "id": "txn_housing_04",
+      "accountId": "acc_current",
+      "title": "Housing and utilities",
+      "amount": {
+        "amount": "4620.00",
+        "currency": "CNY"
+      },
+      "category": "HOUSING",
+      "occurredAt": "2026-04-01T09:00:00+08:00",
+      "type": "DIRECT_DEBIT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-04-01T09:00:00+08:00"
+    },
+    {
+      "id": "txn_housing_05",
+      "accountId": "acc_current",
+      "title": "Housing and utilities",
+      "amount": {
+        "amount": "5180.00",
+        "currency": "CNY"
+      },
+      "category": "HOUSING",
+      "occurredAt": "2026-05-01T09:00:00+08:00",
+      "type": "DIRECT_DEBIT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-05-01T09:00:00+08:00"
+    },
+    {
+      "id": "txn_housing_06",
+      "accountId": "acc_current",
+      "title": "Housing and utilities",
+      "amount": {
+        "amount": "4822.00",
+        "currency": "CNY"
+      },
+      "category": "HOUSING",
+      "occurredAt": "2026-06-01T09:00:00+08:00",
+      "type": "DIRECT_DEBIT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-06-01T09:00:00+08:00"
+    },
+    {
+      "id": "txn_housing_07",
+      "accountId": "acc_current",
+      "title": "Housing and utilities",
+      "amount": {
+        "amount": "5552.00",
+        "currency": "CNY"
+      },
+      "category": "HOUSING",
+      "occurredAt": "2026-07-01T09:00:00+08:00",
+      "type": "DIRECT_DEBIT",
+      "direction": "DEBIT",
+      "status": "COMPLETED",
+      "bookedAt": "2026-07-01T09:00:00+08:00"
+    }
+  ]
+}

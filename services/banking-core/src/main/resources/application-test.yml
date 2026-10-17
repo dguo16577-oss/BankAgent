@@ -1,0 +1,4 @@
+spring:
+  main:
+    banner-mode: off
+# Tests supply Clock.fixed explicitly; no production clock or security override.

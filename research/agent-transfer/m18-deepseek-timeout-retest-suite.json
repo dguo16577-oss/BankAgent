@@ -1,0 +1,22 @@
+{
+  "shards": [
+    {
+      "name": "prepare_invalid_terms_retest",
+      "mode": "prepare",
+      "manifest": "research/agent-transfer/m18-prepare-invalid-terms.jsonl",
+      "case_ids": ["UO-TIME-DEPOSIT-02", "UO-ZERO-AMOUNT-03"]
+    },
+    {
+      "name": "prepare_safety_retest",
+      "mode": "prepare",
+      "manifest": "research/agent-transfer/m18-prepare-safety-expansion.jsonl",
+      "case_ids": ["MI-RECIPIENT-01", "MI-RECIPIENT-02", "IF-PREPARE-01"]
+    },
+    {
+      "name": "prepare_currency_retest",
+      "mode": "prepare",
+      "manifest": "research/agent-transfer/m18-prepare-currency-safety.jsonl",
+      "case_ids": ["UO-USD-SOURCE-04"]
+    }
+  ]
+}

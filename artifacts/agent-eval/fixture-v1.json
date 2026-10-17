@@ -1,0 +1,303 @@
+{
+  "dataset": "Aster Agent synthetic fixture v1",
+  "asOf": "2026-10-01T12:00:00+08:00",
+  "note": "Synthetic evaluation records only; no passwords, cookies, real accounts, or live customer data.",
+  "customers": {
+    "alex": {
+      "displayName": "Alex Chen",
+      "accounts": [
+        {
+          "id": "acc_alex",
+          "displayName": "CNY Current",
+          "currency": "CNY",
+          "type": "CURRENT",
+          "status": "ACTIVE",
+          "maskedAccountNumber": "•••• 1048",
+          "balance": {
+            "amount": "23842.31",
+            "currency": "CNY"
+          },
+          "pendingAmount": {
+            "amount": "120.00",
+            "currency": "CNY"
+          },
+          "availableBalance": {
+            "amount": "23722.31",
+            "currency": "CNY"
+          }
+        },
+        {
+          "id": "acc_savings",
+          "displayName": "Savings",
+          "currency": "CNY",
+          "type": "SAVINGS",
+          "status": "ACTIVE",
+          "maskedAccountNumber": "•••• 1190",
+          "balance": {
+            "amount": "8200.00",
+            "currency": "CNY"
+          },
+          "availableBalance": {
+            "amount": "8200.00",
+            "currency": "CNY"
+          }
+        },
+        {
+          "id": "acc_usd",
+          "displayName": "USD",
+          "currency": "USD",
+          "type": "MULTI_CURRENCY",
+          "status": "ACTIVE",
+          "maskedAccountNumber": "•••• 2107",
+          "balance": {
+            "amount": "621.32",
+            "currency": "USD"
+          },
+          "availableBalance": {
+            "amount": "621.32",
+            "currency": "USD"
+          },
+          "baseCurrencyEquivalent": {
+            "amount": "4411.37",
+            "currency": "CNY"
+          },
+          "exchangeRate": "7.100000",
+          "conversionSource": "DEMO_RATE",
+          "conversionAsOf": "2026-10-01T08:00:00+08:00"
+        }
+      ],
+      "transactions": [
+        {
+          "id": "tx_oct_lin_1",
+          "accountId": "acc_alex",
+          "title": "To Lin Wei",
+          "counterparty": {
+            "name": "Lin Wei",
+            "maskedAccountNumber": "•••• 4455"
+          },
+          "amount": {
+            "amount": "10.10",
+            "currency": "CNY"
+          },
+          "direction": "DEBIT",
+          "status": "COMPLETED",
+          "type": "BANK_TRANSFER",
+          "category": "TRANSFER",
+          "occurredAt": "2026-10-01T09:00:00+08:00",
+          "bookedAt": "2026-10-01T09:00:00+08:00"
+        },
+        {
+          "id": "tx_oct_other",
+          "accountId": "acc_alex",
+          "title": "To Other Person",
+          "counterparty": {
+            "name": "Other Person",
+            "maskedAccountNumber": "•••• 4455"
+          },
+          "amount": {
+            "amount": "99.00",
+            "currency": "CNY"
+          },
+          "direction": "DEBIT",
+          "status": "COMPLETED",
+          "type": "BANK_TRANSFER",
+          "category": "TRANSFER",
+          "occurredAt": "2026-10-01T08:00:00+08:00",
+          "bookedAt": "2026-10-01T08:00:00+08:00"
+        },
+        {
+          "id": "tx_sep_lin",
+          "accountId": "acc_alex",
+          "title": "To Lin Wei",
+          "counterparty": {
+            "name": "Lin Wei",
+            "maskedAccountNumber": "•••• 4455"
+          },
+          "amount": {
+            "amount": "20.20",
+            "currency": "CNY"
+          },
+          "direction": "DEBIT",
+          "status": "COMPLETED",
+          "type": "BANK_TRANSFER",
+          "category": "TRANSFER",
+          "occurredAt": "2026-09-18T10:00:00+08:00",
+          "bookedAt": "2026-09-18T10:00:00+08:00"
+        },
+        {
+          "id": "tx_coffee",
+          "accountId": "acc_alex",
+          "title": "Starbucks",
+          "merchant": {
+            "name": "Starbucks"
+          },
+          "amount": {
+            "amount": "25.00",
+            "currency": "CNY"
+          },
+          "direction": "DEBIT",
+          "status": "COMPLETED",
+          "type": "CARD_PAYMENT",
+          "category": "DINING",
+          "occurredAt": "2026-10-01T07:00:00+08:00",
+          "bookedAt": "2026-10-01T07:05:00+08:00"
+        },
+        {
+          "id": "tx_pending",
+          "accountId": "acc_alex",
+          "title": "Pending Market",
+          "merchant": {
+            "name": "Pending Market"
+          },
+          "amount": {
+            "amount": "120.00",
+            "currency": "CNY"
+          },
+          "direction": "DEBIT",
+          "status": "PENDING",
+          "type": "CARD_PAYMENT",
+          "category": "GROCERIES",
+          "occurredAt": "2026-10-01T06:00:00+08:00",
+          "bookedAt": null
+        },
+        {
+          "id": "tx_sep_other",
+          "accountId": "acc_alex",
+          "title": "To Other Person",
+          "counterparty": {
+            "name": "Other Person",
+            "maskedAccountNumber": "•••• 4455"
+          },
+          "amount": {
+            "amount": "40.00",
+            "currency": "CNY"
+          },
+          "direction": "DEBIT",
+          "status": "COMPLETED",
+          "type": "BANK_TRANSFER",
+          "category": "TRANSFER",
+          "occurredAt": "2026-09-05T10:00:00+08:00",
+          "bookedAt": "2026-09-05T10:00:00+08:00"
+        }
+      ],
+      "recipients": [
+        {
+          "id": "recipient_lin",
+          "displayName": "Lin Wei",
+          "currency": "CNY",
+          "status": "ACTIVE"
+        },
+        {
+          "id": "recipient_other",
+          "displayName": "Other Person",
+          "currency": "CNY",
+          "status": "ACTIVE"
+        }
+      ],
+      "cards": [
+        {
+          "id": "card_alex_1",
+          "displayName": "Visa Debit",
+          "maskedNumber": "•••• 8821",
+          "status": "ACTIVE"
+        },
+        {
+          "id": "card_alex_2",
+          "displayName": "Mastercard",
+          "maskedNumber": "•••• 1937",
+          "status": "ACTIVE"
+        }
+      ],
+      "recurring": [
+        {
+          "id": "rec_netflix",
+          "displayName": "Netflix",
+          "status": "ACTIVE",
+          "usualAmount": {
+            "amount": "88.00",
+            "currency": "CNY"
+          }
+        }
+      ]
+    },
+    "lin": {
+      "displayName": "Lin Wei",
+      "accounts": [
+        {
+          "id": "acc_lin",
+          "displayName": "Lin Current",
+          "currency": "CNY",
+          "type": "CURRENT",
+          "status": "ACTIVE",
+          "maskedAccountNumber": "•••• 9988",
+          "balance": {
+            "amount": "900.00",
+            "currency": "CNY"
+          },
+          "availableBalance": {
+            "amount": "900.00",
+            "currency": "CNY"
+          }
+        }
+      ],
+      "transactions": [],
+      "recipients": [],
+      "cards": [],
+      "recurring": []
+    }
+  },
+  "public": {
+    "catalog": {
+      "items": [
+        {
+          "slug": "cashback-credit-card",
+          "title": "Cashback Credit Card",
+          "shortDescription": "Illustrative cashback card; terms must be checked on the product page.",
+          "category": "CARDS",
+          "tags": [
+            "cashback",
+            "card"
+          ]
+        },
+        {
+          "slug": "personal-loan",
+          "title": "Personal Loan",
+          "shortDescription": "Illustrative personal loan. Approval is subject to review.",
+          "category": "LOANS",
+          "tags": [
+            "loan"
+          ]
+        }
+      ]
+    },
+    "supportArticles": {
+      "items": [
+        {
+          "slug": "exchange-rate-guide",
+          "title": "Exchange Rate Guide",
+          "summary": "A demo rate is not an executable quote.",
+          "category": "RATES",
+          "tags": [
+            "exchange rate",
+            "fee"
+          ]
+        }
+      ]
+    },
+    "rates": {
+      "items": [
+        {
+          "id": "rate_fx",
+          "title": "Demo Exchange Rate",
+          "value": "7.10",
+          "unit": "CNY per USD",
+          "conditions": "Demo estimate, not an executable quote.",
+          "kind": "FX"
+        }
+      ]
+    },
+    "offers": {
+      "items": []
+    }
+  }
+}

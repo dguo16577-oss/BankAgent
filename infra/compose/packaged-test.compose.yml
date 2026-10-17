@@ -1,0 +1,5 @@
+# Isolated acceptance tests only; normal demo uses the system clock.
+services:
+  banking-core:
+    environment:
+      SPRING_PROFILES_ACTIVE: demo,e2e

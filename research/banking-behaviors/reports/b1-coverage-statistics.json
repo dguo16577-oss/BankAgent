@@ -1,0 +1,101 @@
+{
+  "projections": [
+    {
+      "batch": "BASELINE",
+      "counts": {
+        "OUT_OF_SCOPE": 9,
+        "PARTIALLY_SUPPORTED": 20,
+        "SUPPORTED": 19,
+        "MISSING": 19
+      },
+      "changes": []
+    },
+    {
+      "batch": "B1A",
+      "counts": {
+        "OUT_OF_SCOPE": 9,
+        "PARTIALLY_SUPPORTED": 18,
+        "SUPPORTED": 21,
+        "MISSING": 19
+      },
+      "changes": [
+        {
+          "family_id": "NEW_RECIPIENT_TRANSFER",
+          "before": "PARTIALLY_SUPPORTED",
+          "after": "SUPPORTED",
+          "reason": "Owned create + existing immediate transfer"
+        },
+        {
+          "family_id": "PAYMENT_RISK_ESCALATION",
+          "before": "PARTIALLY_SUPPORTED",
+          "after": "SUPPORTED",
+          "reason": "Payment-specific policy and authorization with both UI and atomic backend execution"
+        }
+      ]
+    },
+    {
+      "batch": "B1B",
+      "counts": {
+        "OUT_OF_SCOPE": 9,
+        "PARTIALLY_SUPPORTED": 18,
+        "SUPPORTED": 23,
+        "MISSING": 17
+      },
+      "changes": [
+        {
+          "family_id": "SCHEDULED_TRANSFER",
+          "before": "MISSING",
+          "after": "SUPPORTED",
+          "reason": "One-time date instruction AND deterministic due execution"
+        },
+        {
+          "family_id": "SCHEDULE_CHANGE",
+          "before": "MISSING",
+          "after": "PARTIALLY_SUPPORTED",
+          "reason": "One-time edits only; source rent standing-order variants remain blocked"
+        },
+        {
+          "family_id": "BUDGET_TO_SCHEDULE",
+          "before": "PARTIALLY_SUPPORTED",
+          "after": "SUPPORTED",
+          "reason": "Manual spending/account primitives + one-time schedule; no Agent orchestration"
+        }
+      ]
+    },
+    {
+      "batch": "B1C",
+      "counts": {
+        "OUT_OF_SCOPE": 9,
+        "PARTIALLY_SUPPORTED": 16,
+        "SUPPORTED": 25,
+        "MISSING": 17
+      },
+      "changes": [
+        {
+          "family_id": "CARD_LOST_BLOCK",
+          "before": "PARTIALLY_SUPPORTED",
+          "after": "SUPPORTED",
+          "reason": "Confirmed lost/stolen permanent lifecycle; source fraud-specific guesses not accepted"
+        },
+        {
+          "family_id": "FRAUD_PROTECTION_DISPUTE",
+          "before": "PARTIALLY_SUPPORTED",
+          "after": "SUPPORTED",
+          "reason": "Locate owned debit, explicitly block reported stolen card, register linked dispute; no refund"
+        }
+      ]
+    }
+  ],
+  "affected_families": 20,
+  "affected_variants": 104,
+  "accepted_affected_families": 16,
+  "accepted_affected_variants": 96,
+  "reviewed_adaptable_variant_lower_bound_ids": [
+    "BUDGET_TO_SCHEDULE_proposed",
+    "FRAUD_PROTECTION_DISPUTE_9f6e6606bb",
+    "NEW_RECIPIENT_TRANSFER_proposed",
+    "PAYMENT_RISK_ESCALATION_proposed"
+  ],
+  "candidate_variant_count": 498,
+  "b0_families": 67
+}

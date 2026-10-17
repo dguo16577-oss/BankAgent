@@ -1,0 +1,56 @@
+node_modules/
+.next/
+out/
+dist/
+coverage/
+playwright-report/
+test-results/
+*.tsbuildinfo
+.env*
+!.env.example
+*.log
+.DS_Store
+.idea/
+.vscode/
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+credentials*.json
+secrets*.json
+*_credentials.json
+*.db
+*.sqlite
+*.sqlite3
+*.bak
+*.dump
+services/banking-core/target/
+services/banking-core/target-*/
+
+!.env.production.example
+backups/
+
+services/agent-runtime/.venv/
+services/agent-runtime/venv/
+services/agent-runtime/**/__pycache__/
+
+# Local handoff bundles are kept outside Git history.
+/*.zip
+/*.zip.sha256
+/README-SELECT-THIS-PACKAGE.md
+
+# Generated execution evidence may contain prompts, responses, demo-account
+# snapshots, or machine-local details. Keep only reviewed, authored evaluation
+# fixtures and compact summaries; all raw or generated evidence remains local.
+/artifacts/**
+!/artifacts/README.HANDOFF.md
+!/artifacts/agent-eval/
+!/artifacts/agent-eval/**
+!/artifacts/m18-benchmark-cases.json
+!/artifacts/m18-benchmark-manifest.json
+!/artifacts/m18-final-benchmark-cases.json
+!/artifacts/m18-final-benchmark-manifest.json
+!/artifacts/m18-final-benchmark-summary.json
+!/artifacts/six-domain-handoff-audit.json

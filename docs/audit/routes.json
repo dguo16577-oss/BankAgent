@@ -1,0 +1,262 @@
+[
+  {
+    "route": "/",
+    "surface": "Public",
+    "source": "apps/web/src/app/(public)/page.tsx"
+  },
+  {
+    "route": "/app",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/page.tsx"
+  },
+  {
+    "route": "/app/accounts",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/accounts/page.tsx"
+  },
+  {
+    "route": "/app/accounts/[accountId]",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/accounts/[accountId]/page.tsx"
+  },
+  {
+    "route": "/app/agent",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/agent/page.tsx"
+  },
+  {
+    "route": "/app/applications",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/applications/page.tsx"
+  },
+  {
+    "route": "/app/applications/[applicationId]",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/applications/[applicationId]/page.tsx"
+  },
+  {
+    "route": "/app/applications/new",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/applications/new/page.tsx"
+  },
+  {
+    "route": "/app/cards",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/cards/page.tsx"
+  },
+  {
+    "route": "/app/cards/[cardId]",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/cards/[cardId]/page.tsx"
+  },
+  {
+    "route": "/app/cards/[cardId]/actions/[actionId]",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/cards/[cardId]/actions/[actionId]/page.tsx"
+  },
+  {
+    "route": "/app/cards/[cardId]/actions/review/[intentId]",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/cards/[cardId]/actions/review/[intentId]/page.tsx"
+  },
+  {
+    "route": "/app/overview",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/overview/page.tsx"
+  },
+  {
+    "route": "/app/payments",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/payments/page.tsx"
+  },
+  {
+    "route": "/app/payments/recipients/[recipientId]",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/payments/recipients/[recipientId]/page.tsx"
+  },
+  {
+    "route": "/app/payments/recipients/new",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/payments/recipients/new/page.tsx"
+  },
+  {
+    "route": "/app/payments/scheduled",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/payments/scheduled/page.tsx"
+  },
+  {
+    "route": "/app/payments/scheduled/[scheduleId]",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/payments/scheduled/[scheduleId]/page.tsx"
+  },
+  {
+    "route": "/app/payments/scheduled/[scheduleId]/edit",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/payments/scheduled/[scheduleId]/edit/page.tsx"
+  },
+  {
+    "route": "/app/payments/scheduled/new",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/payments/scheduled/new/page.tsx"
+  },
+  {
+    "route": "/app/payments/transfers/[transferId]",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/payments/transfers/[transferId]/page.tsx"
+  },
+  {
+    "route": "/app/payments/transfers/new",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/payments/transfers/new/page.tsx"
+  },
+  {
+    "route": "/app/payments/transfers/review/[intentId]",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/payments/transfers/review/[intentId]/page.tsx"
+  },
+  {
+    "route": "/app/security/step-up/[challengeId]",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/security/step-up/[challengeId]/page.tsx"
+  },
+  {
+    "route": "/app/settings",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/settings/page.tsx"
+  },
+  {
+    "route": "/app/spending",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/spending/page.tsx"
+  },
+  {
+    "route": "/app/spending/recurring/[recurringPaymentId]",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/spending/recurring/[recurringPaymentId]/page.tsx"
+  },
+  {
+    "route": "/app/spending/recurring/[recurringPaymentId]/actions/[actionId]",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/spending/recurring/[recurringPaymentId]/actions/[actionId]/page.tsx"
+  },
+  {
+    "route": "/app/spending/recurring/[recurringPaymentId]/actions/review/[intentId]",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/spending/recurring/[recurringPaymentId]/actions/review/[intentId]/page.tsx"
+  },
+  {
+    "route": "/app/transactions",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/transactions/page.tsx"
+  },
+  {
+    "route": "/app/transactions/[transactionId]",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/transactions/[transactionId]/page.tsx"
+  },
+  {
+    "route": "/app/wealth",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/wealth/page.tsx"
+  },
+  {
+    "route": "/app/wealth/orders/[orderId]",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/wealth/orders/[orderId]/page.tsx"
+  },
+  {
+    "route": "/app/wealth/orders/review/[intentId]",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/wealth/orders/review/[intentId]/page.tsx"
+  },
+  {
+    "route": "/app/wealth/products/[productId]",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/wealth/products/[productId]/page.tsx"
+  },
+  {
+    "route": "/app/wealth/products/[productId]/invest",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/wealth/products/[productId]/invest/page.tsx"
+  },
+  {
+    "route": "/ask",
+    "surface": "Public",
+    "source": "apps/web/src/app/(public)/ask/page.tsx"
+  },
+  {
+    "route": "/banking",
+    "surface": "Public",
+    "source": "apps/web/src/app/(public)/banking/page.tsx"
+  },
+  {
+    "route": "/borrowing",
+    "surface": "Public",
+    "source": "apps/web/src/app/(public)/borrowing/page.tsx"
+  },
+  {
+    "route": "/cards",
+    "surface": "Public",
+    "source": "apps/web/src/app/(public)/cards/page.tsx"
+  },
+  {
+    "route": "/cards/compare",
+    "surface": "Public",
+    "source": "apps/web/src/app/(public)/cards/compare/page.tsx"
+  },
+  {
+    "route": "/fees",
+    "surface": "Public",
+    "source": "apps/web/src/app/(public)/fees/page.tsx"
+  },
+  {
+    "route": "/insights",
+    "surface": "Public",
+    "source": "apps/web/src/app/(public)/insights/page.tsx"
+  },
+  {
+    "route": "/insurance",
+    "surface": "Public",
+    "source": "apps/web/src/app/(public)/insurance/page.tsx"
+  },
+  {
+    "route": "/investments",
+    "surface": "Public",
+    "source": "apps/web/src/app/(public)/investments/page.tsx"
+  },
+  {
+    "route": "/login",
+    "surface": "Login",
+    "source": "apps/web/src/app/login/page.tsx"
+  },
+  {
+    "route": "/offers",
+    "surface": "Public",
+    "source": "apps/web/src/app/(public)/offers/page.tsx"
+  },
+  {
+    "route": "/payments-fx",
+    "surface": "Public",
+    "source": "apps/web/src/app/(public)/payments-fx/page.tsx"
+  },
+  {
+    "route": "/products/[slug]",
+    "surface": "Public",
+    "source": "apps/web/src/app/(public)/products/[slug]/page.tsx"
+  },
+  {
+    "route": "/rates",
+    "surface": "Public",
+    "source": "apps/web/src/app/(public)/rates/page.tsx"
+  },
+  {
+    "route": "/support",
+    "surface": "Public",
+    "source": "apps/web/src/app/(public)/support/page.tsx"
+  },
+  {
+    "route": "/support/[slug]",
+    "surface": "Public",
+    "source": "apps/web/src/app/(public)/support/[slug]/page.tsx"
+  }
+]

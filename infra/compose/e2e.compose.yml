@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: aster_e2e
+      POSTGRES_USER: aster_e2e
+      POSTGRES_PASSWORD: aster_e2e_only
+    ports:
+      - "127.0.0.1:15432:5432"
+    volumes:
+      - e2e-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aster_e2e -d aster_e2e"]
+      interval: 1s
+      timeout: 3s
+      retries: 60
+
+volumes:
+  e2e-postgres:

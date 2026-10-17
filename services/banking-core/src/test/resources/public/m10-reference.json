@@ -1,0 +1,3051 @@
+{
+  "home": {
+    "hero": {
+      "eyebrow": "ASTER BANK · PERSONAL BANKING",
+      "title": "Everyday banking, built around you.",
+      "description": "Accounts, cards, payments, investing and financial guidance.",
+      "actions": [
+        {
+          "label": "Explore banking",
+          "route": "/banking"
+        },
+        {
+          "label": "Ask Aster",
+          "route": "/ask"
+        }
+      ]
+    },
+    "serviceCategories": [
+      {
+        "id": "accounts",
+        "title": "Accounts & Savings",
+        "description": "A place for today, a plan for tomorrow.",
+        "route": "/banking",
+        "label": "Explore",
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      },
+      {
+        "id": "cards",
+        "title": "Cards",
+        "description": "Find a card for your everyday life.",
+        "route": "/cards",
+        "label": "Explore",
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      },
+      {
+        "id": "borrowing",
+        "title": "Borrowing",
+        "description": "Understand your options and costs.",
+        "route": "/borrowing",
+        "label": "Explore",
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      },
+      {
+        "id": "investments",
+        "title": "Investments",
+        "description": "Explore products and investment basics.",
+        "route": "/investments",
+        "label": "Explore",
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      },
+      {
+        "id": "insurance",
+        "title": "Insurance",
+        "description": "Plan for what matters to you.",
+        "route": "/insurance",
+        "label": "Explore",
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      },
+      {
+        "id": "payments",
+        "title": "Payments & FX",
+        "description": "Discover payments and currency services.",
+        "route": "/products/payments-transfers",
+        "label": "Explore",
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      }
+    ],
+    "securityNotice": {
+      "title": "Stay alert to scams",
+      "message": "Aster Bank will never ask you to reveal your password or security code.",
+      "link": {
+        "label": "Explore security guidance",
+        "route": "/support/recognise-phishing"
+      }
+    },
+    "environment": "DEMO",
+    "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+    "featuredServices": [
+      {
+        "id": "everyday-account",
+        "title": "Everyday Account",
+        "description": "An everyday CNY account for receiving money and making payments.",
+        "route": "/products/everyday-account",
+        "label": "BANKING",
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      },
+      {
+        "id": "flexible-savings",
+        "title": "Flexible Savings",
+        "description": "Set money aside with flexible access and an illustrative savings rate.",
+        "route": "/products/flexible-savings",
+        "label": "BANKING",
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      },
+      {
+        "id": "travel-credit-card",
+        "title": "Travel Credit Card",
+        "description": "Compare a simulated card designed around travel features.",
+        "route": "/products/travel-credit-card",
+        "label": "CARDS",
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      },
+      {
+        "id": "personal-loan",
+        "title": "Personal Loan",
+        "description": "Learn about fixed-term borrowing and repayment commitments.",
+        "route": "/products/personal-loan",
+        "label": "BORROWING",
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      },
+      {
+        "id": "bond-investing",
+        "title": "Bond Investing",
+        "description": "Understand fixed-income exposure, credit risk and interest-rate sensitivity.",
+        "route": "/products/bond-investing",
+        "label": "INVESTMENTS",
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      },
+      {
+        "id": "travel-insurance",
+        "title": "Travel Insurance",
+        "description": "Learn about trip cancellation, medical and baggage protection.",
+        "route": "/products/travel-insurance",
+        "label": "INSURANCE",
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      }
+    ],
+    "offers": [
+      {
+        "id": "savings-learning",
+        "title": "Build a savings habit",
+        "description": "Explore the Flexible Savings guide and plan a regular savings routine.",
+        "route": "/offers#savings-learning",
+        "label": "DEMO CAMPAIGN",
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      },
+      {
+        "id": "travel-learning",
+        "title": "Travel with a clearer plan",
+        "description": "Compare travel card information and learn about overseas conversion costs.",
+        "route": "/offers#travel-learning",
+        "label": "DEMO CAMPAIGN",
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      }
+    ],
+    "insights": [
+      {
+        "id": "recognise-phishing",
+        "title": "How to recognise a phishing attempt",
+        "description": "Avoiding scams",
+        "route": "/support/recognise-phishing",
+        "label": "SECURITY",
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      },
+      {
+        "id": "budgeting-basics",
+        "title": "Budgeting basics",
+        "description": "Building a spending plan",
+        "route": "/support/budgeting-basics",
+        "label": "ACCOUNTS",
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      },
+      {
+        "id": "bond-risk",
+        "title": "Understanding bond risk",
+        "description": "Bond investing",
+        "route": "/support/bond-risk",
+        "label": "INVESTMENTS",
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      },
+      {
+        "id": "exchange-rates",
+        "title": "How exchange rates work",
+        "description": "Foreign exchange rates",
+        "route": "/support/exchange-rates",
+        "label": "ACCOUNTS",
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      }
+    ],
+    "rates": {
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO",
+      "asOf": "2026-09-27T09:00:00+08:00",
+      "source": "DEMO_RATE",
+      "disclaimer": "Illustrative demo rates, not live quotes.",
+      "items": [
+        {
+          "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+          "environment": "DEMO",
+          "id": "usd-cny",
+          "title": "USD / CNY",
+          "kind": "FX",
+          "value": "7.1000",
+          "unit": "CNY per USD",
+          "conditions": "Indicative mid-rate example; excludes fees and markup."
+        },
+        {
+          "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+          "environment": "DEMO",
+          "id": "savings",
+          "title": "Flexible Savings",
+          "kind": "SAVINGS",
+          "value": "0.80",
+          "unit": "% per year",
+          "conditions": "Variable illustrative gross annual rate; no guaranteed return."
+        },
+        {
+          "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+          "environment": "DEMO",
+          "id": "deposit",
+          "title": "12-month Time Deposit",
+          "kind": "TIME_DEPOSIT",
+          "value": "1.50",
+          "unit": "% per year",
+          "conditions": "Illustrative gross annual rate for a 12-month CNY term; early withdrawal may reduce interest."
+        }
+      ]
+    }
+  },
+  "navigation": {
+    "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+    "environment": "DEMO",
+    "groups": [
+      {
+        "id": "banking",
+        "label": "Banking",
+        "route": "/banking",
+        "description": "Everyday accounts and simple ways to manage your money.",
+        "sections": [
+          {
+            "label": "Accounts",
+            "links": [
+              {
+                "label": "Current Account",
+                "route": "/products/everyday-account",
+                "description": "Explore current account information in the Aster demo."
+              },
+              {
+                "label": "Savings",
+                "route": "/products/flexible-savings",
+                "description": "Explore savings information in the Aster demo."
+              },
+              {
+                "label": "Time Deposit",
+                "route": "/products/time-deposit",
+                "description": "Explore time deposit information in the Aster demo."
+              },
+              {
+                "label": "Multi-currency Account",
+                "route": "/products/global-currency-account",
+                "description": "Explore multi-currency account information in the Aster demo."
+              }
+            ]
+          },
+          {
+            "label": "Everyday Banking",
+            "links": [
+              {
+                "label": "Payments & Transfers",
+                "route": "/products/payments-transfers",
+                "description": "Explore payments & transfers information in the Aster demo."
+              },
+              {
+                "label": "Foreign Exchange",
+                "route": "/products/foreign-exchange",
+                "description": "Explore foreign exchange information in the Aster demo."
+              },
+              {
+                "label": "Statements",
+                "route": "/support/account-statements",
+                "description": "Explore statements information in the Aster demo."
+              },
+              {
+                "label": "Budgeting",
+                "route": "/support/budgeting-basics",
+                "description": "Explore budgeting information in the Aster demo."
+              }
+            ]
+          },
+          {
+            "label": "Ways to bank",
+            "links": [
+              {
+                "label": "Online Banking",
+                "route": "/support/online-banking",
+                "description": "Explore online banking information in the Aster demo."
+              },
+              {
+                "label": "Mobile Banking",
+                "route": "/support/online-banking",
+                "description": "Explore mobile banking information in the Aster demo."
+              }
+            ]
+          },
+          {
+            "label": "Reference",
+            "links": [
+              {
+                "label": "Rates",
+                "route": "/rates"
+              },
+              {
+                "label": "Fees",
+                "route": "/fees"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "cards",
+        "label": "Cards & Borrowing",
+        "route": "/cards",
+        "description": "Explore cards and borrowing options for the way you live.",
+        "sections": [
+          {
+            "label": "Cards",
+            "links": [
+              {
+                "label": "Everyday Card",
+                "route": "/products/everyday-debit-card",
+                "description": "Explore everyday card information in the Aster demo."
+              },
+              {
+                "label": "Cashback Card",
+                "route": "/products/cashback-credit-card",
+                "description": "Explore cashback card information in the Aster demo."
+              },
+              {
+                "label": "Travel Card",
+                "route": "/products/travel-credit-card",
+                "description": "Explore travel card information in the Aster demo."
+              },
+              {
+                "label": "Compare Cards",
+                "route": "/cards/compare",
+                "description": "Explore compare cards information in the Aster demo."
+              }
+            ]
+          },
+          {
+            "label": "Borrowing",
+            "links": [
+              {
+                "label": "Personal Loan",
+                "route": "/products/personal-loan",
+                "description": "Explore personal loan information in the Aster demo."
+              },
+              {
+                "label": "Mortgage",
+                "route": "/products/home-mortgage",
+                "description": "Explore mortgage information in the Aster demo."
+              },
+              {
+                "label": "Overdraft",
+                "route": "/products/overdraft",
+                "description": "Explore overdraft information in the Aster demo."
+              }
+            ]
+          },
+          {
+            "label": "Tools",
+            "links": [
+              {
+                "label": "Fees",
+                "route": "/fees",
+                "description": "Explore fees information in the Aster demo."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "investments",
+        "label": "Investments",
+        "route": "/investments",
+        "description": "Start with the basics. Explore choices at your own pace.",
+        "sections": [
+          {
+            "label": "Products",
+            "links": [
+              {
+                "label": "Money Market",
+                "route": "/products/money-market-investing",
+                "description": "Explore money market information in the Aster demo."
+              },
+              {
+                "label": "Funds",
+                "route": "/products/fund-investing",
+                "description": "Explore funds information in the Aster demo."
+              },
+              {
+                "label": "Bonds",
+                "route": "/products/bond-investing",
+                "description": "Explore bonds information in the Aster demo."
+              }
+            ]
+          },
+          {
+            "label": "Planning",
+            "links": [
+              {
+                "label": "Risk Profile",
+                "route": "/support/investment-risk",
+                "description": "Explore risk profile information in the Aster demo."
+              },
+              {
+                "label": "Investment Basics",
+                "route": "/products/investment-basics",
+                "description": "Explore investment basics information in the Aster demo."
+              },
+              {
+                "label": "Market Insights",
+                "route": "/insights",
+                "description": "Explore market insights information in the Aster demo."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "insurance",
+        "label": "Insurance",
+        "route": "/insurance",
+        "description": "Information to help you plan for the people and things you value.",
+        "sections": [
+          {
+            "label": "Explore protection",
+            "links": [
+              {
+                "label": "Life",
+                "route": "/products/life-insurance",
+                "description": "Explore life information in the Aster demo."
+              },
+              {
+                "label": "Health",
+                "route": "/products/health-insurance",
+                "description": "Explore health information in the Aster demo."
+              },
+              {
+                "label": "Travel",
+                "route": "/products/travel-insurance",
+                "description": "Explore travel information in the Aster demo."
+              },
+              {
+                "label": "Home",
+                "route": "/products/home-insurance",
+                "description": "Explore home information in the Aster demo."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "insights",
+        "label": "Insights",
+        "route": "/insights",
+        "description": "Make sense of everyday financial decisions.",
+        "sections": [
+          {
+            "label": "Learn with Aster",
+            "links": [
+              {
+                "label": "Money basics",
+                "route": "/support/budgeting-basics",
+                "description": "Explore money basics information in the Aster demo."
+              },
+              {
+                "label": "Rates explained",
+                "route": "/rates",
+                "description": "Explore rates explained information in the Aster demo."
+              },
+              {
+                "label": "Security guides",
+                "route": "/support/recognise-phishing",
+                "description": "Explore security guides information in the Aster demo."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "offers",
+        "label": "Offers",
+        "route": "/offers",
+        "description": "Discover illustrative offers in our demo catalog.",
+        "sections": [
+          {
+            "label": "Discover",
+            "links": [
+              {
+                "label": "Everyday banking offers",
+                "route": "/offers",
+                "description": "Explore everyday banking offers information in the Aster demo."
+              },
+              {
+                "label": "Travel ideas",
+                "route": "/offers",
+                "description": "Explore travel ideas information in the Aster demo."
+              },
+              {
+                "label": "Learning events",
+                "route": "/offers",
+                "description": "Explore learning events information in the Aster demo."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "support",
+        "label": "Support",
+        "route": "/support",
+        "description": "Find useful guidance and learn how to bank safely.",
+        "sections": [
+          {
+            "label": "How can we help?",
+            "links": [
+              {
+                "label": "Help centre",
+                "route": "/support",
+                "description": "Explore help centre information in the Aster demo."
+              },
+              {
+                "label": "Ways to contact us",
+                "route": "/support/contact-support",
+                "description": "Explore ways to contact us information in the Aster demo."
+              },
+              {
+                "label": "Security help",
+                "route": "/support/recognise-phishing",
+                "description": "Explore security help information in the Aster demo."
+              },
+              {
+                "label": "Accessibility",
+                "route": "/support/contact-support",
+                "description": "Explore accessibility information in the Aster demo."
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "categories": [
+      {
+        "route": "/banking",
+        "title": "Banking",
+        "description": "Make everyday money easier to understand. Explore accounts, savings, payments and ways to bank.",
+        "services": [
+          {
+            "id": "everyday-account",
+            "title": "Everyday Account",
+            "description": "An everyday CNY account for receiving money and making payments.",
+            "route": "/products/everyday-account",
+            "label": "BANKING",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "flexible-savings",
+            "title": "Flexible Savings",
+            "description": "Set money aside with flexible access and an illustrative savings rate.",
+            "route": "/products/flexible-savings",
+            "label": "BANKING",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "time-deposit",
+            "title": "Time Deposit",
+            "description": "Explore setting aside funds for a fixed illustrative term.",
+            "route": "/products/time-deposit",
+            "label": "BANKING",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "global-currency-account",
+            "title": "Global Currency Account",
+            "description": "Understand holding CNY and USD in separate currency balances.",
+            "route": "/products/global-currency-account",
+            "label": "BANKING",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          }
+        ],
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      },
+      {
+        "route": "/cards",
+        "title": "Cards",
+        "description": "Explore card products and compare everyday features. These are public product guides, not your personal cards.",
+        "services": [
+          {
+            "id": "everyday-debit-card",
+            "title": "Everyday Debit Card",
+            "description": "Explore a card connected to an everyday account.",
+            "route": "/products/everyday-debit-card",
+            "label": "CARDS",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "cashback-credit-card",
+            "title": "Cashback Credit Card",
+            "description": "A simulated credit-card guide with everyday reward examples.",
+            "route": "/products/cashback-credit-card",
+            "label": "CARDS",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "travel-credit-card",
+            "title": "Travel Credit Card",
+            "description": "Compare a simulated card designed around travel features.",
+            "route": "/products/travel-credit-card",
+            "label": "CARDS",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "student-card",
+            "title": "Student Card",
+            "description": "A simulated debit-card guide for students managing a first budget.",
+            "route": "/products/student-card",
+            "label": "CARDS",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          }
+        ],
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      },
+      {
+        "route": "/borrowing",
+        "title": "Borrowing",
+        "description": "Understand borrowing choices, costs and repayment commitments. Product information only; no applications or calculators are available.",
+        "services": [
+          {
+            "id": "personal-loan",
+            "title": "Personal Loan",
+            "description": "Learn about fixed-term borrowing and repayment commitments.",
+            "route": "/products/personal-loan",
+            "label": "BORROWING",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "home-mortgage",
+            "title": "Home Mortgage",
+            "description": "An introduction to secured home borrowing and deposit requirements.",
+            "route": "/products/home-mortgage",
+            "label": "BORROWING",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "overdraft",
+            "title": "Overdraft",
+            "description": "Understand short-term borrowing linked to a current account.",
+            "route": "/products/overdraft",
+            "label": "BORROWING",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          }
+        ],
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      },
+      {
+        "route": "/investments",
+        "title": "Investments",
+        "description": "Explore investment product information. This catalog is separate from your personal portfolio. Values can fall as well as rise.",
+        "services": [
+          {
+            "id": "money-market-investing",
+            "title": "Money Market Investing",
+            "description": "Learn about short-duration investments and liquidity considerations.",
+            "route": "/products/money-market-investing",
+            "label": "INVESTMENTS",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "bond-investing",
+            "title": "Bond Investing",
+            "description": "Understand fixed-income exposure, credit risk and interest-rate sensitivity.",
+            "route": "/products/bond-investing",
+            "label": "INVESTMENTS",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "fund-investing",
+            "title": "Fund Investing",
+            "description": "Explore pooled investments and diversification.",
+            "route": "/products/fund-investing",
+            "label": "INVESTMENTS",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "investment-basics",
+            "title": "Investment Basics",
+            "description": "Start with goals, time horizon and investment risk.",
+            "route": "/products/investment-basics",
+            "label": "INVESTMENTS",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          }
+        ],
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      },
+      {
+        "route": "/insurance",
+        "title": "Insurance",
+        "description": "Explore protection categories and the questions to consider. Illustrative information only; no quotes or policies are issued.",
+        "services": [
+          {
+            "id": "life-insurance",
+            "title": "Life Insurance",
+            "description": "Learn about life protection, beneficiaries and exclusions.",
+            "route": "/products/life-insurance",
+            "label": "INSURANCE",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "health-insurance",
+            "title": "Health Insurance",
+            "description": "Explore medical coverage, waiting periods and exclusions.",
+            "route": "/products/health-insurance",
+            "label": "INSURANCE",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "travel-insurance",
+            "title": "Travel Insurance",
+            "description": "Learn about trip cancellation, medical and baggage protection.",
+            "route": "/products/travel-insurance",
+            "label": "INSURANCE",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "home-insurance",
+            "title": "Home Insurance",
+            "description": "Understand buildings and contents protection.",
+            "route": "/products/home-insurance",
+            "label": "INSURANCE",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          }
+        ],
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      },
+      {
+        "route": "/insights",
+        "title": "Insights",
+        "description": "Clear introductions to money, rates and staying safe. Educational demo content, with no live market data.",
+        "services": [
+          {
+            "id": "recognise-phishing",
+            "title": "How to recognise a phishing attempt",
+            "description": "Avoiding scams",
+            "route": "/support/recognise-phishing",
+            "label": "SECURITY",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "budgeting-basics",
+            "title": "Budgeting basics",
+            "description": "Building a spending plan",
+            "route": "/support/budgeting-basics",
+            "label": "ACCOUNTS",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "bond-risk",
+            "title": "Understanding bond risk",
+            "description": "Bond investing",
+            "route": "/support/bond-risk",
+            "label": "INVESTMENTS",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "exchange-rates",
+            "title": "How exchange rates work",
+            "description": "Foreign exchange rates",
+            "route": "/support/exchange-rates",
+            "label": "ACCOUNTS",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          }
+        ],
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      },
+      {
+        "route": "/offers",
+        "title": "Offers",
+        "description": "Browse a small selection of illustrative promotions. No live discounts, eligibility decisions or applications.",
+        "services": [
+          {
+            "id": "savings-learning",
+            "title": "Build a savings habit",
+            "description": "Explore the Flexible Savings guide and plan a regular savings routine.",
+            "route": "/offers#savings-learning",
+            "label": "DEMO CAMPAIGN",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "travel-learning",
+            "title": "Travel with a clearer plan",
+            "description": "Compare travel card information and learn about overseas conversion costs.",
+            "route": "/offers#travel-learning",
+            "label": "DEMO CAMPAIGN",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          }
+        ],
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      },
+      {
+        "route": "/support",
+        "title": "Support",
+        "description": "Find your way around Aster and learn how to protect your information. This demo has no staffed support service.",
+        "services": [
+          {
+            "id": "recognise-phishing",
+            "title": "How to recognise a phishing attempt",
+            "description": "Avoiding scams",
+            "route": "/support/recognise-phishing",
+            "label": "SECURITY",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "lost-card",
+            "title": "What to do if your card is lost",
+            "description": "Lost card help",
+            "route": "/support/lost-card",
+            "label": "CARDS",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "pending-card-payments",
+            "title": "Understanding pending card payments",
+            "description": "Pending payments",
+            "route": "/support/pending-card-payments",
+            "label": "CARDS",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "bank-transfers",
+            "title": "How bank transfers work",
+            "description": "Transfers explained",
+            "route": "/support/bank-transfers",
+            "label": "PAYMENTS",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "failed-transfer",
+            "title": "Why a transfer may fail",
+            "description": "Transfer troubleshooting",
+            "route": "/support/failed-transfer",
+            "label": "PAYMENTS",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "balance-available",
+            "title": "Balance and available balance",
+            "description": "Understanding account balances",
+            "route": "/support/balance-available",
+            "label": "ACCOUNTS",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "recurring-payments",
+            "title": "How recurring payments work",
+            "description": "Recurring payments",
+            "route": "/support/recurring-payments",
+            "label": "PAYMENTS",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "step-up-verification",
+            "title": "What step-up verification means",
+            "description": "Extra verification",
+            "route": "/support/step-up-verification",
+            "label": "SECURITY",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "investment-risk",
+            "title": "Understanding investment risk levels",
+            "description": "Investment risk",
+            "route": "/support/investment-risk",
+            "label": "INVESTMENTS",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "budgeting-basics",
+            "title": "Budgeting basics",
+            "description": "Building a spending plan",
+            "route": "/support/budgeting-basics",
+            "label": "ACCOUNTS",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "bond-risk",
+            "title": "Understanding bond risk",
+            "description": "Bond investing",
+            "route": "/support/bond-risk",
+            "label": "INVESTMENTS",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "exchange-rates",
+            "title": "How exchange rates work",
+            "description": "Foreign exchange rates",
+            "route": "/support/exchange-rates",
+            "label": "ACCOUNTS",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "online-banking",
+            "title": "Using online banking safely",
+            "description": "Digital banking access",
+            "route": "/support/online-banking",
+            "label": "DIGITAL_BANKING",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "account-statements",
+            "title": "Reading an account statement",
+            "description": "Statements guide",
+            "route": "/support/account-statements",
+            "label": "ACCOUNTS",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          },
+          {
+            "id": "contact-support",
+            "title": "Finding a trusted support channel",
+            "description": "Contact and accessibility",
+            "route": "/support/contact-support",
+            "label": "DIGITAL_BANKING",
+            "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+            "environment": "DEMO"
+          }
+        ],
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      }
+    ]
+  },
+  "catalog": [
+    {
+      "id": "everyday-account",
+      "slug": "everyday-account",
+      "category": "BANKING",
+      "type": "CURRENT_ACCOUNT",
+      "title": "Everyday Account",
+      "shortDescription": "An everyday CNY account for receiving money and making payments.",
+      "description": "An everyday CNY account for receiving money and making payments. This simulated guide explains example features and considerations. It is not an offer to open, borrow, insure or invest.",
+      "highlights": [
+        "Access funds on demand",
+        "Read terms, fees and eligibility together"
+      ],
+      "features": [
+        {
+          "title": "Key benefit",
+          "description": "Access funds on demand"
+        },
+        {
+          "title": "FX / travel",
+          "description": "Currency and jurisdiction restrictions may apply."
+        }
+      ],
+      "eligibility": {
+        "summary": "For adults aged 18 or over; illustrative residency and identity requirements would apply.",
+        "requirements": ["Information only; no application is accepted."]
+      },
+      "fees": [
+        {
+          "label": "Account fee",
+          "value": "CNY 0 per month",
+          "conditions": "No minimum balance in this illustration."
+        }
+      ],
+      "tags": ["banking", "current account", "everyday account"],
+      "disclaimers": [
+        "DEMO / SIMULATED PRODUCT INFORMATION",
+        "No real product is available to purchase through this website.",
+        "No minimum balance in this illustration."
+      ],
+      "relatedItemIds": ["flexible-savings", "time-deposit"],
+      "cta": [
+        {
+          "type": "LEARN_MORE",
+          "label": "Read support guides",
+          "route": "/support"
+        },
+        {
+          "type": "SIGN_IN",
+          "label": "Sign in to demo",
+          "route": "/login"
+        }
+      ],
+      "supportedCurrencies": ["CNY"],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "flexible-savings",
+      "slug": "flexible-savings",
+      "category": "BANKING",
+      "type": "SAVINGS_ACCOUNT",
+      "title": "Flexible Savings",
+      "shortDescription": "Set money aside with flexible access and an illustrative savings rate.",
+      "description": "Set money aside with flexible access and an illustrative savings rate. This simulated guide explains example features and considerations. It is not an offer to open, borrow, insure or invest.",
+      "highlights": [
+        "Separate savings from daily spending",
+        "Read terms, fees and eligibility together"
+      ],
+      "features": [
+        {
+          "title": "Key benefit",
+          "description": "Separate savings from daily spending"
+        },
+        {
+          "title": "FX / travel",
+          "description": "Currency and jurisdiction restrictions may apply."
+        }
+      ],
+      "eligibility": {
+        "summary": "For adults aged 18 or over; illustrative residency and identity requirements would apply.",
+        "requirements": ["Information only; no application is accepted."]
+      },
+      "fees": [
+        {
+          "label": "Account fee",
+          "value": "CNY 0 per month",
+          "conditions": "Illustrative interest is variable and not guaranteed."
+        }
+      ],
+      "tags": ["banking", "savings account", "flexible savings"],
+      "disclaimers": [
+        "DEMO / SIMULATED PRODUCT INFORMATION",
+        "No real product is available to purchase through this website.",
+        "Illustrative interest is variable and not guaranteed."
+      ],
+      "relatedItemIds": ["everyday-account", "time-deposit"],
+      "cta": [
+        {
+          "type": "LEARN_MORE",
+          "label": "Read support guides",
+          "route": "/support"
+        },
+        {
+          "type": "SIGN_IN",
+          "label": "Sign in to demo",
+          "route": "/login"
+        }
+      ],
+      "supportedCurrencies": ["CNY"],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "time-deposit",
+      "slug": "time-deposit",
+      "category": "BANKING",
+      "type": "TIME_DEPOSIT",
+      "title": "Time Deposit",
+      "shortDescription": "Explore setting aside funds for a fixed illustrative term.",
+      "description": "Explore setting aside funds for a fixed illustrative term. This simulated guide explains example features and considerations. It is not an offer to open, borrow, insure or invest.",
+      "highlights": [
+        "Choose a 12-month example term",
+        "Read terms, fees and eligibility together"
+      ],
+      "features": [
+        {
+          "title": "Key benefit",
+          "description": "Choose a 12-month example term"
+        },
+        {
+          "title": "FX / travel",
+          "description": "Currency and jurisdiction restrictions may apply."
+        }
+      ],
+      "eligibility": {
+        "summary": "For adults aged 18 or over; illustrative residency and identity requirements would apply.",
+        "requirements": ["Information only; no application is accepted."]
+      },
+      "fees": [
+        {
+          "label": "Early withdrawal",
+          "value": "Interest may be reduced",
+          "conditions": "Early withdrawal terms would be confirmed before a real agreement."
+        }
+      ],
+      "tags": ["banking", "time deposit", "time deposit"],
+      "disclaimers": [
+        "DEMO / SIMULATED PRODUCT INFORMATION",
+        "No real product is available to purchase through this website.",
+        "Early withdrawal terms would be confirmed before a real agreement."
+      ],
+      "relatedItemIds": ["everyday-account", "flexible-savings"],
+      "cta": [
+        {
+          "type": "LEARN_MORE",
+          "label": "Read support guides",
+          "route": "/support"
+        },
+        {
+          "type": "SIGN_IN",
+          "label": "Sign in to demo",
+          "route": "/login"
+        }
+      ],
+      "supportedCurrencies": ["CNY"],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "global-currency-account",
+      "slug": "global-currency-account",
+      "category": "BANKING",
+      "type": "MULTI_CURRENCY_ACCOUNT",
+      "title": "Global Currency Account",
+      "shortDescription": "Understand holding CNY and USD in separate currency balances.",
+      "description": "Understand holding CNY and USD in separate currency balances. This simulated guide explains example features and considerations. It is not an offer to open, borrow, insure or invest.",
+      "highlights": [
+        "View balances in their original currency",
+        "Read terms, fees and eligibility together"
+      ],
+      "features": [
+        {
+          "title": "Key benefit",
+          "description": "View balances in their original currency"
+        },
+        {
+          "title": "FX / travel",
+          "description": "Currency and jurisdiction restrictions may apply."
+        }
+      ],
+      "eligibility": {
+        "summary": "For adults aged 18 or over; illustrative residency and identity requirements would apply.",
+        "requirements": ["Information only; no application is accepted."]
+      },
+      "fees": [
+        {
+          "label": "FX markup",
+          "value": "0.50% example",
+          "conditions": "Currency conversion involves exchange-rate risk."
+        }
+      ],
+      "tags": ["banking", "multi currency account", "global currency account"],
+      "disclaimers": [
+        "DEMO / SIMULATED PRODUCT INFORMATION",
+        "No real product is available to purchase through this website.",
+        "Currency conversion involves exchange-rate risk."
+      ],
+      "relatedItemIds": ["everyday-account", "flexible-savings"],
+      "cta": [
+        {
+          "type": "LEARN_MORE",
+          "label": "Read support guides",
+          "route": "/support"
+        },
+        {
+          "type": "SIGN_IN",
+          "label": "Sign in to demo",
+          "route": "/login"
+        }
+      ],
+      "supportedCurrencies": ["CNY", "USD"],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "payments-transfers",
+      "slug": "payments-transfers",
+      "category": "PAYMENTS_FX",
+      "type": "BANKING_SERVICE",
+      "title": "Payments & Transfers",
+      "shortDescription": "Learn how domestic bank transfers move funds between accounts.",
+      "description": "Learn how domestic bank transfers move funds between accounts. This simulated guide explains example features and considerations. It is not an offer to open, borrow, insure or invest.",
+      "highlights": [
+        "Review recipient details before confirming",
+        "Read terms, fees and eligibility together"
+      ],
+      "features": [
+        {
+          "title": "Key benefit",
+          "description": "Review recipient details before confirming"
+        },
+        {
+          "title": "FX / travel",
+          "description": "Currency and jurisdiction restrictions may apply."
+        }
+      ],
+      "eligibility": {
+        "summary": "For adults aged 18 or over; illustrative residency and identity requirements would apply.",
+        "requirements": ["Information only; no application is accepted."]
+      },
+      "fees": [
+        {
+          "label": "Domestic transfer",
+          "value": "CNY 0 example",
+          "conditions": "No international transfer pricing is implied."
+        }
+      ],
+      "tags": ["payments_fx", "banking service", "payments & transfers"],
+      "disclaimers": [
+        "DEMO / SIMULATED PRODUCT INFORMATION",
+        "No real product is available to purchase through this website.",
+        "No international transfer pricing is implied."
+      ],
+      "relatedItemIds": ["foreign-exchange"],
+      "cta": [
+        {
+          "type": "LEARN_MORE",
+          "label": "Read support guides",
+          "route": "/support"
+        },
+        {
+          "type": "SIGN_IN",
+          "label": "Sign in to demo",
+          "route": "/login"
+        }
+      ],
+      "supportedCurrencies": ["CNY"],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "foreign-exchange",
+      "slug": "foreign-exchange",
+      "category": "PAYMENTS_FX",
+      "type": "BANKING_SERVICE",
+      "title": "Foreign Exchange",
+      "shortDescription": "Explore indicative exchange rates and conversion costs.",
+      "description": "Explore indicative exchange rates and conversion costs. This simulated guide explains example features and considerations. It is not an offer to open, borrow, insure or invest.",
+      "highlights": [
+        "Understand rate and markup separately",
+        "Read terms, fees and eligibility together"
+      ],
+      "features": [
+        {
+          "title": "Key benefit",
+          "description": "Understand rate and markup separately"
+        },
+        {
+          "title": "FX / travel",
+          "description": "Currency and jurisdiction restrictions may apply."
+        }
+      ],
+      "eligibility": {
+        "summary": "For adults aged 18 or over; illustrative residency and identity requirements would apply.",
+        "requirements": ["Information only; no application is accepted."]
+      },
+      "fees": [
+        {
+          "label": "FX markup",
+          "value": "0.50% example",
+          "conditions": "Demo rates are not executable quotes."
+        }
+      ],
+      "tags": ["payments_fx", "banking service", "foreign exchange"],
+      "disclaimers": [
+        "DEMO / SIMULATED PRODUCT INFORMATION",
+        "No real product is available to purchase through this website.",
+        "Demo rates are not executable quotes."
+      ],
+      "relatedItemIds": ["payments-transfers"],
+      "cta": [
+        {
+          "type": "LEARN_MORE",
+          "label": "Read support guides",
+          "route": "/support"
+        },
+        {
+          "type": "SIGN_IN",
+          "label": "Sign in to demo",
+          "route": "/login"
+        }
+      ],
+      "supportedCurrencies": ["CNY", "USD"],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "everyday-debit-card",
+      "slug": "everyday-debit-card",
+      "category": "CARDS",
+      "type": "DEBIT_CARD",
+      "title": "Everyday Debit Card",
+      "shortDescription": "Explore a card connected to an everyday account.",
+      "description": "Explore a card connected to an everyday account. This simulated guide explains example features and considerations. It is not an offer to open, borrow, insure or invest.",
+      "highlights": [
+        "Spend from available funds",
+        "Read terms, fees and eligibility together"
+      ],
+      "features": [
+        {
+          "title": "Key benefit",
+          "description": "Spend from available funds"
+        },
+        {
+          "title": "FX / travel",
+          "description": "No borrowing facility; overseas conversion may incur an FX markup."
+        }
+      ],
+      "eligibility": {
+        "summary": "For adults aged 18 or over; illustrative residency and identity requirements would apply.",
+        "requirements": ["Information only; no application is accepted."]
+      },
+      "fees": [
+        {
+          "label": "Annual fee",
+          "value": "CNY 0",
+          "conditions": "No borrowing facility; overseas conversion may incur an FX markup."
+        }
+      ],
+      "tags": ["cards", "debit card", "everyday debit card"],
+      "disclaimers": [
+        "DEMO / SIMULATED PRODUCT INFORMATION",
+        "No real product is available to purchase through this website.",
+        "No borrowing facility; overseas conversion may incur an FX markup."
+      ],
+      "relatedItemIds": ["cashback-credit-card", "travel-credit-card"],
+      "cta": [
+        {
+          "type": "LEARN_MORE",
+          "label": "Read support guides",
+          "route": "/support"
+        },
+        {
+          "type": "COMPARE",
+          "label": "Compare cards",
+          "route": "/cards/compare"
+        }
+      ],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "cashback-credit-card",
+      "slug": "cashback-credit-card",
+      "category": "CARDS",
+      "type": "CREDIT_CARD",
+      "title": "Cashback Credit Card",
+      "shortDescription": "A simulated credit-card guide with everyday reward examples.",
+      "description": "A simulated credit-card guide with everyday reward examples. This simulated guide explains example features and considerations. It is not an offer to open, borrow, insure or invest.",
+      "highlights": [
+        "Illustrative 1% cashback on eligible purchases",
+        "Read terms, fees and eligibility together"
+      ],
+      "features": [
+        {
+          "title": "Key benefit",
+          "description": "Illustrative 1% cashback on eligible purchases"
+        },
+        {
+          "title": "FX / travel",
+          "description": "Currency conversion fees may apply to overseas purchases. No travel cover is included."
+        }
+      ],
+      "eligibility": {
+        "summary": "For adults aged 18 or over; illustrative residency and identity requirements would apply. Credit and affordability assessment would be required; no approval is implied.",
+        "requirements": ["Information only; no application is accepted."]
+      },
+      "fees": [
+        {
+          "label": "Annual fee",
+          "value": "CNY 120 example",
+          "conditions": "Reward exclusions and caps would apply; no rewards are issued in this demo."
+        }
+      ],
+      "tags": ["cards", "credit card", "cashback credit card"],
+      "disclaimers": [
+        "DEMO / SIMULATED PRODUCT INFORMATION",
+        "No real product is available to purchase through this website.",
+        "Reward exclusions and caps would apply; no rewards are issued in this demo."
+      ],
+      "relatedItemIds": ["everyday-debit-card", "travel-credit-card"],
+      "cta": [
+        {
+          "type": "LEARN_MORE",
+          "label": "Read support guides",
+          "route": "/support"
+        },
+        {
+          "type": "COMPARE",
+          "label": "Compare cards",
+          "route": "/cards/compare"
+        }
+      ],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "travel-credit-card",
+      "slug": "travel-credit-card",
+      "category": "CARDS",
+      "type": "CREDIT_CARD",
+      "title": "Travel Credit Card",
+      "shortDescription": "Compare a simulated card designed around travel features.",
+      "description": "Compare a simulated card designed around travel features. This simulated guide explains example features and considerations. It is not an offer to open, borrow, insure or invest.",
+      "highlights": [
+        "Travel purchase information and overseas acceptance",
+        "Read terms, fees and eligibility together"
+      ],
+      "features": [
+        {
+          "title": "Key benefit",
+          "description": "Travel purchase information and overseas acceptance"
+        },
+        {
+          "title": "FX / travel",
+          "description": "Illustrative 0.50% FX markup; travel cover is not included."
+        }
+      ],
+      "eligibility": {
+        "summary": "For adults aged 18 or over; illustrative residency and identity requirements would apply. Credit and affordability assessment would be required; no approval is implied.",
+        "requirements": ["Information only; no application is accepted."]
+      },
+      "fees": [
+        {
+          "label": "Annual fee",
+          "value": "CNY 300 example",
+          "conditions": "Illustrative 0.50% FX markup; travel cover is not included."
+        }
+      ],
+      "tags": ["cards", "credit card", "travel credit card"],
+      "disclaimers": [
+        "DEMO / SIMULATED PRODUCT INFORMATION",
+        "No real product is available to purchase through this website.",
+        "Illustrative 0.50% FX markup; travel cover is not included."
+      ],
+      "relatedItemIds": ["everyday-debit-card", "cashback-credit-card"],
+      "cta": [
+        {
+          "type": "LEARN_MORE",
+          "label": "Read support guides",
+          "route": "/support"
+        },
+        {
+          "type": "COMPARE",
+          "label": "Compare cards",
+          "route": "/cards/compare"
+        }
+      ],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "student-card",
+      "slug": "student-card",
+      "category": "CARDS",
+      "type": "DEBIT_CARD",
+      "title": "Student Card",
+      "shortDescription": "A simulated debit-card guide for students managing a first budget.",
+      "description": "A simulated debit-card guide for students managing a first budget. This simulated guide explains example features and considerations. It is not an offer to open, borrow, insure or invest.",
+      "highlights": [
+        "Simple spending from available funds",
+        "Read terms, fees and eligibility together"
+      ],
+      "features": [
+        {
+          "title": "Key benefit",
+          "description": "Simple spending from available funds"
+        },
+        {
+          "title": "FX / travel",
+          "description": "Overseas acceptance depends on the card network; conversion fees may apply. No travel cover is included."
+        }
+      ],
+      "eligibility": {
+        "summary": "For students aged 18 or over; proof of student status would be required.",
+        "requirements": ["Information only; no application is accepted."]
+      },
+      "fees": [
+        {
+          "label": "Annual fee",
+          "value": "CNY 0",
+          "conditions": "Student status would need verification; no credit facility."
+        }
+      ],
+      "tags": ["cards", "debit card", "student card"],
+      "disclaimers": [
+        "DEMO / SIMULATED PRODUCT INFORMATION",
+        "No real product is available to purchase through this website.",
+        "Student status would need verification; no credit facility."
+      ],
+      "relatedItemIds": ["everyday-debit-card", "cashback-credit-card"],
+      "cta": [
+        {
+          "type": "LEARN_MORE",
+          "label": "Read support guides",
+          "route": "/support"
+        },
+        {
+          "type": "COMPARE",
+          "label": "Compare cards",
+          "route": "/cards/compare"
+        }
+      ],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "personal-loan",
+      "slug": "personal-loan",
+      "category": "BORROWING",
+      "type": "PERSONAL_LOAN",
+      "title": "Personal Loan",
+      "shortDescription": "Learn about fixed-term borrowing and repayment commitments.",
+      "description": "Learn about fixed-term borrowing and repayment commitments. This simulated guide explains example features and considerations. It is not an offer to open, borrow, insure or invest.",
+      "highlights": [
+        "Understand total borrowing costs",
+        "Read terms, fees and eligibility together"
+      ],
+      "features": [
+        {
+          "title": "Key benefit",
+          "description": "Understand total borrowing costs"
+        },
+        {
+          "title": "FX / travel",
+          "description": "Currency and jurisdiction restrictions may apply."
+        }
+      ],
+      "eligibility": {
+        "summary": "For adults aged 18 or over; illustrative residency and identity requirements would apply. Credit and affordability assessment would be required; no approval is implied.",
+        "requirements": ["Information only; no application is accepted."]
+      },
+      "fees": [
+        {
+          "label": "Arrangement fee",
+          "value": "CNY 0 example",
+          "conditions": "Interest and affordability would require a separate assessment."
+        }
+      ],
+      "tags": ["borrowing", "personal loan", "personal loan"],
+      "disclaimers": [
+        "DEMO / SIMULATED PRODUCT INFORMATION",
+        "No real product is available to purchase through this website.",
+        "Interest and affordability would require a separate assessment."
+      ],
+      "relatedItemIds": ["home-mortgage", "overdraft"],
+      "cta": [
+        {
+          "type": "LEARN_MORE",
+          "label": "Read support guides",
+          "route": "/support"
+        },
+        {
+          "type": "SIGN_IN",
+          "label": "Sign in to demo",
+          "route": "/login"
+        }
+      ],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "home-mortgage",
+      "slug": "home-mortgage",
+      "category": "BORROWING",
+      "type": "MORTGAGE",
+      "title": "Home Mortgage",
+      "shortDescription": "An introduction to secured home borrowing and deposit requirements.",
+      "description": "An introduction to secured home borrowing and deposit requirements. This simulated guide explains example features and considerations. It is not an offer to open, borrow, insure or invest.",
+      "highlights": [
+        "Explore term, deposit and repayment considerations",
+        "Read terms, fees and eligibility together"
+      ],
+      "features": [
+        {
+          "title": "Key benefit",
+          "description": "Explore term, deposit and repayment considerations"
+        },
+        {
+          "title": "FX / travel",
+          "description": "Currency and jurisdiction restrictions may apply."
+        }
+      ],
+      "eligibility": {
+        "summary": "For adults aged 18 or over; illustrative residency and identity requirements would apply. Credit and affordability assessment would be required; no approval is implied.",
+        "requirements": ["Information only; no application is accepted."]
+      },
+      "fees": [
+        {
+          "label": "Valuation fee",
+          "value": "Not quoted",
+          "conditions": "A property valuation and lending assessment would be required."
+        }
+      ],
+      "tags": ["borrowing", "mortgage", "home mortgage"],
+      "disclaimers": [
+        "DEMO / SIMULATED PRODUCT INFORMATION",
+        "No real product is available to purchase through this website.",
+        "A property valuation and lending assessment would be required."
+      ],
+      "relatedItemIds": ["personal-loan", "overdraft"],
+      "cta": [
+        {
+          "type": "LEARN_MORE",
+          "label": "Read support guides",
+          "route": "/support"
+        },
+        {
+          "type": "SIGN_IN",
+          "label": "Sign in to demo",
+          "route": "/login"
+        }
+      ],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "overdraft",
+      "slug": "overdraft",
+      "category": "BORROWING",
+      "type": "OVERDRAFT",
+      "title": "Overdraft",
+      "shortDescription": "Understand short-term borrowing linked to a current account.",
+      "description": "Understand short-term borrowing linked to a current account. This simulated guide explains example features and considerations. It is not an offer to open, borrow, insure or invest.",
+      "highlights": [
+        "Review borrowing limits and repayment costs",
+        "Read terms, fees and eligibility together"
+      ],
+      "features": [
+        {
+          "title": "Key benefit",
+          "description": "Review borrowing limits and repayment costs"
+        },
+        {
+          "title": "FX / travel",
+          "description": "Currency and jurisdiction restrictions may apply."
+        }
+      ],
+      "eligibility": {
+        "summary": "For adults aged 18 or over; illustrative residency and identity requirements would apply. Credit and affordability assessment would be required; no approval is implied.",
+        "requirements": ["Information only; no application is accepted."]
+      },
+      "fees": [
+        {
+          "label": "Facility fee",
+          "value": "Not quoted",
+          "conditions": "Borrowing is subject to assessment; this guide does not approve a limit."
+        }
+      ],
+      "tags": ["borrowing", "overdraft", "overdraft"],
+      "disclaimers": [
+        "DEMO / SIMULATED PRODUCT INFORMATION",
+        "No real product is available to purchase through this website.",
+        "Borrowing is subject to assessment; this guide does not approve a limit."
+      ],
+      "relatedItemIds": ["personal-loan", "home-mortgage"],
+      "cta": [
+        {
+          "type": "LEARN_MORE",
+          "label": "Read support guides",
+          "route": "/support"
+        },
+        {
+          "type": "SIGN_IN",
+          "label": "Sign in to demo",
+          "route": "/login"
+        }
+      ],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "money-market-investing",
+      "slug": "money-market-investing",
+      "category": "INVESTMENTS",
+      "type": "INVESTMENT_PRODUCT",
+      "title": "Money Market Investing",
+      "shortDescription": "Learn about short-duration investments and liquidity considerations.",
+      "description": "Learn about short-duration investments and liquidity considerations. This simulated guide explains example features and considerations. It is not an offer to open, borrow, insure or invest.",
+      "highlights": [
+        "Explore liquidity and credit risk",
+        "Read terms, fees and eligibility together"
+      ],
+      "features": [
+        {
+          "title": "Key benefit",
+          "description": "Explore liquidity and credit risk"
+        },
+        {
+          "title": "FX / travel",
+          "description": "Currency and jurisdiction restrictions may apply."
+        }
+      ],
+      "eligibility": {
+        "summary": "For adults aged 18 or over; illustrative residency and identity requirements would apply.",
+        "requirements": ["Information only; no application is accepted."]
+      },
+      "fees": [
+        {
+          "label": "Management fee",
+          "value": "0.20% per year example",
+          "conditions": "Capital and returns are not guaranteed."
+        }
+      ],
+      "tags": ["investments", "investment product", "money market investing"],
+      "disclaimers": [
+        "DEMO / SIMULATED PRODUCT INFORMATION",
+        "No real product is available to purchase through this website.",
+        "Capital and returns are not guaranteed."
+      ],
+      "relatedItemIds": ["bond-investing", "fund-investing"],
+      "cta": [
+        {
+          "type": "LEARN_MORE",
+          "label": "Read support guides",
+          "route": "/support"
+        },
+        {
+          "type": "SIGN_IN",
+          "label": "Sign in to demo",
+          "route": "/login"
+        }
+      ],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "bond-investing",
+      "slug": "bond-investing",
+      "category": "INVESTMENTS",
+      "type": "INVESTMENT_PRODUCT",
+      "title": "Bond Investing",
+      "shortDescription": "Understand fixed-income exposure, credit risk and interest-rate sensitivity.",
+      "description": "Understand fixed-income exposure, credit risk and interest-rate sensitivity. This simulated guide explains example features and considerations. It is not an offer to open, borrow, insure or invest.",
+      "highlights": [
+        "Compare issuer quality and maturity",
+        "Read terms, fees and eligibility together"
+      ],
+      "features": [
+        {
+          "title": "Key benefit",
+          "description": "Compare issuer quality and maturity"
+        },
+        {
+          "title": "FX / travel",
+          "description": "Currency and jurisdiction restrictions may apply."
+        }
+      ],
+      "eligibility": {
+        "summary": "For adults aged 18 or over; illustrative residency and identity requirements would apply.",
+        "requirements": ["Information only; no application is accepted."]
+      },
+      "fees": [
+        {
+          "label": "Management fee",
+          "value": "0.40% per year example",
+          "conditions": "Bond prices can fall when interest rates rise."
+        }
+      ],
+      "tags": ["investments", "investment product", "bond investing"],
+      "disclaimers": [
+        "DEMO / SIMULATED PRODUCT INFORMATION",
+        "No real product is available to purchase through this website.",
+        "Bond prices can fall when interest rates rise."
+      ],
+      "relatedItemIds": ["money-market-investing", "fund-investing"],
+      "cta": [
+        {
+          "type": "LEARN_MORE",
+          "label": "Read support guides",
+          "route": "/support"
+        },
+        {
+          "type": "SIGN_IN",
+          "label": "Sign in to demo",
+          "route": "/login"
+        }
+      ],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "fund-investing",
+      "slug": "fund-investing",
+      "category": "INVESTMENTS",
+      "type": "INVESTMENT_PRODUCT",
+      "title": "Fund Investing",
+      "shortDescription": "Explore pooled investments and diversification.",
+      "description": "Explore pooled investments and diversification. This simulated guide explains example features and considerations. It is not an offer to open, borrow, insure or invest.",
+      "highlights": [
+        "Review strategy, costs and risk together",
+        "Read terms, fees and eligibility together"
+      ],
+      "features": [
+        {
+          "title": "Key benefit",
+          "description": "Review strategy, costs and risk together"
+        },
+        {
+          "title": "FX / travel",
+          "description": "Currency and jurisdiction restrictions may apply."
+        }
+      ],
+      "eligibility": {
+        "summary": "For adults aged 18 or over; illustrative residency and identity requirements would apply.",
+        "requirements": ["Information only; no application is accepted."]
+      },
+      "fees": [
+        {
+          "label": "Management fee",
+          "value": "0.80% per year example",
+          "conditions": "Diversification cannot eliminate market losses."
+        }
+      ],
+      "tags": ["investments", "investment product", "fund investing"],
+      "disclaimers": [
+        "DEMO / SIMULATED PRODUCT INFORMATION",
+        "No real product is available to purchase through this website.",
+        "Diversification cannot eliminate market losses."
+      ],
+      "relatedItemIds": ["money-market-investing", "bond-investing"],
+      "cta": [
+        {
+          "type": "LEARN_MORE",
+          "label": "Read support guides",
+          "route": "/support"
+        },
+        {
+          "type": "SIGN_IN",
+          "label": "Sign in to demo",
+          "route": "/login"
+        }
+      ],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "investment-basics",
+      "slug": "investment-basics",
+      "category": "INVESTMENTS",
+      "type": "BANKING_SERVICE",
+      "title": "Investment Basics",
+      "shortDescription": "Start with goals, time horizon and investment risk.",
+      "description": "Start with goals, time horizon and investment risk. This simulated guide explains example features and considerations. It is not an offer to open, borrow, insure or invest.",
+      "highlights": [
+        "Understand risk before choosing a product",
+        "Read terms, fees and eligibility together"
+      ],
+      "features": [
+        {
+          "title": "Key benefit",
+          "description": "Understand risk before choosing a product"
+        },
+        {
+          "title": "FX / travel",
+          "description": "Currency and jurisdiction restrictions may apply."
+        }
+      ],
+      "eligibility": {
+        "summary": "For adults aged 18 or over; illustrative residency and identity requirements would apply.",
+        "requirements": ["Information only; no application is accepted."]
+      },
+      "fees": [
+        {
+          "label": "Guide fee",
+          "value": "CNY 0",
+          "conditions": "Educational content; no personal investment advice."
+        }
+      ],
+      "tags": ["investments", "banking service", "investment basics"],
+      "disclaimers": [
+        "DEMO / SIMULATED PRODUCT INFORMATION",
+        "No real product is available to purchase through this website.",
+        "Educational content; no personal investment advice."
+      ],
+      "relatedItemIds": ["money-market-investing", "bond-investing"],
+      "cta": [
+        {
+          "type": "LEARN_MORE",
+          "label": "Read support guides",
+          "route": "/support"
+        },
+        {
+          "type": "SIGN_IN",
+          "label": "Sign in to demo",
+          "route": "/login"
+        }
+      ],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "life-insurance",
+      "slug": "life-insurance",
+      "category": "INSURANCE",
+      "type": "INSURANCE_PRODUCT",
+      "title": "Life Insurance",
+      "shortDescription": "Learn about life protection, beneficiaries and exclusions.",
+      "description": "Learn about life protection, beneficiaries and exclusions. This simulated guide explains example features and considerations. It is not an offer to open, borrow, insure or invest.",
+      "highlights": [
+        "Understand the purpose of a protection policy",
+        "Read terms, fees and eligibility together"
+      ],
+      "features": [
+        {
+          "title": "Key benefit",
+          "description": "Understand the purpose of a protection policy"
+        },
+        {
+          "title": "FX / travel",
+          "description": "Currency and jurisdiction restrictions may apply."
+        }
+      ],
+      "eligibility": {
+        "summary": "For adults aged 18 or over; illustrative residency and identity requirements would apply.",
+        "requirements": ["Information only; no application is accepted."]
+      },
+      "fees": [
+        {
+          "label": "Premium",
+          "value": "Not quoted",
+          "conditions": "Cover, exclusions and underwriting would need separate confirmation."
+        }
+      ],
+      "tags": ["insurance", "insurance product", "life insurance"],
+      "disclaimers": [
+        "DEMO / SIMULATED PRODUCT INFORMATION",
+        "No real product is available to purchase through this website.",
+        "Cover, exclusions and underwriting would need separate confirmation."
+      ],
+      "relatedItemIds": ["health-insurance", "travel-insurance"],
+      "cta": [
+        {
+          "type": "LEARN_MORE",
+          "label": "Read support guides",
+          "route": "/support"
+        },
+        {
+          "type": "SIGN_IN",
+          "label": "Sign in to demo",
+          "route": "/login"
+        }
+      ],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "health-insurance",
+      "slug": "health-insurance",
+      "category": "INSURANCE",
+      "type": "INSURANCE_PRODUCT",
+      "title": "Health Insurance",
+      "shortDescription": "Explore medical coverage, waiting periods and exclusions.",
+      "description": "Explore medical coverage, waiting periods and exclusions. This simulated guide explains example features and considerations. It is not an offer to open, borrow, insure or invest.",
+      "highlights": [
+        "Review limits and eligible treatment",
+        "Read terms, fees and eligibility together"
+      ],
+      "features": [
+        {
+          "title": "Key benefit",
+          "description": "Review limits and eligible treatment"
+        },
+        {
+          "title": "FX / travel",
+          "description": "Currency and jurisdiction restrictions may apply."
+        }
+      ],
+      "eligibility": {
+        "summary": "For adults aged 18 or over; illustrative residency and identity requirements would apply.",
+        "requirements": ["Information only; no application is accepted."]
+      },
+      "fees": [
+        {
+          "label": "Premium",
+          "value": "Not quoted",
+          "conditions": "Pre-existing conditions may affect cover; no policy is issued."
+        }
+      ],
+      "tags": ["insurance", "insurance product", "health insurance"],
+      "disclaimers": [
+        "DEMO / SIMULATED PRODUCT INFORMATION",
+        "No real product is available to purchase through this website.",
+        "Pre-existing conditions may affect cover; no policy is issued."
+      ],
+      "relatedItemIds": ["life-insurance", "travel-insurance"],
+      "cta": [
+        {
+          "type": "LEARN_MORE",
+          "label": "Read support guides",
+          "route": "/support"
+        },
+        {
+          "type": "SIGN_IN",
+          "label": "Sign in to demo",
+          "route": "/login"
+        }
+      ],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "travel-insurance",
+      "slug": "travel-insurance",
+      "category": "INSURANCE",
+      "type": "INSURANCE_PRODUCT",
+      "title": "Travel Insurance",
+      "shortDescription": "Learn about trip cancellation, medical and baggage protection.",
+      "description": "Learn about trip cancellation, medical and baggage protection. This simulated guide explains example features and considerations. It is not an offer to open, borrow, insure or invest.",
+      "highlights": [
+        "Review destination and activity exclusions",
+        "Read terms, fees and eligibility together"
+      ],
+      "features": [
+        {
+          "title": "Key benefit",
+          "description": "Review destination and activity exclusions"
+        },
+        {
+          "title": "FX / travel",
+          "description": "Currency and jurisdiction restrictions may apply."
+        }
+      ],
+      "eligibility": {
+        "summary": "For adults aged 18 or over; illustrative residency and identity requirements would apply.",
+        "requirements": ["Information only; no application is accepted."]
+      },
+      "fees": [
+        {
+          "label": "Premium",
+          "value": "Not quoted",
+          "conditions": "Cover is subject to policy terms; no active protection is provided."
+        }
+      ],
+      "tags": ["insurance", "insurance product", "travel insurance"],
+      "disclaimers": [
+        "DEMO / SIMULATED PRODUCT INFORMATION",
+        "No real product is available to purchase through this website.",
+        "Cover is subject to policy terms; no active protection is provided."
+      ],
+      "relatedItemIds": ["life-insurance", "health-insurance"],
+      "cta": [
+        {
+          "type": "LEARN_MORE",
+          "label": "Read support guides",
+          "route": "/support"
+        },
+        {
+          "type": "SIGN_IN",
+          "label": "Sign in to demo",
+          "route": "/login"
+        }
+      ],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "home-insurance",
+      "slug": "home-insurance",
+      "category": "INSURANCE",
+      "type": "INSURANCE_PRODUCT",
+      "title": "Home Insurance",
+      "shortDescription": "Understand buildings and contents protection.",
+      "description": "Understand buildings and contents protection. This simulated guide explains example features and considerations. It is not an offer to open, borrow, insure or invest.",
+      "highlights": [
+        "Review insured risks and excesses",
+        "Read terms, fees and eligibility together"
+      ],
+      "features": [
+        {
+          "title": "Key benefit",
+          "description": "Review insured risks and excesses"
+        },
+        {
+          "title": "FX / travel",
+          "description": "Currency and jurisdiction restrictions may apply."
+        }
+      ],
+      "eligibility": {
+        "summary": "For adults aged 18 or over; illustrative residency and identity requirements would apply.",
+        "requirements": ["Information only; no application is accepted."]
+      },
+      "fees": [
+        {
+          "label": "Premium",
+          "value": "Not quoted",
+          "conditions": "Property assessment and policy exclusions would apply."
+        }
+      ],
+      "tags": ["insurance", "insurance product", "home insurance"],
+      "disclaimers": [
+        "DEMO / SIMULATED PRODUCT INFORMATION",
+        "No real product is available to purchase through this website.",
+        "Property assessment and policy exclusions would apply."
+      ],
+      "relatedItemIds": ["life-insurance", "health-insurance"],
+      "cta": [
+        {
+          "type": "LEARN_MORE",
+          "label": "Read support guides",
+          "route": "/support"
+        },
+        {
+          "type": "SIGN_IN",
+          "label": "Sign in to demo",
+          "route": "/login"
+        }
+      ],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    }
+  ],
+  "articles": [
+    {
+      "id": "recognise-phishing",
+      "slug": "recognise-phishing",
+      "title": "How to recognise a phishing attempt",
+      "summary": "Avoiding scams",
+      "category": "SECURITY",
+      "tags": ["avoiding scams", "insight"],
+      "heading": "How to recognise a phishing attempt",
+      "sections": [
+        {
+          "heading": "What to know",
+          "paragraphs": [
+            "Be cautious of urgency, unfamiliar links and requests for security codes.",
+            "Open your bank through a known bookmark or its official app. Verify unexpected contact using a trusted channel."
+          ],
+          "callouts": [
+            "Never disclose passwords, PINs or one-time security codes."
+          ]
+        }
+      ],
+      "relatedArticles": ["lost-card", "pending-card-payments"],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "lost-card",
+      "slug": "lost-card",
+      "title": "What to do if your card is lost",
+      "summary": "Lost card help",
+      "category": "CARDS",
+      "tags": ["lost card help", "guide"],
+      "heading": "What to do if your card is lost",
+      "sections": [
+        {
+          "heading": "What to know",
+          "paragraphs": [
+            "Act promptly when a card is missing or you notice unfamiliar activity.",
+            "Contact your card issuer through a trusted channel and follow its instructions for blocking the card. Review recent activity."
+          ],
+          "callouts": [
+            "This public demo cannot freeze a real card or report a loss."
+          ]
+        }
+      ],
+      "relatedArticles": ["pending-card-payments", "bank-transfers"],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "pending-card-payments",
+      "slug": "pending-card-payments",
+      "title": "Understanding pending card payments",
+      "summary": "Pending payments",
+      "category": "CARDS",
+      "tags": ["pending payments", "guide"],
+      "heading": "Understanding pending card payments",
+      "sections": [
+        {
+          "heading": "What to know",
+          "paragraphs": [
+            "A card authorisation may reserve funds before the merchant completes settlement.",
+            "A pending debit can reduce available funds while the booked balance remains unchanged. Release and settlement timing depends on the issuer and merchant."
+          ],
+          "callouts": [
+            "Do not assume a pending payment has failed or repeat it automatically."
+          ]
+        }
+      ],
+      "relatedArticles": ["bank-transfers", "failed-transfer"],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "bank-transfers",
+      "slug": "bank-transfers",
+      "title": "How bank transfers work",
+      "summary": "Transfers explained",
+      "category": "PAYMENTS",
+      "tags": ["transfers explained", "guide"],
+      "heading": "How bank transfers work",
+      "sections": [
+        {
+          "heading": "What to know",
+          "paragraphs": [
+            "Transfers move funds using recipient and account details.",
+            "Check the recipient, currency and amount before confirming. Settlement time depends on the payment route and processing schedule."
+          ],
+          "callouts": ["This article does not execute or guarantee a transfer."]
+        }
+      ],
+      "relatedArticles": ["failed-transfer", "balance-available"],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "failed-transfer",
+      "slug": "failed-transfer",
+      "title": "Why a transfer may fail",
+      "summary": "Transfer troubleshooting",
+      "category": "PAYMENTS",
+      "tags": ["transfer troubleshooting", "guide"],
+      "heading": "Why a transfer may fail",
+      "sections": [
+        {
+          "heading": "What to know",
+          "paragraphs": [
+            "Incorrect recipient details, restrictions or insufficient available funds can prevent a transfer.",
+            "Review the reported reason and payment status before attempting another transfer. Use a trusted support channel if the outcome is unclear."
+          ],
+          "callouts": [
+            "Avoid duplicate payments when an earlier result is uncertain."
+          ]
+        }
+      ],
+      "relatedArticles": ["balance-available", "recurring-payments"],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "balance-available",
+      "slug": "balance-available",
+      "title": "Balance and available balance",
+      "summary": "Understanding account balances",
+      "category": "ACCOUNTS",
+      "tags": ["understanding account balances", "guide"],
+      "heading": "Balance and available balance",
+      "sections": [
+        {
+          "heading": "What to know",
+          "paragraphs": [
+            "Balance records booked funds; available balance reflects funds currently usable.",
+            "For the demo current account, pending debit holds reduce available balance. Other banking products may use different rules."
+          ],
+          "callouts": ["Pending amounts are not always booked transactions."]
+        }
+      ],
+      "relatedArticles": ["recurring-payments", "step-up-verification"],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "recurring-payments",
+      "slug": "recurring-payments",
+      "title": "How recurring payments work",
+      "summary": "Recurring payments",
+      "category": "PAYMENTS",
+      "tags": ["recurring payments", "guide"],
+      "heading": "How recurring payments work",
+      "sections": [
+        {
+          "heading": "What to know",
+          "paragraphs": [
+            "A recurring arrangement describes future scheduled collections or payments.",
+            "Review the schedule, amount and beneficiary. Stopping an arrangement may not cancel a payment already in progress."
+          ],
+          "callouts": [
+            "Contact the service provider about any separate contract."
+          ]
+        }
+      ],
+      "relatedArticles": ["step-up-verification", "investment-risk"],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "step-up-verification",
+      "slug": "step-up-verification",
+      "title": "What step-up verification means",
+      "summary": "Extra verification",
+      "category": "SECURITY",
+      "tags": ["extra verification", "guide"],
+      "heading": "What step-up verification means",
+      "sections": [
+        {
+          "heading": "What to know",
+          "paragraphs": [
+            "Some sensitive actions require stronger verification than the initial sign-in.",
+            "An authorisation should be tied to the particular action and expire after a short period. Verify the action details before approving it."
+          ],
+          "callouts": [
+            "Never share a verification code with someone who contacts you."
+          ]
+        }
+      ],
+      "relatedArticles": ["investment-risk", "budgeting-basics"],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "investment-risk",
+      "slug": "investment-risk",
+      "title": "Understanding investment risk levels",
+      "summary": "Investment risk",
+      "category": "INVESTMENTS",
+      "tags": ["investment risk", "guide"],
+      "heading": "Understanding investment risk levels",
+      "sections": [
+        {
+          "heading": "What to know",
+          "paragraphs": [
+            "Risk depends on market exposure, liquidity, credit quality and your investment horizon.",
+            "A risk label summarises selected characteristics. It cannot predict losses or guarantee that a product is suitable for you."
+          ],
+          "callouts": [
+            "Investments can lose value. This is general education, not personal advice."
+          ]
+        }
+      ],
+      "relatedArticles": ["budgeting-basics", "bond-risk"],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "budgeting-basics",
+      "slug": "budgeting-basics",
+      "title": "Budgeting basics",
+      "summary": "Building a spending plan",
+      "category": "ACCOUNTS",
+      "tags": ["building a spending plan", "insight"],
+      "heading": "Budgeting basics",
+      "sections": [
+        {
+          "heading": "What to know",
+          "paragraphs": [
+            "Start with income, essential costs and a manageable savings target.",
+            "Review spending categories regularly and leave room for irregular costs. Use estimates as a starting point and adjust them as circumstances change."
+          ],
+          "callouts": [
+            "A budget is a planning aid, not a promise about future finances."
+          ]
+        }
+      ],
+      "relatedArticles": ["bond-risk", "exchange-rates"],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "bond-risk",
+      "slug": "bond-risk",
+      "title": "Understanding bond risk",
+      "summary": "Bond investing",
+      "category": "INVESTMENTS",
+      "tags": ["bond investing", "insight"],
+      "heading": "Understanding bond risk",
+      "sections": [
+        {
+          "heading": "What to know",
+          "paragraphs": [
+            "Bond values respond to interest rates, issuer credit quality and liquidity.",
+            "A longer maturity can increase interest-rate sensitivity. A higher quoted yield may reflect greater risk."
+          ],
+          "callouts": ["Bonds and bond funds can lose capital."]
+        }
+      ],
+      "relatedArticles": ["exchange-rates", "online-banking"],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "exchange-rates",
+      "slug": "exchange-rates",
+      "title": "How exchange rates work",
+      "summary": "Foreign exchange rates",
+      "category": "ACCOUNTS",
+      "tags": ["foreign exchange rates", "insight"],
+      "heading": "How exchange rates work",
+      "sections": [
+        {
+          "heading": "What to know",
+          "paragraphs": [
+            "An exchange rate expresses one currency in units of another.",
+            "Compare the quoted rate, markup and any fixed fee. An indicative rate may differ from the final executable quote."
+          ],
+          "callouts": [
+            "All rates on this website are illustrative demo values."
+          ]
+        }
+      ],
+      "relatedArticles": ["online-banking", "account-statements"],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "online-banking",
+      "slug": "online-banking",
+      "title": "Using online banking safely",
+      "summary": "Digital banking access",
+      "category": "DIGITAL_BANKING",
+      "tags": ["digital banking access", "guide"],
+      "heading": "Using online banking safely",
+      "sections": [
+        {
+          "heading": "What to know",
+          "paragraphs": [
+            "Use trusted devices and keep browser and operating system updates current.",
+            "Sign out on shared devices and verify the site address before entering credentials. Avoid entering real credentials into a demo."
+          ],
+          "callouts": [
+            "A public product guide never needs your banking password."
+          ]
+        }
+      ],
+      "relatedArticles": ["account-statements", "contact-support"],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "account-statements",
+      "slug": "account-statements",
+      "title": "Reading an account statement",
+      "summary": "Statements guide",
+      "category": "ACCOUNTS",
+      "tags": ["statements guide", "guide"],
+      "heading": "Reading an account statement",
+      "sections": [
+        {
+          "heading": "What to know",
+          "paragraphs": [
+            "A statement summarises booked activity during a stated period.",
+            "Check opening and closing balances, transaction dates and fees. Report unfamiliar entries through a trusted support channel."
+          ],
+          "callouts": [
+            "Pending authorisations may not appear as booked statement entries."
+          ]
+        }
+      ],
+      "relatedArticles": ["contact-support", "recognise-phishing"],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "id": "contact-support",
+      "slug": "contact-support",
+      "title": "Finding a trusted support channel",
+      "summary": "Contact and accessibility",
+      "category": "DIGITAL_BANKING",
+      "tags": ["contact and accessibility", "guide"],
+      "heading": "Finding a trusted support channel",
+      "sections": [
+        {
+          "heading": "What to know",
+          "paragraphs": [
+            "Use contact details from your verified bank app or official documentation.",
+            "Avoid numbers provided in suspicious messages. Ask your provider about accessible formats and communication options."
+          ],
+          "callouts": [
+            "Aster is a demo and has no real customer contact centre."
+          ]
+        }
+      ],
+      "relatedArticles": ["recognise-phishing", "lost-card"],
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    }
+  ],
+  "rates": {
+    "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+    "environment": "DEMO",
+    "asOf": "2026-09-27T09:00:00+08:00",
+    "source": "DEMO_RATE",
+    "disclaimer": "Illustrative demo rates, not live quotes.",
+    "items": [
+      {
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO",
+        "id": "usd-cny",
+        "title": "USD / CNY",
+        "kind": "FX",
+        "value": "7.1000",
+        "unit": "CNY per USD",
+        "conditions": "Indicative mid-rate example; excludes fees and markup."
+      },
+      {
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO",
+        "id": "savings",
+        "title": "Flexible Savings",
+        "kind": "SAVINGS",
+        "value": "0.80",
+        "unit": "% per year",
+        "conditions": "Variable illustrative gross annual rate; no guaranteed return."
+      },
+      {
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO",
+        "id": "deposit",
+        "title": "12-month Time Deposit",
+        "kind": "TIME_DEPOSIT",
+        "value": "1.50",
+        "unit": "% per year",
+        "conditions": "Illustrative gross annual rate for a 12-month CNY term; early withdrawal may reduce interest."
+      }
+    ]
+  },
+  "offers": [
+    {
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO",
+      "id": "savings-learning",
+      "title": "Build a savings habit",
+      "summary": "Explore the Flexible Savings guide and plan a regular savings routine.",
+      "category": "BANKING",
+      "validFrom": "2026-09-01T00:00:00+08:00",
+      "validUntil": "2026-12-31T23:59:59+08:00",
+      "termsSummary": "Demo educational campaign only. No cash reward, bonus rate or entitlement.",
+      "route": "/products/flexible-savings"
+    },
+    {
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO",
+      "id": "travel-learning",
+      "title": "Travel with a clearer plan",
+      "summary": "Compare travel card information and learn about overseas conversion costs.",
+      "category": "CARDS",
+      "validFrom": "2026-09-01T00:00:00+08:00",
+      "validUntil": "2026-12-31T23:59:59+08:00",
+      "termsSummary": "Simulated campaign. No discount, insurance cover or reward is issued.",
+      "route": "/products/travel-credit-card"
+    }
+  ],
+  "groups": [
+    {
+      "id": "banking",
+      "label": "Banking",
+      "route": "/banking",
+      "description": "Everyday accounts and simple ways to manage your money.",
+      "sections": [
+        {
+          "label": "Accounts",
+          "links": [
+            {
+              "label": "Current Account",
+              "route": "/products/everyday-account",
+              "description": "Explore current account information in the Aster demo."
+            },
+            {
+              "label": "Savings",
+              "route": "/products/flexible-savings",
+              "description": "Explore savings information in the Aster demo."
+            },
+            {
+              "label": "Time Deposit",
+              "route": "/products/time-deposit",
+              "description": "Explore time deposit information in the Aster demo."
+            },
+            {
+              "label": "Multi-currency Account",
+              "route": "/products/global-currency-account",
+              "description": "Explore multi-currency account information in the Aster demo."
+            }
+          ]
+        },
+        {
+          "label": "Everyday Banking",
+          "links": [
+            {
+              "label": "Payments & Transfers",
+              "route": "/products/payments-transfers",
+              "description": "Explore payments & transfers information in the Aster demo."
+            },
+            {
+              "label": "Foreign Exchange",
+              "route": "/products/foreign-exchange",
+              "description": "Explore foreign exchange information in the Aster demo."
+            },
+            {
+              "label": "Statements",
+              "route": "/support/account-statements",
+              "description": "Explore statements information in the Aster demo."
+            },
+            {
+              "label": "Budgeting",
+              "route": "/support/budgeting-basics",
+              "description": "Explore budgeting information in the Aster demo."
+            }
+          ]
+        },
+        {
+          "label": "Ways to bank",
+          "links": [
+            {
+              "label": "Online Banking",
+              "route": "/support/online-banking",
+              "description": "Explore online banking information in the Aster demo."
+            },
+            {
+              "label": "Mobile Banking",
+              "route": "/support/online-banking",
+              "description": "Explore mobile banking information in the Aster demo."
+            }
+          ]
+        },
+        {
+          "label": "Reference",
+          "links": [
+            {
+              "label": "Rates",
+              "route": "/rates"
+            },
+            {
+              "label": "Fees",
+              "route": "/fees"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cards",
+      "label": "Cards & Borrowing",
+      "route": "/cards",
+      "description": "Explore cards and borrowing options for the way you live.",
+      "sections": [
+        {
+          "label": "Cards",
+          "links": [
+            {
+              "label": "Everyday Card",
+              "route": "/products/everyday-debit-card",
+              "description": "Explore everyday card information in the Aster demo."
+            },
+            {
+              "label": "Cashback Card",
+              "route": "/products/cashback-credit-card",
+              "description": "Explore cashback card information in the Aster demo."
+            },
+            {
+              "label": "Travel Card",
+              "route": "/products/travel-credit-card",
+              "description": "Explore travel card information in the Aster demo."
+            },
+            {
+              "label": "Compare Cards",
+              "route": "/cards/compare",
+              "description": "Explore compare cards information in the Aster demo."
+            }
+          ]
+        },
+        {
+          "label": "Borrowing",
+          "links": [
+            {
+              "label": "Personal Loan",
+              "route": "/products/personal-loan",
+              "description": "Explore personal loan information in the Aster demo."
+            },
+            {
+              "label": "Mortgage",
+              "route": "/products/home-mortgage",
+              "description": "Explore mortgage information in the Aster demo."
+            },
+            {
+              "label": "Overdraft",
+              "route": "/products/overdraft",
+              "description": "Explore overdraft information in the Aster demo."
+            }
+          ]
+        },
+        {
+          "label": "Tools",
+          "links": [
+            {
+              "label": "Fees",
+              "route": "/fees",
+              "description": "Explore fees information in the Aster demo."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "investments",
+      "label": "Investments",
+      "route": "/investments",
+      "description": "Start with the basics. Explore choices at your own pace.",
+      "sections": [
+        {
+          "label": "Products",
+          "links": [
+            {
+              "label": "Money Market",
+              "route": "/products/money-market-investing",
+              "description": "Explore money market information in the Aster demo."
+            },
+            {
+              "label": "Funds",
+              "route": "/products/fund-investing",
+              "description": "Explore funds information in the Aster demo."
+            },
+            {
+              "label": "Bonds",
+              "route": "/products/bond-investing",
+              "description": "Explore bonds information in the Aster demo."
+            }
+          ]
+        },
+        {
+          "label": "Planning",
+          "links": [
+            {
+              "label": "Risk Profile",
+              "route": "/support/investment-risk",
+              "description": "Explore risk profile information in the Aster demo."
+            },
+            {
+              "label": "Investment Basics",
+              "route": "/products/investment-basics",
+              "description": "Explore investment basics information in the Aster demo."
+            },
+            {
+              "label": "Market Insights",
+              "route": "/insights",
+              "description": "Explore market insights information in the Aster demo."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "insurance",
+      "label": "Insurance",
+      "route": "/insurance",
+      "description": "Information to help you plan for the people and things you value.",
+      "sections": [
+        {
+          "label": "Explore protection",
+          "links": [
+            {
+              "label": "Life",
+              "route": "/products/life-insurance",
+              "description": "Explore life information in the Aster demo."
+            },
+            {
+              "label": "Health",
+              "route": "/products/health-insurance",
+              "description": "Explore health information in the Aster demo."
+            },
+            {
+              "label": "Travel",
+              "route": "/products/travel-insurance",
+              "description": "Explore travel information in the Aster demo."
+            },
+            {
+              "label": "Home",
+              "route": "/products/home-insurance",
+              "description": "Explore home information in the Aster demo."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "insights",
+      "label": "Insights",
+      "route": "/insights",
+      "description": "Make sense of everyday financial decisions.",
+      "sections": [
+        {
+          "label": "Learn with Aster",
+          "links": [
+            {
+              "label": "Money basics",
+              "route": "/support/budgeting-basics",
+              "description": "Explore money basics information in the Aster demo."
+            },
+            {
+              "label": "Rates explained",
+              "route": "/rates",
+              "description": "Explore rates explained information in the Aster demo."
+            },
+            {
+              "label": "Security guides",
+              "route": "/support/recognise-phishing",
+              "description": "Explore security guides information in the Aster demo."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "offers",
+      "label": "Offers",
+      "route": "/offers",
+      "description": "Discover illustrative offers in our demo catalog.",
+      "sections": [
+        {
+          "label": "Discover",
+          "links": [
+            {
+              "label": "Everyday banking offers",
+              "route": "/offers",
+              "description": "Explore everyday banking offers information in the Aster demo."
+            },
+            {
+              "label": "Travel ideas",
+              "route": "/offers",
+              "description": "Explore travel ideas information in the Aster demo."
+            },
+            {
+              "label": "Learning events",
+              "route": "/offers",
+              "description": "Explore learning events information in the Aster demo."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "support",
+      "label": "Support",
+      "route": "/support",
+      "description": "Find useful guidance and learn how to bank safely.",
+      "sections": [
+        {
+          "label": "How can we help?",
+          "links": [
+            {
+              "label": "Help centre",
+              "route": "/support",
+              "description": "Explore help centre information in the Aster demo."
+            },
+            {
+              "label": "Ways to contact us",
+              "route": "/support/contact-support",
+              "description": "Explore ways to contact us information in the Aster demo."
+            },
+            {
+              "label": "Security help",
+              "route": "/support/recognise-phishing",
+              "description": "Explore security help information in the Aster demo."
+            },
+            {
+              "label": "Accessibility",
+              "route": "/support/contact-support",
+              "description": "Explore accessibility information in the Aster demo."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "categories": [
+    {
+      "route": "/banking",
+      "title": "Banking",
+      "description": "Make everyday money easier to understand. Explore accounts, savings, payments and ways to bank.",
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "route": "/cards",
+      "title": "Cards",
+      "description": "Explore card products and compare everyday features. These are public product guides, not your personal cards.",
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "route": "/borrowing",
+      "title": "Borrowing",
+      "description": "Understand borrowing choices, costs and repayment commitments. Product information only; no applications or calculators are available.",
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "route": "/investments",
+      "title": "Investments",
+      "description": "Explore investment product information. This catalog is separate from your personal portfolio. Values can fall as well as rise.",
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "route": "/insurance",
+      "title": "Insurance",
+      "description": "Explore protection categories and the questions to consider. Illustrative information only; no quotes or policies are issued.",
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "route": "/insights",
+      "title": "Insights",
+      "description": "Clear introductions to money, rates and staying safe. Educational demo content, with no live market data.",
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "route": "/offers",
+      "title": "Offers",
+      "description": "Browse a small selection of illustrative promotions. No live discounts, eligibility decisions or applications.",
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    },
+    {
+      "route": "/support",
+      "title": "Support",
+      "description": "Find your way around Aster and learn how to protect your information. This demo has no staffed support service.",
+      "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+      "environment": "DEMO"
+    }
+  ],
+  "presentation": {
+    "hero": {
+      "eyebrow": "ASTER BANK · PERSONAL BANKING",
+      "title": "Everyday banking, built around you.",
+      "description": "Accounts, cards, payments, investing and financial guidance.",
+      "actions": [
+        {
+          "label": "Explore banking",
+          "route": "/banking"
+        },
+        {
+          "label": "Ask Aster",
+          "route": "/ask"
+        }
+      ]
+    },
+    "securityNotice": {
+      "title": "Stay alert to scams",
+      "message": "Aster Bank will never ask you to reveal your password or security code.",
+      "link": {
+        "label": "Explore security guidance",
+        "route": "/support/recognise-phishing"
+      }
+    },
+    "serviceCategories": [
+      {
+        "id": "accounts",
+        "title": "Accounts & Savings",
+        "description": "A place for today, a plan for tomorrow.",
+        "route": "/banking",
+        "label": "Explore",
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      },
+      {
+        "id": "cards",
+        "title": "Cards",
+        "description": "Find a card for your everyday life.",
+        "route": "/cards",
+        "label": "Explore",
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      },
+      {
+        "id": "borrowing",
+        "title": "Borrowing",
+        "description": "Understand your options and costs.",
+        "route": "/borrowing",
+        "label": "Explore",
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      },
+      {
+        "id": "investments",
+        "title": "Investments",
+        "description": "Explore products and investment basics.",
+        "route": "/investments",
+        "label": "Explore",
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      },
+      {
+        "id": "insurance",
+        "title": "Insurance",
+        "description": "Plan for what matters to you.",
+        "route": "/insurance",
+        "label": "Explore",
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      },
+      {
+        "id": "payments",
+        "title": "Payments & FX",
+        "description": "Discover payments and currency services.",
+        "route": "/products/payments-transfers",
+        "label": "Explore",
+        "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+        "environment": "DEMO"
+      }
+    ],
+    "featuredIds": [
+      "everyday-account",
+      "flexible-savings",
+      "travel-credit-card",
+      "personal-loan",
+      "bond-investing",
+      "travel-insurance"
+    ],
+    "lastUpdatedAt": "2026-09-27T09:00:00+08:00",
+    "environment": "DEMO"
+  }
+}

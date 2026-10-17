@@ -1,0 +1,149 @@
+"""Bounded factual evidence and fail-closed checks for analytical replies."""
+
+from __future__ import annotations
+
+import re
+from collections import defaultdict
+from decimal import Decimal, InvalidOperation
+from typing import Any
+
+from .models import Task
+
+
+FACT_FIELDS = {"merchant_untrusted": "merchant", "counterparty_untrusted": "counterparty",
+               "display_name_untrusted": "recipient_display", "card_masked_number": "card_mask",
+               "masked_number": "card_mask", "masked_account": "account_mask",
+               "counterparty_masked_account": "account_mask", "untrusted_title": "transaction_title",
+               "transaction_id": "transaction_id", "amount": "amount", "currency": "currency",
+               "category": "category"}
+MONEY = re.compile(r"(?:(?:CNY|USD|JPY|EUR|GBP|HKD|AUD|SGD|[¥￥])\s*([0-9][0-9,]*\.\d{2})|([0-9][0-9,]*\.\d{2})\s*元)")
+MASK = re.compile(r"(?:[•*]{2,}|尾号\s*)(?:\s|\.)*([0-9]{4})")
+BULLET_MERCHANT = re.compile(
+    r"^\s*[-*]\s*([^，,:：\n]{2,80})[，,]\s*(?:CNY|USD|JPY|EUR|GBP|HKD|AUD|SGD|[¥￥])\s*([0-9][0-9,]*\.\d{2})",
+    re.MULTILINE,
+)
+
+
+def evidence(task: Task) -> list[dict[str, str]]:
+    facts: list[dict[str, str]] = []
+    for index, observation in reversed(list(enumerate(task.observations))):
+        if not observation.success:
+            continue
+
+        def visit(value: Any, path: str) -> None:
+            if len(facts) >= 300:
+                return
+            if isinstance(value, dict):
+                for key, item in value.items():
+                    field = FACT_FIELDS.get(key)
+                    if field and isinstance(item, (str, int, float)) and str(item):
+                        facts.append({"fact_id": f"o{index}.{path}.{key}", "field": field,
+                                      "value": str(item), "source_tool": observation.tool_name})
+                    visit(item, f"{path}.{key}")
+            elif isinstance(value, list):
+                for item_index, item in enumerate(value):
+                    visit(item, f"{path}[{item_index}]")
+
+        visit(observation.structured_result, "result")
+    return facts
+
+
+def _dec(value: Any) -> Decimal | None:
+    try:
+        number = Decimal(str(value).replace(",", ""))
+        return number if number.is_finite() else None
+    except (InvalidOperation, TypeError):
+        return None
+
+
+def validate_analytical_reply(task: Task, message: str) -> str | None:
+    """Reject unsupported masks, amounts and transaction/merchant associations.
+
+    The bank supplies entity facts; model prose cannot manufacture financial figures.
+    """
+    allowed_amounts: set[Decimal] = {Decimal("0.00")}
+    allowed_masks: set[str] = set()
+    merchant_amounts: dict[str, set[Decimal]] = defaultdict(set)
+    transaction_merchants: dict[str, str] = {}
+    for observation in task.observations:
+        if not observation.success:
+            continue
+        result = observation.structured_result
+
+        def visit(value: Any) -> None:
+            if isinstance(value, dict):
+                for key, item in value.items():
+                    if key in {"amount", "current_amount", "previous_amount", "absolute_change"}:
+                        amount = _dec(item)
+                        if amount is not None:
+                            allowed_amounts.add(amount)
+                    if "mask" in key.lower() and isinstance(item, str):
+                        allowed_masks.update(MASK.findall(item))
+                    visit(item)
+            elif isinstance(value, list):
+                for item in value:
+                    visit(item)
+
+        visit(result)
+        for collection in ("transactions", "anomalies", "top_merchants"):
+            for row in result.get(collection, []):
+                if not isinstance(row, dict):
+                    continue
+                merchant = row.get("merchant_untrusted")
+                if not isinstance(merchant, str) or not merchant:
+                    continue
+                money = row.get("amount")
+                amount = _dec(money.get("amount") if isinstance(money, dict) else money)
+                if amount is not None:
+                    merchant_amounts[merchant].add(amount)
+                ident = row.get("transaction_id")
+                if isinstance(ident, str):
+                    transaction_merchants[ident] = merchant
+    for match in MASK.finditer(message):
+        if match.group(1) not in allowed_masks:
+            return "UNOBSERVED_MASK"
+    for match in MONEY.finditer(message):
+        amount = _dec(match.group(1) or match.group(2))
+        if amount is not None and amount not in allowed_amounts:
+            return "UNOBSERVED_AMOUNT"
+    # A merchant label paired with a monetary value must be copied from a
+    # bank observation. This catches translations and near-name substitutions
+    # without a merchant-specific dictionary or an LLM judge.
+    for match in BULLET_MERCHANT.finditer(message):
+        name, raw_amount = match.groups()
+        amount = _dec(raw_amount)
+        if amount is not None and merchant_amounts and amount not in merchant_amounts.get(name.strip(), set()):
+            return "UNOBSERVED_MERCHANT_AMOUNT_PAIR"
+    for clause in re.split(r"[\n。；;]", message):
+        names = [(match.start(), match.end(), merchant)
+                 for merchant in merchant_amounts
+                 for match in re.finditer(re.escape(merchant), clause)]
+        for ident, expected in transaction_merchants.items():
+            if ident in clause and names and all(name != expected for _, _, name in names):
+                return "TRANSACTION_MERCHANT_MISMATCH"
+        for match in MONEY.finditer(clause):
+            amount = _dec(match.group(1) or match.group(2))
+            if amount is None or not names:
+                continue
+            nearest = min(names, key=lambda item: min(abs(item[0] - match.end()), abs(item[1] - match.start())))
+            distance = min(abs(nearest[0] - match.end()), abs(nearest[1] - match.start()))
+            if distance <= 80 and amount not in merchant_amounts[nearest[2]]:
+                return "MERCHANT_AMOUNT_MISMATCH"
+    return None
+
+
+def coverage_notice(task: Task) -> str:
+    for observation in reversed(task.observations):
+        if observation.tool_name != "summarize_spending" or not observation.success:
+            continue
+        comparison = observation.structured_result.get("period_change")
+        if not isinstance(comparison, dict):
+            return ""
+        if comparison.get("coverage_comparable") is not False:
+            return ""
+        left = comparison.get("left_period", {})
+        right = comparison.get("right_period", {})
+        return (f"\n\n账期提醒：本期为截至目前的 MTD（{left.get('days_covered', '?')} 天），"
+                f"对比期覆盖 {right.get('days_covered', '?')} 天；覆盖天数不同，"
+                "不能仅凭金额差异判断完整月份的消费趋势。")
+    return ""

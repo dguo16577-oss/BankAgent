@@ -1,0 +1,17 @@
+**/node_modules
+**/.next
+**/target
+**/coverage
+**/test-results
+**/playwright-report
+**/*.log
+**/*.tsbuildinfo
+**/.env*
+.git
+.idea
+.vscode
+artifacts
+backups
+docs/screenshots
+
+services/banking-core/target-b4

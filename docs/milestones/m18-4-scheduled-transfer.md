@@ -1,0 +1,7 @@
+# M18.4 Scheduled Transfer — implementation checkpoint
+
+**Status: PARTIAL (2026-10-08).** Agent v2 can read schedules, prepare a future transfer, prepare cancellation, and stop at `WAITING_CONFIRMATION`. The trusted confirmation path creates or cancels the bank-owned schedule. Revising amount, recipient, or time revokes the obsolete bank intent before creating a replacement. The model does not execute the payment.
+
+Banking Core validates the offset-aware due time and immutable intent terms. Flyway V21 added cancellation state; the compatible Customer API added `POST /customer/scheduled-payment-intents/{intentId}/cancel`. Cancellation and confirmation lock the same intent. The Spring worker owns due-time execution and is disabled by default; isolated tests explicitly enable it. PostgreSQL integration tests cover due execution, insufficient funds, replay, and concurrent operations. The [approved lifecycle proposal](M18-4-SCHEDULE-INTENT-LIFECYCLE-PROPOSAL.md) documents the contract and state transitions.
+
+The isolated [four-case real-model run](../../artifacts/m18-smart-actions-model-smoke.json) includes schedule preparation and amount revision. It verified bank-side revocation of the old intent and zero pre-confirmation debit. The [real-model create/cancel run](../../artifacts/m18-smart-actions-lifecycle.json) used HTTP step-up and trusted confirmation; PostgreSQL recorded one schedule ending `CANCELLED`, with unchanged accounts and transfer count. These are focused checks. **S01–S13 have not been fully graded**, so M18.4 is not yet accepted as PASS.

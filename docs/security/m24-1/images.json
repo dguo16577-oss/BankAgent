@@ -1,0 +1,98 @@
+[
+  {
+    "Id": "sha256:729c21e36d830bcb78ddcba214d222e68c353de7ce2c9613e89ea04e8679ef39",
+    "RepoTags": ["aster-web:v1.0.0-demo"],
+    "RepoDigests": [
+      "aster-web@sha256:729c21e36d830bcb78ddcba214d222e68c353de7ce2c9613e89ea04e8679ef39"
+    ],
+    "Os": "linux",
+    "Architecture": "amd64",
+    "RootFS": {
+      "Type": "layers",
+      "Layers": [
+        "sha256:a6dc765193a52cbaede3c93a9ff48b9540948dd0774bbe7031fcb5847606f9ac",
+        "sha256:5a1870e6a29e704665d7b28a66e7bbfb703d60820f0f7cd0a337d8b3217c94aa",
+        "sha256:132e432d13dc5ca66ec66e27e54d587041d95abd4027fac540cf6c2d0dbd019e",
+        "sha256:a7f6e5a01f4d08aa0700ee0dec2dc01efc409045b8cac34ca6edffacac578e87",
+        "sha256:467f06bac59846d314589697fc7edb98805230d7ee61ed9bcc670c0f9ff710a3",
+        "sha256:91b064082b03a59530d8c47cb13b25af6483cd0d3bb71455b539bdcf4a523b14",
+        "sha256:c8f1f23711190eb0acf3d39171c362c51b3c0fc30e2f05cc0f8d6937b8b48a20",
+        "sha256:11440d8f76dd373d095854de4d968ba1f94c2a000f16d2471c19c554495689c1",
+        "sha256:6e38ff39057a58331029ca7e14dbf98bf440a3c2b8f13f07458039d272ea5cf5",
+        "sha256:f270f65d81503be6ecf19671a7990cd1a411e721198e043426ce818b228d03e7"
+      ]
+    },
+    "Size": 398702197
+  },
+  {
+    "Id": "sha256:6e2972022f9bd8965e263419f7fd5e2781a5d51a48cf4cec6a5b1badda4a8906",
+    "RepoTags": ["aster-banking-core:v1.0.0-demo"],
+    "RepoDigests": [
+      "aster-banking-core@sha256:6e2972022f9bd8965e263419f7fd5e2781a5d51a48cf4cec6a5b1badda4a8906"
+    ],
+    "Os": "linux",
+    "Architecture": "amd64",
+    "RootFS": {
+      "Type": "layers",
+      "Layers": [
+        "sha256:65e5d715ea720349e6475f91651a0956279fc295a45fd73aa04f1cec046281a1",
+        "sha256:2ff2d205415bd8a2d172c0bec6f5d7f070211f22541d5955f933240bc0e2dfa7",
+        "sha256:9e193d30034339dcda1096bb489f7c6a715c2dafd80d1ccdccc6945b3a3351ba",
+        "sha256:b28443e8a0bfdd4c7088562b765a857ea8c3dbb102ba0c1b84706af3280c0e3b",
+        "sha256:2f146a83743bf8d245682c6b9222c6296f9b4fcdead2c8992346676264892e21",
+        "sha256:1be473eb4c428f24c49970dfe7d6287cdd1ea74b9e0c57fb0b6a6434d6139de1",
+        "sha256:aac604b4ce7693a1a4fe2309a75ca30b55c24f43799e4e30aeacc193a0975468",
+        "sha256:d5a7db71eaf06fe0bc1848c08084a356ba9a79abbcb234e9ee9ab8c184b53fdf"
+      ]
+    },
+    "Size": 518471410
+  },
+  {
+    "Id": "sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236",
+    "RepoTags": ["nginx:1.28.3-alpine"],
+    "RepoDigests": [
+      "nginx@sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236"
+    ],
+    "Os": "linux",
+    "Architecture": "amd64",
+    "RootFS": {
+      "Type": "layers",
+      "Layers": [
+        "sha256:989e799e634906e94dc9a5ee2ee26fc92ad260522990f26e707861a5f52bf64e",
+        "sha256:a2738b08d7114c9d5581dd5482d3b5cc297fcf73b8d330c3ba38d24c43939119",
+        "sha256:47a53288c3ef0ee51df84ef47d217f18c1762412532fded9af1fd88ecee14294",
+        "sha256:9e707aa6db4786355904a1b794c80f378b690f8f0384af56117708a23a91f1da",
+        "sha256:a3446cc6c821fa11b704a45811ab554675f0327307af71b3f4ff5a70c7a4eec8",
+        "sha256:42608b42cb5e68548abf1c71aa851acfd65816d0ceaff6ee85849c7c478463f0",
+        "sha256:53c769b49ca0a2f0f6cf5e4a807af8933cec6cde9302d56d91a78bc38ea407a8",
+        "sha256:f76f397f2ce6b266573b70eb60ef1335e9984a1941eedd2a3505af4870c3afa0"
+      ]
+    },
+    "Size": 92460189
+  },
+  {
+    "Id": "sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24",
+    "RepoTags": ["postgres:17-alpine"],
+    "RepoDigests": [
+      "postgres@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24"
+    ],
+    "Os": "linux",
+    "Architecture": "amd64",
+    "RootFS": {
+      "Type": "layers",
+      "Layers": [
+        "sha256:74d97c428c51a828f9051a7a40a53ff1fc99e54fc30323ce36760701b0b7f711",
+        "sha256:199b85bb67b34ec56ca3679a640cad26c482694949d478875ad803bfad29f113",
+        "sha256:1b1c5f60fe610883c371803e933d0eb9d31dfe8ae9c1a5299e2516c6757eb2d9",
+        "sha256:507f0fcc5e5565bd8f7a584202000685ebfaa7ebda9b9d436289bc1004fb4ce8",
+        "sha256:34f5e4927b447367ecd2367ae94e56d654a30b9e244b9396ac628d5bcf90a5cf",
+        "sha256:d006a4a663e7362cd4ae34ed8bf9a851ac9e99c359d8b1f143b1fccc0ad3e8fe",
+        "sha256:42a506b7d4dafcf6fb679a5c2e4de60153ebca613bbfad36b833053eb92cd047",
+        "sha256:149a42a2d36a8dc846e4624af2c7c2766d1cac31300c9f8392ca050d137ed217",
+        "sha256:f81d67057ca8ee3ee1f538cdb7b128e05b4e2727e1c50686633d8b5158793fe2",
+        "sha256:b69834c94476d5cb5d6561d3529668949fa3d28bd745a937bcec2f66eadebb72"
+      ]
+    },
+    "Size": 423189986
+  }
+]

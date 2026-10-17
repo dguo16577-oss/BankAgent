@@ -1,0 +1,11 @@
+{
+  "script_version": "b0.1",
+  "rules": "audit_config.py and normalize_sources.py",
+  "unmapped_non_refusal_tool_targets": [],
+  "rule_limitations": [
+    "Multi-tool Indic tasks assigned by final significant gold outcome; source IDs retained for finer later review.",
+    "Knowledge tasks may map to several families, so domain source-task membership totals overlap.",
+    "No language utterance counted as executable scenario; no generated scores.",
+    "Source-derived family grading and Aster proposal grading are different fields."
+  ]
+}

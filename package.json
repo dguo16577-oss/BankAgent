@@ -1,0 +1,43 @@
+{
+  "name": "banking-workspace",
+  "private": true,
+  "packageManager": "pnpm@11.19.0",
+  "engines": {
+    "node": ">=22.12.0",
+    "pnpm": ">=11"
+  },
+  "scripts": {
+    "dev": "node scripts/web-runtime.mjs dev",
+    "lint": "pnpm --filter web lint && pnpm format:check",
+    "typecheck": "pnpm api:check && pnpm --filter web typecheck",
+    "test": "pnpm --filter web test && node --test scripts/contract-hash.test.mjs",
+    "test:e2e": "pnpm --filter web test:e2e",
+    "build": "node scripts/web-runtime.mjs build",
+    "start": "node scripts/web-runtime.mjs start",
+    "api:generate": "openapi-typescript contracts/openapi/customer.yaml -o apps/web/src/generated/customer-api.d.ts && openapi-typescript contracts/openapi/public.yaml -o apps/web/src/generated/public-api.d.ts",
+    "api:check": "openapi-typescript contracts/openapi/customer.yaml -o apps/web/src/generated/customer-api.d.ts --check && openapi-typescript contracts/openapi/public.yaml -o apps/web/src/generated/public-api.d.ts --check",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "contract:check": "redocly lint contracts/openapi/customer.yaml contracts/openapi/public.yaml && node scripts/audit.mjs",
+    "audit:update": "node scripts/audit.mjs --write && node scripts/error-inventory.mjs",
+    "check": "pnpm lint && pnpm typecheck && pnpm contract:check && pnpm test",
+    "dev:backend": "node scripts/web-runtime.mjs dev backend",
+    "dev:agent": "python -m uvicorn app.main:app --app-dir services/agent-runtime --host 127.0.0.1 --port 8001",
+    "dev:mock": "node scripts/web-runtime.mjs dev mock",
+    "test:e2e:mock": "playwright test",
+    "test:e2e:backend": "node scripts/real-backend-e2e.mjs",
+    "test:agent": "python -m unittest discover -s services/agent-runtime/tests -v",
+    "test:agent:eval": "python scripts/agent-eval.py",
+    "agent:eval:export": "python scripts/export-agent-eval.py",
+    "integration:check": "node scripts/frontend-integration-audit.mjs",
+    "test:e2e:packaged": "node scripts/packaged-e2e.mjs"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "1.63.0",
+    "@redocly/cli": "^2.54.3",
+    "openapi-typescript": "^7.13.0",
+    "prettier": "^3.9.9",
+    "yaml": "^2.9.1"
+  }
+}

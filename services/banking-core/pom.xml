@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>4.1.1</version>
+    <relativePath/>
+  </parent>
+  <groupId>com.asterbank</groupId>
+  <artifactId>banking-core</artifactId>
+  <version>0.1.0-SNAPSHOT</version>
+  <name>Aster Banking Core</name>
+  <description>Modular monolith with scoped banking reads and atomic Transfer execution.</description>
+  <properties>
+    <java.version>21</java.version>
+    <aster.build.directory>${project.basedir}/target</aster.build.directory>
+    <!-- M12 explicitly targets JUnit 5 rather than Boot 4's JUnit 6 default. -->
+    <junit-jupiter.version>5.13.4</junit-jupiter.version>
+    <openapi-generator.version>7.25.0</openapi-generator.version>
+    <archunit.version>1.4.1</archunit.version>
+  </properties>
+  <dependencies>
+    <dependency><groupId>org.springframework.session</groupId><artifactId>spring-session-jdbc</artifactId></dependency>
+    <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-data-jpa</artifactId></dependency>
+    <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-flyway</artifactId></dependency>
+    <dependency><groupId>org.flywaydb</groupId><artifactId>flyway-database-postgresql</artifactId></dependency>
+    <dependency><groupId>org.postgresql</groupId><artifactId>postgresql</artifactId><scope>runtime</scope></dependency>
+    <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-testcontainers</artifactId><scope>test</scope></dependency>
+    <dependency><groupId>org.testcontainers</groupId><artifactId>testcontainers-postgresql</artifactId><scope>test</scope></dependency>
+    <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-web</artifactId></dependency>
+    <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-validation</artifactId></dependency>
+    <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-actuator</artifactId></dependency>
+    <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-security</artifactId></dependency>
+    <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-test</artifactId><scope>test</scope></dependency>
+    <dependency><groupId>org.springframework.security</groupId><artifactId>spring-security-test</artifactId><scope>test</scope></dependency>
+    <dependency><groupId>com.tngtech.archunit</groupId><artifactId>archunit-junit5</artifactId><version>${archunit.version}</version><scope>test</scope></dependency>
+    <dependency><groupId>org.yaml</groupId><artifactId>snakeyaml</artifactId></dependency>
+  </dependencies>
+  <build>
+    <directory>${aster.build.directory}</directory>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId><artifactId>maven-failsafe-plugin</artifactId>
+        <executions><execution><goals><goal>integration-test</goal><goal>verify</goal></goals></execution></executions>
+      </plugin>
+      <plugin><groupId>org.springframework.boot</groupId><artifactId>spring-boot-maven-plugin</artifactId></plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId><artifactId>maven-enforcer-plugin</artifactId><version>3.6.2</version>
+        <executions><execution><id>java-21-only</id><goals><goal>enforce</goal></goals><configuration><rules><requireJavaVersion><version>[21,22)</version><message>Banking Core requires JDK 21. Set JAVA_HOME to a Java 21 JDK.</message></requireJavaVersion></rules></configuration></execution></executions>
+      </plugin>
+      <plugin>
+        <groupId>org.openapitools</groupId><artifactId>openapi-generator-maven-plugin</artifactId><version>${openapi-generator.version}</version>
+        <configuration>
+          <generatorName>spring</generatorName>
+          <generateApiTests>false</generateApiTests><generateModelTests>false</generateModelTests>
+          <generateApiDocumentation>false</generateApiDocumentation><generateModelDocumentation>false</generateModelDocumentation>
+          <generateSupportingFiles>false</generateSupportingFiles>
+          <!-- Keep wire timestamp strings: Jakarta @Pattern cannot validate OffsetDateTime. -->
+          <typeMappings><typeMapping>DateTime=String</typeMapping></typeMappings>
+          <configOptions>
+            <useSpringBoot4>true</useSpringBoot4><interfaceOnly>true</interfaceOnly><skipDefaultInterface>true</skipDefaultInterface>
+            <useBeanValidation>true</useBeanValidation><openApiNullable>false</openApiNullable>
+            <annotationLibrary>none</annotationLibrary><documentationProvider>none</documentationProvider>
+            <useTags>true</useTags><hideGenerationTimestamp>true</hideGenerationTimestamp>
+            <dateLibrary>java8</dateLibrary><useResponseEntity>true</useResponseEntity>
+            <generateJsonIncludeAnnotations>true</generateJsonIncludeAnnotations>
+            <generateJsonSetterNullsAnnotations>true</generateJsonSetterNullsAnnotations>
+          </configOptions>
+        </configuration>
+        <executions>
+          <execution><id>customer-contract</id><goals><goal>generate</goal></goals><configuration>
+            <openapiNormalizer><rule>SET_TAGS_TO_OPERATIONID=true</rule></openapiNormalizer>
+            <inputSpec>${project.basedir}/../../contracts/openapi/customer.yaml</inputSpec>
+            <output>${project.build.directory}/generated-sources/openapi/customer</output>
+            <apiPackage>com.asterbank.contract.customer.api</apiPackage><modelPackage>com.asterbank.contract.customer.model</modelPackage>
+          </configuration></execution>
+          <execution><id>public-contract</id><goals><goal>generate</goal></goals><configuration>
+            <inputSpec>${project.basedir}/../../contracts/openapi/public.yaml</inputSpec>
+            <output>${project.build.directory}/generated-sources/openapi/public</output>
+            <apiPackage>com.asterbank.contract.publicapi.api</apiPackage><modelPackage>com.asterbank.contract.publicapi.model</modelPackage>
+          </configuration></execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.diffplug.spotless</groupId><artifactId>spotless-maven-plugin</artifactId><version>3.0.0</version>
+        <configuration><lineEndings>UNIX</lineEndings><java><includes><include>src/main/java/**/*.java</include><include>src/test/java/**/*.java</include></includes><googleJavaFormat><version>1.28.0</version></googleJavaFormat></java></configuration>
+        <executions><execution><id>format-check</id><phase>verify</phase><goals><goal>check</goal></goals></execution></executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

@@ -1,0 +1,6 @@
+{
+  "retrieval_date": "2026-09-29",
+  "search_scope": ["NPCI TauIndianBankBench", "NPCI IndicBankBench", "AgentDojo Banking", "tau2 tau3 banking_knowledge", "financial banking tool-use benchmarks", "Open Banking UK", "Banking77"],
+  "screened_unavailable": [{"name":"t54 FinAgent-Bench","documentation":"https://docs.t54.ai/docs/research/finagent-bench","repository":"https://github.com/t54-labs/FinAgent-Bench","result":"404 from web open; no task files inspected","version":null,"license":"UNKNOWN","task_count":null,"decision":"Excluded from verified-source and normalization counts"}],
+  "scope_limit": "Targeted source audit, not an exhaustive systematic review or model performance evaluation. No proprietary API needed or used. Similar names FinAgentBench / FinAgent-Bench are not assumed to identify the same dataset."
+}

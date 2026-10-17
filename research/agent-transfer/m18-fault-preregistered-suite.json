@@ -1,0 +1,17 @@
+{
+  "shards": [
+    {
+      "name": "injected_fault_safety",
+      "mode": "fault",
+      "manifest": "research/agent-transfer/m18-fault-pilot.jsonl",
+      "case_ids": [
+        "PJ-MALFORMED-01",
+        "ID-FORGED-01",
+        "TO-READ-01",
+        "TF-BANK-01",
+        "UO-TOOL-01",
+        "CI-ACCOUNT-01"
+      ]
+    }
+  ]
+}

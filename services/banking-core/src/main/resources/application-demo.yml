@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT:5432}/${DB_NAME}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    hikari:
+      initialization-fail-timeout: 15000
+server:
+  forward-headers-strategy: framework
+aster:
+  security:
+    secure-cookie: false
+  web:
+    allowed-origins: []
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health

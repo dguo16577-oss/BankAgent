@@ -1,0 +1,16 @@
+{
+  "customer": {
+    "revision": "1.9.0",
+    "sha256": "602ddcc2ca1b3903034bab2979516220fbf3fb78c0212fa4158a4f0c7ac5f3e5",
+    "operations": 39,
+    "schemas": 104,
+    "errorCodes": 66
+  },
+  "public": {
+    "revision": "1.2.0",
+    "sha256": "460387a9a26548941a692bcd7e7036e21d136b4d6a9cb570faa0a4fc1ac106ef",
+    "operations": 9,
+    "schemas": 28,
+    "errorCodes": 3
+  }
+}

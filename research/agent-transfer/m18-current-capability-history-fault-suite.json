@@ -1,0 +1,166 @@
+{
+  "shards": [
+    {
+      "name": "read_core",
+      "mode": "read",
+      "manifest": "research/agent-transfer/m18-read-pilot-expanded.jsonl",
+      "case_ids": [
+        "S-READ-01",
+        "Q-NOTE-01",
+        "T-READ-01",
+        "T-ACCOUNT-02",
+        "E-SPEND-01",
+        "B-CALC-01",
+        "B-CALC-02",
+        "IN-NOTE-01",
+        "IM-MERCHANT-01",
+        "Q-NOTE-02"
+      ]
+    },
+    {
+      "name": "read_regression",
+      "mode": "read",
+      "manifest": "research/agent-transfer/m18-read-regression.jsonl",
+      "case_ids": [
+        "B05-LIST-RECIPIENTS",
+        "B06-CARD-SPENDING",
+        "B08-ACCOUNT-BALANCE",
+        "T-CURSOR-03",
+        "Q-NOMATCH-03",
+        "CI-FOREIGN-READ-02"
+      ]
+    },
+    {
+      "name": "split_calculation",
+      "mode": "read",
+      "manifest": "research/agent-transfer/m18-split-calculation-expansion.jsonl",
+      "case_ids": [
+        "B-CALC-03",
+        "B-CALC-04"
+      ]
+    },
+    {
+      "name": "prepare_core",
+      "mode": "prepare",
+      "manifest": "research/agent-transfer/m18-prepare-pilot.jsonl",
+      "case_ids": [
+        "N-PREP-01",
+        "N-PREP-02",
+        "P-PREP-01",
+        "A-AMB-01",
+        "M-CHOICE-01",
+        "MI-AMOUNT-01",
+        "P-NOMATCH-02",
+        "UO-DIRECT-01",
+        "H-NOMATCH-01",
+        "N-PINYIN-03"
+      ]
+    },
+    {
+      "name": "prepare_expansion",
+      "mode": "prepare",
+      "manifest": "research/agent-transfer/m18-prepare-expansion.jsonl",
+      "case_ids": [
+        "N-PREP-04",
+        "P-PREP-02",
+        "P-PREP-03",
+        "M-CHOICE-02",
+        "MI-AMOUNT-02"
+      ]
+    },
+    {
+      "name": "prepare_source_note",
+      "mode": "prepare",
+      "manifest": "research/agent-transfer/m18-prepare-account-note.jsonl",
+      "case_ids": [
+        "N-SOURCE-01",
+        "N-NOTE-01"
+      ]
+    },
+    {
+      "name": "prepare_safety",
+      "mode": "prepare",
+      "manifest": "research/agent-transfer/m18-prepare-safety-expansion.jsonl",
+      "case_ids": [
+        "MI-RECIPIENT-01",
+        "MI-RECIPIENT-02",
+        "IF-PREPARE-01"
+      ]
+    },
+    {
+      "name": "prepare_invalid_terms",
+      "mode": "prepare",
+      "manifest": "research/agent-transfer/m18-prepare-invalid-terms.jsonl",
+      "case_ids": [
+        "UO-TIME-DEPOSIT-02",
+        "UO-ZERO-AMOUNT-03"
+      ]
+    },
+    {
+      "name": "prepare_currency_source",
+      "mode": "prepare",
+      "manifest": "research/agent-transfer/m18-prepare-currency-safety.jsonl",
+      "case_ids": [
+        "UO-USD-SOURCE-04"
+      ]
+    },
+    {
+      "name": "prepare_conflicting_terms",
+      "mode": "prepare",
+      "manifest": "research/agent-transfer/m18-conflicting-user-terms.jsonl",
+      "case_ids": [
+        "MI-CONFLICTING-AMOUNT-03",
+        "MI-CONFLICTING-RECIPIENT-04"
+      ]
+    },
+    {
+      "name": "prepare_money_semantics",
+      "mode": "prepare",
+      "manifest": "research/agent-transfer/m18-money-semantics.jsonl",
+      "case_ids": [
+        "UO-PRECISION-05",
+        "UO-NEGATIVE-06",
+        "N-COLLOQUIAL-AMOUNT-07"
+      ]
+    },
+    {
+      "name": "prepare_currency_boundaries",
+      "mode": "prepare",
+      "manifest": "research/agent-transfer/m18-currency-and-source-boundaries.jsonl",
+      "case_ids": [
+        "UO-USD-DENOMINATION-07",
+        "IF-EXPLICIT-SOURCE-03"
+      ]
+    },
+    {
+      "name": "injected_fault_safety",
+      "mode": "fault",
+      "manifest": "research/agent-transfer/m18-fault-pilot.jsonl",
+      "case_ids": [
+        "PJ-MALFORMED-01",
+        "ID-FORGED-01",
+        "TO-READ-01",
+        "TF-BANK-01",
+        "UO-TOOL-01",
+        "CI-ACCOUNT-01"
+      ]
+    },
+    {
+      "name": "historical_recipient_h01_h10",
+      "mode": "history",
+      "manifest": "research/agent-transfer/m18-history-preregistered.jsonl",
+      "case_ids": [
+        "H01",
+        "H02",
+        "H03",
+        "H04",
+        "H05",
+        "H06",
+        "H07",
+        "H08",
+        "H09",
+        "H10"
+      ]
+    }
+  ]
+}

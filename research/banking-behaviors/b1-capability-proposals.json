@@ -1,0 +1,916 @@
+{
+  "stage": "B1",
+  "date": "2026-09-30",
+  "status": "DESIGN_BOUNDARY_FREEZE_NOT_IMPLEMENTATION_AUTHORIZATION",
+  "b0_input_sha256": {
+    "normalized/behavior-families.jsonl": "2f425c790207b60525a87cdc8357e11cf9da6e5b9359cae3e7bae7630c1b9c5a",
+    "normalized/candidate-families.jsonl": "2dff0d3d65636bd71e063747b29f04d77b62f8d8fa628d84dddca66de46a4f75",
+    "normalized/candidate-variants.jsonl": "d3faa2372cdf670787295c04b0bf1e2b8d5ee23d3c25bf8bb42b74c2b7a2ed8b",
+    "normalized/source-to-aster-mapping.jsonl": "29a3cbafe6a255b5dc550af1a94b57b8a5319f4b6ac2e956a575022c9ce3e953",
+    "aster-capabilities.json": "6e1be9ae7af1ddc4fc97c72a525384af63fc657dc6d9af75fe255c9ff0fd59fd"
+  },
+  "capabilities": [
+    {
+      "capability_id": "RECIPIENT_RESOLVE",
+      "area": "RECIPIENT",
+      "recommendation": "FOUNDATIONAL",
+      "b0_capabilities": [
+        "RECIPIENT_READ"
+      ],
+      "implementation_batch": "B1A",
+      "accepted": true,
+      "proposed_scope": "Reuse owned list/name/bank search; selection by opaque ID; ambiguity requires explicit user choice. No phone directory.",
+      "manual_ui": "Payments > recipient selector",
+      "parity": "MANUAL_EXACT",
+      "api_impact": "Reuse GET /customer/recipients; future detail GET candidate",
+      "database_impact": "Existing recipients; future owner/version/state fields",
+      "authorization": "AAL1; ALLOW reads; no action authorization",
+      "depends_on": [],
+      "implementation_cost": "MEDIUM",
+      "agent_value": "HIGH",
+      "state_machine": "READ_ONLY",
+      "design_only": true,
+      "coverage": {
+        "affected_family_ids": [
+          "RECIPIENT_TRANSFER",
+          "TRANSACTION_TO_TRANSFER"
+        ],
+        "affected_family_count": 2,
+        "affected_candidate_variant_ids": [
+          "RECIPIENT_TRANSFER_8398265963",
+          "RECIPIENT_TRANSFER_aster_changed_key_payload",
+          "RECIPIENT_TRANSFER_aster_expired_intent",
+          "RECIPIENT_TRANSFER_aster_insufficient_available",
+          "RECIPIENT_TRANSFER_aster_missing_csrf",
+          "RECIPIENT_TRANSFER_aster_same_key_retry",
+          "TRANSACTION_TO_TRANSFER_07e77e20f0",
+          "TRANSACTION_TO_TRANSFER_09c6ba1aac",
+          "TRANSACTION_TO_TRANSFER_0b157ec8e8",
+          "TRANSACTION_TO_TRANSFER_4ec66c6407",
+          "TRANSACTION_TO_TRANSFER_790230ebae"
+        ],
+        "affected_candidate_variant_count": 11,
+        "affected_domains": [
+          "CROSS_DOMAIN",
+          "PAYMENTS"
+        ],
+        "jointly_improved_family_ids": [],
+        "jointly_fully_unlocked_family_ids": [],
+        "projected_adaptable_variant_lower_bound_ids": [],
+        "projected_adaptable_variant_lower_bound_count": 0,
+        "standalone_unlock_count": null,
+        "caveat": "Joint batch prerequisites required; overlapping counts are not additive; not upstream benchmark passes. Disable is a protective extension, not a B0 creation requirement."
+      },
+      "reuse_only_cross_domain_families": [],
+      "design_document": "docs/research/b1-recipient-management-design.md"
+    },
+    {
+      "capability_id": "RECIPIENT_CREATE",
+      "area": "RECIPIENT",
+      "recommendation": "FOUNDATIONAL",
+      "b0_capabilities": [
+        "RECIPIENT_CREATE"
+      ],
+      "implementation_batch": "B1A",
+      "accepted": true,
+      "proposed_scope": "Create an owned recipient referencing an opaque synthetic demo destination; active UNVERIFIED record; unique destination per owner.",
+      "manual_ui": "Payments > Add recipient; return to transfer form",
+      "parity": "MANUAL_EXACT",
+      "api_impact": "New recipient-action-intents prepare/GET then POST /customer/recipients executes CREATE; extend reads; no frozen contract change in B1",
+      "database_impact": "Owner + opaque destination ref + createdAt + version + status; unique owner/destination",
+      "authorization": "AAL1+CSRF; CONFIRMATION; idempotency; no step-up at address-book creation; payment authorization remains separate",
+      "depends_on": [
+        "RECIPIENT_RESOLVE"
+      ],
+      "implementation_cost": "MEDIUM",
+      "agent_value": "HIGH",
+      "state_machine": "ABSENT -> ACTIVE; duplicate -> existing record/conflict, never a second destination",
+      "design_only": true,
+      "coverage": {
+        "affected_family_ids": [
+          "NEW_RECIPIENT_TRANSFER",
+          "BILL_TO_TRANSFER"
+        ],
+        "affected_family_count": 2,
+        "affected_candidate_variant_ids": [
+          "BILL_TO_TRANSFER_9471ad517f",
+          "NEW_RECIPIENT_TRANSFER_proposed"
+        ],
+        "affected_candidate_variant_count": 2,
+        "affected_domains": [
+          "CROSS_DOMAIN",
+          "PAYMENTS"
+        ],
+        "jointly_improved_family_ids": [
+          "NEW_RECIPIENT_TRANSFER"
+        ],
+        "jointly_fully_unlocked_family_ids": [
+          "NEW_RECIPIENT_TRANSFER"
+        ],
+        "projected_adaptable_variant_lower_bound_ids": [
+          "NEW_RECIPIENT_TRANSFER_proposed"
+        ],
+        "projected_adaptable_variant_lower_bound_count": 1,
+        "standalone_unlock_count": null,
+        "caveat": "Joint batch prerequisites required; overlapping counts are not additive; not upstream benchmark passes. Disable is a protective extension, not a B0 creation requirement."
+      },
+      "reuse_only_cross_domain_families": [],
+      "design_document": "docs/research/b1-recipient-management-design.md"
+    },
+    {
+      "capability_id": "RECIPIENT_DISABLE",
+      "area": "RECIPIENT",
+      "recommendation": "CORE",
+      "b0_capabilities": [
+        "RECIPIENT_CREATE"
+      ],
+      "implementation_batch": "B1A",
+      "accepted": true,
+      "proposed_scope": "Deactivate an address-book destination with explicit notice that due schedules will fail; do not delete history or edit routing identity.",
+      "manual_ui": "Payments > recipient detail",
+      "parity": "MANUAL_EXACT",
+      "api_impact": "New recipient action intent/execute design candidates",
+      "database_impact": "Recipient ACTIVE/INACTIVE + version; immutable historical snapshots",
+      "authorization": "AAL1+CSRF; CONFIRMATION; intent + idempotency; no AAL2 for protective disable",
+      "depends_on": [
+        "RECIPIENT_CREATE"
+      ],
+      "implementation_cost": "MEDIUM",
+      "agent_value": "MEDIUM",
+      "state_machine": "ACTIVE -> INACTIVE terminal for first slice; no delete/reactivate",
+      "design_only": true,
+      "coverage": {
+        "affected_family_ids": [
+          "NEW_RECIPIENT_TRANSFER",
+          "BILL_TO_TRANSFER"
+        ],
+        "affected_family_count": 2,
+        "affected_candidate_variant_ids": [
+          "BILL_TO_TRANSFER_9471ad517f",
+          "NEW_RECIPIENT_TRANSFER_proposed"
+        ],
+        "affected_candidate_variant_count": 2,
+        "affected_domains": [
+          "CROSS_DOMAIN",
+          "PAYMENTS"
+        ],
+        "jointly_improved_family_ids": [],
+        "jointly_fully_unlocked_family_ids": [],
+        "projected_adaptable_variant_lower_bound_ids": [],
+        "projected_adaptable_variant_lower_bound_count": 0,
+        "standalone_unlock_count": null,
+        "caveat": "Joint batch prerequisites required; overlapping counts are not additive; not upstream benchmark passes. Disable is a protective extension, not a B0 creation requirement."
+      },
+      "reuse_only_cross_domain_families": [],
+      "design_document": "docs/research/b1-recipient-management-design.md"
+    },
+    {
+      "capability_id": "RISK_POLICY",
+      "area": "RISK",
+      "recommendation": "FOUNDATIONAL",
+      "b0_capabilities": [
+        "PAYMENT_RISK"
+      ],
+      "implementation_batch": "B1A",
+      "accepted": true,
+      "proposed_scope": "Deterministic authorization decision with policy version and reason codes; preserve current card/recurring/wealth rules; no fraud scoring.",
+      "manual_ui": "Inside each action review/step-up workflow",
+      "parity": "PRIMITIVES_ONLY",
+      "api_impact": "No public risk endpoint; candidate extension to prepared intents",
+      "database_impact": "Persist decision snapshot on intent/receipt and minimized SecurityEvent; no risk_decisions table",
+      "authorization": "ALLOW/CONFIRMATION/STEP_UP_AUTH/DENY; AAL2 never overrides invalid business state",
+      "depends_on": [],
+      "implementation_cost": "HIGH",
+      "agent_value": "HIGH",
+      "state_machine": "Immutable decision snapshot; changes require new intent",
+      "design_only": true,
+      "coverage": {
+        "affected_family_ids": [
+          "PAYMENT_RISK_ESCALATION"
+        ],
+        "affected_family_count": 1,
+        "affected_candidate_variant_ids": [
+          "PAYMENT_RISK_ESCALATION_proposed"
+        ],
+        "affected_candidate_variant_count": 1,
+        "affected_domains": [
+          "PAYMENTS"
+        ],
+        "jointly_improved_family_ids": [
+          "PAYMENT_RISK_ESCALATION"
+        ],
+        "jointly_fully_unlocked_family_ids": [
+          "PAYMENT_RISK_ESCALATION"
+        ],
+        "projected_adaptable_variant_lower_bound_ids": [
+          "PAYMENT_RISK_ESCALATION_proposed"
+        ],
+        "projected_adaptable_variant_lower_bound_count": 1,
+        "standalone_unlock_count": null,
+        "caveat": "Joint batch prerequisites required; overlapping counts are not additive; not upstream benchmark passes. Disable is a protective extension, not a B0 creation requirement."
+      },
+      "reuse_only_cross_domain_families": [
+        "CARD_FREEZE",
+        "CARD_UNFREEZE",
+        "CARD_CONTROLS",
+        "RECURRING_STOP",
+        "INVESTMENT_PURCHASE",
+        "CARD_APPLICATION"
+      ],
+      "design_document": "docs/research/b1-risk-policy-design.md"
+    },
+    {
+      "capability_id": "PAYMENT_AUTHORIZATION",
+      "area": "RISK",
+      "recommendation": "FOUNDATIONAL",
+      "b0_capabilities": [
+        "PAYMENT_RISK"
+      ],
+      "implementation_batch": "B1A",
+      "accepted": true,
+      "proposed_scope": "Payment-specific resource/hash/session-bound authorization; extend existing challenge/consume ports, never accept CARD_ACTION_INTENT for transfers.",
+      "manual_ui": "Transfer review > confirmation > step-up when required",
+      "parity": "MANUAL_EXACT",
+      "api_impact": "Extend existing transfer intent/execute and challenge resource enum in a later contract revision",
+      "database_impact": "Existing challenges/authorizations/events; transfer policy/recipient-version snapshot",
+      "authorization": "AAL1+CSRF; amount/newness policy; single-use authorization consumed atomically with debit and receipt",
+      "depends_on": [
+        "RISK_POLICY",
+        "RECIPIENT_CREATE"
+      ],
+      "implementation_cost": "HIGH",
+      "agent_value": "HIGH",
+      "state_machine": "Existing PREPARED/EXPIRED/EXECUTED and ACTIVE/CONSUMED/EXPIRED/REVOKED",
+      "design_only": true,
+      "coverage": {
+        "affected_family_ids": [
+          "PAYMENT_RISK_ESCALATION"
+        ],
+        "affected_family_count": 1,
+        "affected_candidate_variant_ids": [
+          "PAYMENT_RISK_ESCALATION_proposed"
+        ],
+        "affected_candidate_variant_count": 1,
+        "affected_domains": [
+          "PAYMENTS"
+        ],
+        "jointly_improved_family_ids": [
+          "PAYMENT_RISK_ESCALATION"
+        ],
+        "jointly_fully_unlocked_family_ids": [
+          "PAYMENT_RISK_ESCALATION"
+        ],
+        "projected_adaptable_variant_lower_bound_ids": [
+          "PAYMENT_RISK_ESCALATION_proposed"
+        ],
+        "projected_adaptable_variant_lower_bound_count": 1,
+        "standalone_unlock_count": null,
+        "caveat": "Joint batch prerequisites required; overlapping counts are not additive; not upstream benchmark passes. Disable is a protective extension, not a B0 creation requirement."
+      },
+      "reuse_only_cross_domain_families": [],
+      "design_document": "docs/research/b1-risk-policy-design.md"
+    },
+    {
+      "capability_id": "SCHEDULE_CREATE",
+      "area": "SCHEDULE",
+      "recommendation": "CORE",
+      "b0_capabilities": [
+        "SCHEDULE_CREATE"
+      ],
+      "implementation_batch": "B1B",
+      "accepted": true,
+      "proposed_scope": "One-time future CNY transfer; explicit date/time in Asia/Shanghai; no reserve, no merchant subscription or standing-order series.",
+      "manual_ui": "Payments > Schedule transfer > review",
+      "parity": "MANUAL_EXACT",
+      "api_impact": "New schedule-intents, schedule-actions, schedules list/detail candidates",
+      "database_impact": "scheduled_payments with immutable approved terms, policy version, recipient version and dueAt",
+      "authorization": "AAL1+CSRF; CONFIRMATION or STEP_UP_AUTH by payment policy; intent and idempotency",
+      "depends_on": [
+        "RECIPIENT_CREATE",
+        "PAYMENT_AUTHORIZATION"
+      ],
+      "implementation_cost": "HIGH",
+      "agent_value": "HIGH",
+      "state_machine": "ABSENT -> SCHEDULED -> EXECUTED | FAILED | CANCELLED",
+      "design_only": true,
+      "coverage": {
+        "affected_family_ids": [
+          "SCHEDULED_TRANSFER",
+          "BUDGET_TO_SCHEDULE"
+        ],
+        "affected_family_count": 2,
+        "affected_candidate_variant_ids": [
+          "BUDGET_TO_SCHEDULE_proposed"
+        ],
+        "affected_candidate_variant_count": 1,
+        "affected_domains": [
+          "CROSS_DOMAIN",
+          "PAYMENTS"
+        ],
+        "jointly_improved_family_ids": [
+          "SCHEDULED_TRANSFER",
+          "BUDGET_TO_SCHEDULE"
+        ],
+        "jointly_fully_unlocked_family_ids": [
+          "SCHEDULED_TRANSFER",
+          "BUDGET_TO_SCHEDULE"
+        ],
+        "projected_adaptable_variant_lower_bound_ids": [
+          "BUDGET_TO_SCHEDULE_proposed"
+        ],
+        "projected_adaptable_variant_lower_bound_count": 1,
+        "standalone_unlock_count": null,
+        "caveat": "Joint batch prerequisites required; overlapping counts are not additive; not upstream benchmark passes. Disable is a protective extension, not a B0 creation requirement."
+      },
+      "reuse_only_cross_domain_families": [],
+      "design_document": "docs/research/b1-scheduled-payments-design.md"
+    },
+    {
+      "capability_id": "SCHEDULE_EDIT",
+      "area": "SCHEDULE",
+      "recommendation": "CORE",
+      "b0_capabilities": [
+        "SCHEDULE_EDIT"
+      ],
+      "implementation_batch": "B1B",
+      "accepted": true,
+      "proposed_scope": "Before due: replace amount/date/recipient via new reviewed intent; cancel is protective; first slice one-time only.",
+      "manual_ui": "Payments > schedule detail > Edit/Cancel",
+      "parity": "MANUAL_EXACT",
+      "api_impact": "New schedule action intent/execute candidates",
+      "database_impact": "Schedule version, amendment/cancel receipts; execution terms locked per version",
+      "authorization": "Edit: payment policy; cancel: CONFIRMATION; AAL1+CSRF; intent + idempotency",
+      "depends_on": [
+        "SCHEDULE_CREATE"
+      ],
+      "implementation_cost": "MEDIUM",
+      "agent_value": "HIGH",
+      "state_machine": "SCHEDULED vN -> SCHEDULED vN+1 | CANCELLED; terminal states immutable",
+      "design_only": true,
+      "coverage": {
+        "affected_family_ids": [
+          "SCHEDULE_CHANGE",
+          "RELOCATION_PAYMENTS"
+        ],
+        "affected_family_count": 2,
+        "affected_candidate_variant_ids": [
+          "SCHEDULE_CHANGE_0c73fa164e",
+          "SCHEDULE_CHANGE_962b604a1b",
+          "SCHEDULE_CHANGE_9b0bea14be"
+        ],
+        "affected_candidate_variant_count": 3,
+        "affected_domains": [
+          "CROSS_DOMAIN",
+          "PAYMENTS"
+        ],
+        "jointly_improved_family_ids": [
+          "SCHEDULE_CHANGE"
+        ],
+        "jointly_fully_unlocked_family_ids": [],
+        "projected_adaptable_variant_lower_bound_ids": [],
+        "projected_adaptable_variant_lower_bound_count": 0,
+        "standalone_unlock_count": null,
+        "caveat": "Joint batch prerequisites required; overlapping counts are not additive; not upstream benchmark passes. Disable is a protective extension, not a B0 creation requirement."
+      },
+      "reuse_only_cross_domain_families": [],
+      "design_document": "docs/research/b1-scheduled-payments-design.md"
+    },
+    {
+      "capability_id": "SCHEDULE_DUE_PROCESSOR",
+      "area": "SCHEDULE",
+      "recommendation": "FOUNDATIONAL",
+      "b0_capabilities": [
+        "SCHEDULE_CREATE"
+      ],
+      "implementation_batch": "B1B",
+      "accepted": true,
+      "proposed_scope": "Deterministic process-due service triggered by local/test operator with Clock; no public customer endpoint or background service promise.",
+      "manual_ui": "Customer sees schedule status/receipt; internal trigger is evaluation infrastructure",
+      "parity": "EVALUATION_ONLY",
+      "api_impact": "No new customer process-due endpoint",
+      "database_impact": "unique schedule execution; row locks + atomic debit/transaction/receipt/final status",
+      "authorization": "Internal restricted runner executes persisted mandate, not an expired browser session or 2-minute grant",
+      "depends_on": [
+        "SCHEDULE_CREATE",
+        "SCHEDULE_EDIT"
+      ],
+      "implementation_cost": "HIGH",
+      "agent_value": "MEDIUM",
+      "state_machine": "SCHEDULED -> EXECUTED or FAILED at due; infrastructure rollback leaves SCHEDULED",
+      "design_only": true,
+      "coverage": {
+        "affected_family_ids": [
+          "SCHEDULED_TRANSFER",
+          "BUDGET_TO_SCHEDULE"
+        ],
+        "affected_family_count": 2,
+        "affected_candidate_variant_ids": [
+          "BUDGET_TO_SCHEDULE_proposed"
+        ],
+        "affected_candidate_variant_count": 1,
+        "affected_domains": [
+          "CROSS_DOMAIN",
+          "PAYMENTS"
+        ],
+        "jointly_improved_family_ids": [
+          "SCHEDULED_TRANSFER",
+          "BUDGET_TO_SCHEDULE"
+        ],
+        "jointly_fully_unlocked_family_ids": [
+          "SCHEDULED_TRANSFER",
+          "BUDGET_TO_SCHEDULE"
+        ],
+        "projected_adaptable_variant_lower_bound_ids": [
+          "BUDGET_TO_SCHEDULE_proposed"
+        ],
+        "projected_adaptable_variant_lower_bound_count": 1,
+        "standalone_unlock_count": null,
+        "caveat": "Joint batch prerequisites required; overlapping counts are not additive; not upstream benchmark passes. Disable is a protective extension, not a B0 creation requirement."
+      },
+      "reuse_only_cross_domain_families": [],
+      "design_document": "docs/research/b1-scheduled-payments-design.md"
+    },
+    {
+      "capability_id": "DISPUTE_INTAKE",
+      "area": "DISPUTE",
+      "recommendation": "CORE",
+      "b0_capabilities": [
+        "DISPUTE"
+      ],
+      "implementation_batch": "B1C",
+      "accepted": true,
+      "proposed_scope": "Owned completed debit linked to a reviewed case; reason, text and status. No money movement, chargeback or guaranteed resolution.",
+      "manual_ui": "Transaction detail > Report a problem; case detail remains contextual",
+      "parity": "MANUAL_EXACT",
+      "api_impact": "New dispute-intents/disputes list/detail/cancel action candidates",
+      "database_impact": "transaction_disputes, immutable original transaction reference; one active case per owner/transaction",
+      "authorization": "AAL1+CSRF; CONFIRMATION; intent + idempotency; no AAL2 for protective reporting",
+      "depends_on": [],
+      "implementation_cost": "MEDIUM",
+      "agent_value": "HIGH",
+      "state_machine": "ABSENT -> OPEN -> CANCELLED; review/resolution deferred",
+      "design_only": true,
+      "coverage": {
+        "affected_family_ids": [
+          "TRANSACTION_DISPUTE",
+          "DUPLICATE_CHARGE",
+          "UNRECOGNIZED_CHARGE",
+          "FRAUD_PROTECTION_DISPUTE"
+        ],
+        "affected_family_count": 4,
+        "affected_candidate_variant_ids": [
+          "FRAUD_PROTECTION_DISPUTE_9f6e6606bb",
+          "TRANSACTION_DISPUTE_0bd152a437",
+          "TRANSACTION_DISPUTE_1505bd6923",
+          "TRANSACTION_DISPUTE_1a39dcc776",
+          "TRANSACTION_DISPUTE_1c05bbf783",
+          "TRANSACTION_DISPUTE_4a26d3c41c",
+          "TRANSACTION_DISPUTE_4bcc5727bf",
+          "TRANSACTION_DISPUTE_5313f436fe",
+          "TRANSACTION_DISPUTE_55f4cf87fc",
+          "TRANSACTION_DISPUTE_57c57d4e05",
+          "TRANSACTION_DISPUTE_5a0bfe3cac",
+          "TRANSACTION_DISPUTE_5cb1ebd522",
+          "TRANSACTION_DISPUTE_5e385dc68d",
+          "TRANSACTION_DISPUTE_64e7a5f46d",
+          "TRANSACTION_DISPUTE_653983fc1e",
+          "TRANSACTION_DISPUTE_760d5b42b5",
+          "TRANSACTION_DISPUTE_77e8e81ca6",
+          "TRANSACTION_DISPUTE_7be67c53fb",
+          "TRANSACTION_DISPUTE_7eb7e0df96",
+          "TRANSACTION_DISPUTE_8c8a805687",
+          "TRANSACTION_DISPUTE_8e4f6edd2a",
+          "TRANSACTION_DISPUTE_916c2a8365",
+          "TRANSACTION_DISPUTE_9ac28344a6",
+          "TRANSACTION_DISPUTE_a14b8041ec",
+          "TRANSACTION_DISPUTE_ab0baf8024",
+          "TRANSACTION_DISPUTE_abf88e93f2",
+          "TRANSACTION_DISPUTE_ad6be3951a",
+          "TRANSACTION_DISPUTE_b4c5eae783",
+          "TRANSACTION_DISPUTE_b87ebb402d",
+          "TRANSACTION_DISPUTE_c442ddc9eb",
+          "TRANSACTION_DISPUTE_d0d2c244fa",
+          "TRANSACTION_DISPUTE_db681f1b58",
+          "TRANSACTION_DISPUTE_db7a05f24e",
+          "TRANSACTION_DISPUTE_e022f1e81a",
+          "TRANSACTION_DISPUTE_e74155a9a1",
+          "TRANSACTION_DISPUTE_e9216300c4",
+          "TRANSACTION_DISPUTE_ef052c1fa3",
+          "TRANSACTION_DISPUTE_f17602544c"
+        ],
+        "affected_candidate_variant_count": 38,
+        "affected_domains": [
+          "CROSS_DOMAIN",
+          "SPENDING_AND_TRANSACTIONS"
+        ],
+        "jointly_improved_family_ids": [
+          "FRAUD_PROTECTION_DISPUTE"
+        ],
+        "jointly_fully_unlocked_family_ids": [
+          "FRAUD_PROTECTION_DISPUTE"
+        ],
+        "projected_adaptable_variant_lower_bound_ids": [
+          "FRAUD_PROTECTION_DISPUTE_9f6e6606bb"
+        ],
+        "projected_adaptable_variant_lower_bound_count": 1,
+        "standalone_unlock_count": null,
+        "caveat": "Joint batch prerequisites required; overlapping counts are not additive; not upstream benchmark passes. Disable is a protective extension, not a B0 creation requirement."
+      },
+      "reuse_only_cross_domain_families": [],
+      "design_document": "docs/research/b1-transaction-dispute-design.md"
+    },
+    {
+      "capability_id": "CARD_LOST_BLOCK",
+      "area": "CARD",
+      "recommendation": "CORE",
+      "b0_capabilities": [
+        "CARD_BLOCK"
+      ],
+      "implementation_batch": "B1C",
+      "accepted": true,
+      "proposed_scope": "Irreversible block for confirmed LOST/STOLEN; preserve ACTIVE/FROZEN/EXPIRED/CANCELLED existing enum semantics; propose BLOCKED separately.",
+      "manual_ui": "Card detail > Report lost/stolen > confirm card",
+      "parity": "MANUAL_EXACT",
+      "api_impact": "Extend existing card action intents/actions and status enum later",
+      "database_impact": "Card status BLOCKED + immutable reason/event; existing version and receipts",
+      "authorization": "AAL1+CSRF; CONFIRMATION, no extra AAL2; existing intent/idempotency pattern",
+      "depends_on": [],
+      "implementation_cost": "MEDIUM",
+      "agent_value": "HIGH",
+      "state_machine": "ACTIVE|FROZEN -> BLOCKED; BLOCKED cannot unfreeze or enable channels",
+      "design_only": true,
+      "coverage": {
+        "affected_family_ids": [
+          "CARD_LOST_BLOCK",
+          "FRAUD_PROTECTION_DISPUTE"
+        ],
+        "affected_family_count": 2,
+        "affected_candidate_variant_ids": [
+          "CARD_LOST_BLOCK_087d2164b0",
+          "CARD_LOST_BLOCK_259c358a85",
+          "CARD_LOST_BLOCK_25dae3b495",
+          "CARD_LOST_BLOCK_4a9161462d",
+          "CARD_LOST_BLOCK_5de70d606f",
+          "CARD_LOST_BLOCK_5ef9dda945",
+          "CARD_LOST_BLOCK_63c39ffcb2",
+          "CARD_LOST_BLOCK_70c13e3260",
+          "CARD_LOST_BLOCK_8b33a055ef",
+          "CARD_LOST_BLOCK_93759f4c9a",
+          "CARD_LOST_BLOCK_a0281a0ff6",
+          "CARD_LOST_BLOCK_da9f7ae3f3",
+          "CARD_LOST_BLOCK_fce45f0ed4",
+          "FRAUD_PROTECTION_DISPUTE_9f6e6606bb"
+        ],
+        "affected_candidate_variant_count": 14,
+        "affected_domains": [
+          "CARDS",
+          "CROSS_DOMAIN"
+        ],
+        "jointly_improved_family_ids": [
+          "CARD_LOST_BLOCK",
+          "FRAUD_PROTECTION_DISPUTE"
+        ],
+        "jointly_fully_unlocked_family_ids": [
+          "CARD_LOST_BLOCK",
+          "FRAUD_PROTECTION_DISPUTE"
+        ],
+        "projected_adaptable_variant_lower_bound_ids": [
+          "FRAUD_PROTECTION_DISPUTE_9f6e6606bb"
+        ],
+        "projected_adaptable_variant_lower_bound_count": 1,
+        "standalone_unlock_count": null,
+        "caveat": "Joint batch prerequisites required; overlapping counts are not additive; not upstream benchmark passes. Disable is a protective extension, not a B0 creation requirement."
+      },
+      "reuse_only_cross_domain_families": [],
+      "design_document": "docs/research/b1-card-lifecycle-design.md"
+    },
+    {
+      "capability_id": "CARD_REPLACEMENT_REQUEST",
+      "area": "CARD",
+      "recommendation": "CORE",
+      "b0_capabilities": [
+        "CARD_REPLACE"
+      ],
+      "implementation_batch": "B1C",
+      "accepted": true,
+      "proposed_scope": "Submit request linked to blocked old card; no new synthetic card, PAN, delivery or activation.",
+      "manual_ui": "Card detail > Replace card; return to same card/request status",
+      "parity": "MANUAL_EXACT",
+      "api_impact": "New replacement request intent/submit/list/detail candidates; do not overload new-product applications",
+      "database_impact": "card_replacement_requests, unique open request per old card, masked reference",
+      "authorization": "AAL1+CSRF; CONFIRMATION; intent + idempotency; request alone does not restore spending so no additional AAL2",
+      "depends_on": [
+        "CARD_LOST_BLOCK"
+      ],
+      "implementation_cost": "MEDIUM",
+      "agent_value": "MEDIUM",
+      "state_machine": "ABSENT -> REQUESTED -> CANCELLED; old card stays BLOCKED",
+      "design_only": true,
+      "coverage": {
+        "affected_family_ids": [
+          "CARD_REPLACEMENT",
+          "CARD_DELIVERY"
+        ],
+        "affected_family_count": 2,
+        "affected_candidate_variant_ids": [
+          "CARD_REPLACEMENT_1505bd6923",
+          "CARD_REPLACEMENT_1c05bbf783",
+          "CARD_REPLACEMENT_2d7ead7680",
+          "CARD_REPLACEMENT_37bf209a1e",
+          "CARD_REPLACEMENT_4bcc5727bf",
+          "CARD_REPLACEMENT_530a257d94",
+          "CARD_REPLACEMENT_5313f436fe",
+          "CARD_REPLACEMENT_5a0bfe3cac",
+          "CARD_REPLACEMENT_5cb1ebd522",
+          "CARD_REPLACEMENT_5e62fe61de",
+          "CARD_REPLACEMENT_64e7a5f46d",
+          "CARD_REPLACEMENT_760d5b42b5",
+          "CARD_REPLACEMENT_77ede70fb9",
+          "CARD_REPLACEMENT_7be67c53fb",
+          "CARD_REPLACEMENT_7eb7e0df96",
+          "CARD_REPLACEMENT_8c8a805687",
+          "CARD_REPLACEMENT_8e23c7e2c9",
+          "CARD_REPLACEMENT_8e4f6edd2a",
+          "CARD_REPLACEMENT_b4c5eae783",
+          "CARD_REPLACEMENT_b87ebb402d",
+          "CARD_REPLACEMENT_c442ddc9eb",
+          "CARD_REPLACEMENT_c98d7df54c",
+          "CARD_REPLACEMENT_d0d2c244fa",
+          "CARD_REPLACEMENT_db681f1b58",
+          "CARD_REPLACEMENT_e42bdad052",
+          "CARD_REPLACEMENT_e9216300c4",
+          "CARD_REPLACEMENT_f17602544c"
+        ],
+        "affected_candidate_variant_count": 27,
+        "affected_domains": [
+          "CARDS"
+        ],
+        "jointly_improved_family_ids": [],
+        "jointly_fully_unlocked_family_ids": [],
+        "projected_adaptable_variant_lower_bound_ids": [],
+        "projected_adaptable_variant_lower_bound_count": 0,
+        "standalone_unlock_count": null,
+        "caveat": "Joint batch prerequisites required; overlapping counts are not additive; not upstream benchmark passes. Disable is a protective extension, not a B0 creation requirement."
+      },
+      "reuse_only_cross_domain_families": [],
+      "design_document": "docs/research/b1-card-lifecycle-design.md"
+    },
+    {
+      "capability_id": "RECURRING_TRANSFER_SERIES",
+      "area": "SCHEDULE",
+      "recommendation": "DEFER",
+      "b0_capabilities": [
+        "RECURRING_CREATE",
+        "RECURRING_EDIT"
+      ],
+      "implementation_batch": null,
+      "accepted": false,
+      "proposed_scope": "Monthly standing-order series and per-occurrence ledger need separate future design; strong source evidence but larger execution scope.",
+      "manual_ui": "Future Payments > standing orders",
+      "parity": "MANUAL_EXACT",
+      "api_impact": "Separate future series/occurrences, never reuse merchant mandate stop",
+      "database_impact": "Series + unique series/due occurrence",
+      "authorization": "Payment policy at creation/amendment; persistent mandate for bounded occurrences",
+      "depends_on": [
+        "SCHEDULE_DUE_PROCESSOR"
+      ],
+      "implementation_cost": "HIGH",
+      "agent_value": "HIGH",
+      "state_machine": "Future ACTIVE/CANCELLED plus per-occurrence results; PAUSED/COMPLETED not accepted now",
+      "design_only": true,
+      "coverage": {
+        "affected_family_ids": [
+          "RECURRING_CREATE",
+          "RECURRING_MODIFY"
+        ],
+        "affected_family_count": 2,
+        "affected_candidate_variant_ids": [
+          "RECURRING_CREATE_9bcee636ff",
+          "RECURRING_MODIFY_proposed"
+        ],
+        "affected_candidate_variant_count": 2,
+        "affected_domains": [
+          "RECURRING_AND_DIRECT_DEBIT"
+        ],
+        "jointly_improved_family_ids": [],
+        "jointly_fully_unlocked_family_ids": [],
+        "projected_adaptable_variant_lower_bound_ids": [],
+        "projected_adaptable_variant_lower_bound_count": 0,
+        "standalone_unlock_count": null,
+        "caveat": "Joint batch prerequisites required; overlapping counts are not additive; not upstream benchmark passes. Disable is a protective extension, not a B0 creation requirement."
+      },
+      "reuse_only_cross_domain_families": [],
+      "design_document": "docs/research/b1-scheduled-payments-design.md"
+    },
+    {
+      "capability_id": "INVESTMENT_RISK_ASSESSMENT",
+      "area": "RISK",
+      "recommendation": "DEFER",
+      "b0_capabilities": [
+        "RISK_ASSESS"
+      ],
+      "implementation_batch": null,
+      "accepted": false,
+      "proposed_scope": "Suitability questionnaire/profile update is not action authorization risk. No validated demo questionnaire/rubric in B0.",
+      "manual_ui": "Future Wealth > risk profile/assessment",
+      "parity": "MANUAL_EXACT",
+      "api_impact": "Future versioned assessment submission; existing GET risk profile stays",
+      "database_impact": "Questionnaire/rubric version, answers and assessment snapshot; invalidate old suitability",
+      "authorization": "AAL1+CSRF; confirm truthful answers; step-up cannot make unsuitable products suitable",
+      "depends_on": [],
+      "implementation_cost": "HIGH",
+      "agent_value": "MEDIUM",
+      "state_machine": "No new lifecycle frozen; questionnaire/scoring is a design blocker",
+      "design_only": true,
+      "coverage": {
+        "affected_family_ids": [
+          "RISK_ASSESSMENT"
+        ],
+        "affected_family_count": 1,
+        "affected_candidate_variant_ids": [],
+        "affected_candidate_variant_count": 0,
+        "affected_domains": [
+          "WEALTH"
+        ],
+        "jointly_improved_family_ids": [],
+        "jointly_fully_unlocked_family_ids": [],
+        "projected_adaptable_variant_lower_bound_ids": [],
+        "projected_adaptable_variant_lower_bound_count": 0,
+        "standalone_unlock_count": null,
+        "caveat": "Joint batch prerequisites required; overlapping counts are not additive; not upstream benchmark passes. Disable is a protective extension, not a B0 creation requirement."
+      },
+      "reuse_only_cross_domain_families": [],
+      "design_document": "docs/research/b1-risk-policy-design.md"
+    },
+    {
+      "capability_id": "CARD_NUMERIC_LIMITS",
+      "area": "CARD",
+      "recommendation": "DEFER",
+      "b0_capabilities": [
+        "CARD_LIMIT"
+      ],
+      "implementation_batch": null,
+      "accepted": false,
+      "proposed_scope": "Numeric limits need an enforcement path; current four boolean controls do not implement amount limits.",
+      "manual_ui": "Future Card detail > limits",
+      "parity": "MANUAL_EXACT",
+      "api_impact": "Future card action extension only if limit enforcement exists",
+      "database_impact": "Versioned currency/period limit + usage counters",
+      "authorization": "Decrease CONFIRMATION; increase STEP_UP_AUTH; ineligible DENY",
+      "depends_on": [
+        "RISK_POLICY"
+      ],
+      "implementation_cost": "HIGH",
+      "agent_value": "MEDIUM",
+      "state_machine": "Future versioned numeric state; not implemented or projected",
+      "design_only": true,
+      "coverage": {
+        "affected_family_ids": [
+          "CARD_LIMIT_CHANGE"
+        ],
+        "affected_family_count": 1,
+        "affected_candidate_variant_ids": [
+          "CARD_LIMIT_CHANGE_111036f3b2",
+          "CARD_LIMIT_CHANGE_4bcc5727bf",
+          "CARD_LIMIT_CHANGE_7eb7e0df96",
+          "CARD_LIMIT_CHANGE_b87ebb402d",
+          "CARD_LIMIT_CHANGE_d0d2c244fa",
+          "CARD_LIMIT_CHANGE_e9216300c4"
+        ],
+        "affected_candidate_variant_count": 6,
+        "affected_domains": [
+          "CARDS"
+        ],
+        "jointly_improved_family_ids": [],
+        "jointly_fully_unlocked_family_ids": [],
+        "projected_adaptable_variant_lower_bound_ids": [],
+        "projected_adaptable_variant_lower_bound_count": 0,
+        "standalone_unlock_count": null,
+        "caveat": "Joint batch prerequisites required; overlapping counts are not additive; not upstream benchmark passes. Disable is a protective extension, not a B0 creation requirement."
+      },
+      "reuse_only_cross_domain_families": [],
+      "design_document": "docs/research/b1-card-lifecycle-design.md"
+    }
+  ],
+  "projection": [
+    {
+      "batch": "BASELINE",
+      "counts": {
+        "OUT_OF_SCOPE": 9,
+        "PARTIALLY_SUPPORTED": 20,
+        "SUPPORTED": 19,
+        "MISSING": 19
+      },
+      "changes": []
+    },
+    {
+      "batch": "B1A",
+      "counts": {
+        "OUT_OF_SCOPE": 9,
+        "PARTIALLY_SUPPORTED": 18,
+        "SUPPORTED": 21,
+        "MISSING": 19
+      },
+      "changes": [
+        {
+          "family_id": "NEW_RECIPIENT_TRANSFER",
+          "before": "PARTIALLY_SUPPORTED",
+          "after": "SUPPORTED",
+          "reason": "Owned create + existing immediate transfer"
+        },
+        {
+          "family_id": "PAYMENT_RISK_ESCALATION",
+          "before": "PARTIALLY_SUPPORTED",
+          "after": "SUPPORTED",
+          "reason": "Payment-specific policy and authorization with both UI and atomic backend execution"
+        }
+      ]
+    },
+    {
+      "batch": "B1B",
+      "counts": {
+        "OUT_OF_SCOPE": 9,
+        "PARTIALLY_SUPPORTED": 18,
+        "SUPPORTED": 23,
+        "MISSING": 17
+      },
+      "changes": [
+        {
+          "family_id": "SCHEDULED_TRANSFER",
+          "before": "MISSING",
+          "after": "SUPPORTED",
+          "reason": "One-time date instruction AND deterministic due execution"
+        },
+        {
+          "family_id": "SCHEDULE_CHANGE",
+          "before": "MISSING",
+          "after": "PARTIALLY_SUPPORTED",
+          "reason": "One-time edits only; source rent standing-order variants remain blocked"
+        },
+        {
+          "family_id": "BUDGET_TO_SCHEDULE",
+          "before": "PARTIALLY_SUPPORTED",
+          "after": "SUPPORTED",
+          "reason": "Manual spending/account primitives + one-time schedule; no Agent orchestration"
+        }
+      ]
+    },
+    {
+      "batch": "B1C",
+      "counts": {
+        "OUT_OF_SCOPE": 9,
+        "PARTIALLY_SUPPORTED": 16,
+        "SUPPORTED": 25,
+        "MISSING": 17
+      },
+      "changes": [
+        {
+          "family_id": "CARD_LOST_BLOCK",
+          "before": "PARTIALLY_SUPPORTED",
+          "after": "SUPPORTED",
+          "reason": "Confirmed lost/stolen permanent lifecycle; source fraud-specific guesses not accepted"
+        },
+        {
+          "family_id": "FRAUD_PROTECTION_DISPUTE",
+          "before": "PARTIALLY_SUPPORTED",
+          "after": "SUPPORTED",
+          "reason": "Locate owned debit, explicitly block reported stolen card, register linked dispute; no refund"
+        }
+      ]
+    }
+  ],
+  "unchanged_scope": "No application, contract, database or Agent implementation",
+  "policy_parameters": {
+    "status": "PARAMETERS_REQUIRE_PRODUCT_APPROVAL_BEFORE_IMPLEMENTATION",
+    "currency": "CNY",
+    "high_amount": null,
+    "new_recipient_hours": null,
+    "boundary": "totalDebit >= approved H; recipient age < approved W; unknown age is new; amounts include fees",
+    "non_normative_test_examples": {
+      "high_amount": "10000.00",
+      "new_recipient_hours": 24
+    },
+    "production": "No benchmark evidence establishes numerical thresholds. Examples are test vectors, not frozen runtime policy."
+  },
+  "unimplemented_missing_families": [
+    "TRANSFER_CANCELLATION",
+    "COLLECT_OR_SPLIT",
+    "FX_EXCHANGE",
+    "LOAN_QUOTE_SERVICE",
+    "ACCOUNT_OPEN_CLOSE",
+    "DEPOSIT_CLOSURE",
+    "DEPOSIT_RENEWAL",
+    "RISK_ASSESSMENT",
+    "INVESTMENT_REDEMPTION",
+    "CARD_ACTIVATION",
+    "CARD_REWARDS_SERVICE",
+    "CARD_DELIVERY",
+    "RECURRING_CREATE",
+    "RECURRING_MODIFY",
+    "SERVICE_ESCALATION",
+    "PROFILE_CHANGE",
+    "DEPOSIT_REINVESTMENT"
+  ],
+  "source_review": "reports/b1-source-review.json",
+  "projection_caveat": "Conditional product capability projection only; all implementation/test gates remain unmet"
+}

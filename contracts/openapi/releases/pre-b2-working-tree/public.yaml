@@ -1,0 +1,1034 @@
+openapi: 3.0.3
+info:
+  title: Aster Bank Public API
+  version: 1.2.0
+  description:
+    Unauthenticated reference and discovery content. No customer financial state or financial
+    mutations. M11 frozen contract artifact revision; not a URL version.
+paths:
+  /public/home:
+    get:
+      operationId: getPublicHome
+      tags:
+        - Public
+      security: []
+      responses:
+        "200":
+          description: Public reference content. No session required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicHome"
+        "500":
+          description: Public content unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicApiError"
+  /public/navigation:
+    get:
+      operationId: getPublicNavigation
+      tags:
+        - Public
+      security: []
+      responses:
+        "200":
+          description: Public reference content. No session required.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicNavigation"
+        "500":
+          description: Public content unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicApiError"
+  /public/catalog:
+    get:
+      operationId: listPublicCatalog
+      tags:
+        - Public
+      security: []
+      parameters:
+        - name: category
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/PublicCatalogCategory"
+        - name: type
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/PublicCatalogItemType"
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 200
+      responses:
+        "200":
+          description: Anonymous deterministic demo reference content.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicCatalog"
+        "400":
+          description: Invalid filter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicApiError"
+        "500":
+          description: Public content unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicApiError"
+  /public/catalog/{slug}:
+    get:
+      operationId: getPublicCatalogItem
+      tags:
+        - Public
+      security: []
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Anonymous deterministic demo reference content.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicCatalogItemDetail"
+        "404":
+          description: Content not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicApiError"
+        "500":
+          description: Public content unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicApiError"
+  /public/support/articles:
+    get:
+      operationId: listSupportArticles
+      tags:
+        - Public
+      security: []
+      parameters:
+        - name: category
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/SupportCategory"
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 200
+      responses:
+        "200":
+          description: Anonymous deterministic demo reference content.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SupportArticles"
+        "400":
+          description: Invalid filter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicApiError"
+        "500":
+          description: Public content unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicApiError"
+  /public/support/articles/{slug}:
+    get:
+      operationId: getSupportArticle
+      tags:
+        - Public
+      security: []
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Anonymous deterministic demo reference content.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SupportArticleDetail"
+        "404":
+          description: Content not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicApiError"
+        "500":
+          description: Public content unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicApiError"
+  /public/rates:
+    get:
+      operationId: getPublicRates
+      tags:
+        - Public
+      security: []
+      parameters: []
+      responses:
+        "200":
+          description: Anonymous deterministic demo reference content.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicRates"
+        "500":
+          description: Public content unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicApiError"
+  /public/offers:
+    get:
+      operationId: listPublicOffers
+      tags:
+        - Public
+      security: []
+      parameters: []
+      responses:
+        "200":
+          description: Anonymous deterministic demo reference content.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicOffers"
+        "500":
+          description: Public content unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicApiError"
+  /public/search:
+    get:
+      operationId: searchPublicContent
+      tags:
+        - Public
+      security: []
+      parameters:
+        - name: q
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 200
+      responses:
+        "200":
+          description: Anonymous deterministic demo reference content.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicSearch"
+        "400":
+          description: Invalid filter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicApiError"
+        "500":
+          description: Public content unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicApiError"
+components:
+  schemas:
+    PublicLink:
+      type: object
+      additionalProperties: false
+      required:
+        - label
+        - route
+      properties:
+        label:
+          type: string
+        route:
+          type: string
+          pattern: ^/(?!/)
+        description:
+          type: string
+    PublicContentCard:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - title
+        - description
+        - route
+        - label
+        - lastUpdatedAt
+        - environment
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        route:
+          type: string
+          pattern: ^/(?!/)
+        label:
+          type: string
+        lastUpdatedAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+        environment:
+          type: string
+          enum:
+            - DEMO
+    PublicNavigationSection:
+      type: object
+      additionalProperties: false
+      required:
+        - label
+        - links
+      properties:
+        label:
+          type: string
+        links:
+          type: array
+          items:
+            $ref: "#/components/schemas/PublicLink"
+    PublicNavigationGroup:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - label
+        - route
+        - description
+        - sections
+      properties:
+        id:
+          type: string
+        label:
+          type: string
+        route:
+          type: string
+        description:
+          type: string
+        sections:
+          type: array
+          items:
+            $ref: "#/components/schemas/PublicNavigationSection"
+    PublicCategory:
+      type: object
+      additionalProperties: false
+      required:
+        - route
+        - title
+        - description
+        - services
+        - lastUpdatedAt
+        - environment
+      properties:
+        route:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        services:
+          type: array
+          items:
+            $ref: "#/components/schemas/PublicContentCard"
+        lastUpdatedAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+        environment:
+          type: string
+          enum:
+            - DEMO
+    PublicNavigation:
+      type: object
+      additionalProperties: false
+      required:
+        - groups
+        - categories
+        - lastUpdatedAt
+        - environment
+      properties:
+        groups:
+          type: array
+          items:
+            $ref: "#/components/schemas/PublicNavigationGroup"
+        categories:
+          type: array
+          items:
+            $ref: "#/components/schemas/PublicCategory"
+        lastUpdatedAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+        environment:
+          type: string
+          enum:
+            - DEMO
+    PublicHome:
+      type: object
+      additionalProperties: false
+      required:
+        - hero
+        - serviceCategories
+        - featuredServices
+        - offers
+        - insights
+        - securityNotice
+        - environment
+        - lastUpdatedAt
+        - rates
+      properties:
+        hero:
+          type: object
+          additionalProperties: false
+          required:
+            - eyebrow
+            - title
+            - description
+            - actions
+          properties:
+            eyebrow:
+              type: string
+            title:
+              type: string
+            description:
+              type: string
+            actions:
+              type: array
+              items:
+                $ref: "#/components/schemas/PublicLink"
+        serviceCategories:
+          type: array
+          items:
+            $ref: "#/components/schemas/PublicContentCard"
+        featuredServices:
+          type: array
+          items:
+            $ref: "#/components/schemas/PublicContentCard"
+        offers:
+          type: array
+          items:
+            $ref: "#/components/schemas/PublicContentCard"
+        insights:
+          type: array
+          items:
+            $ref: "#/components/schemas/PublicContentCard"
+        securityNotice:
+          type: object
+          additionalProperties: false
+          required:
+            - title
+            - message
+            - link
+          properties:
+            title:
+              type: string
+            message:
+              type: string
+            link:
+              $ref: "#/components/schemas/PublicLink"
+        environment:
+          type: string
+          enum:
+            - DEMO
+        lastUpdatedAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+        rates:
+          $ref: "#/components/schemas/PublicRates"
+    PublicApiError:
+      type: object
+      additionalProperties: false
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          enum:
+            - PUBLIC_CONTENT_UNAVAILABLE
+            - PUBLIC_CONTENT_NOT_FOUND
+            - INVALID_PUBLIC_QUERY
+        message:
+          type: string
+    PublicCatalogCategory:
+      type: string
+      enum:
+        - BANKING
+        - CARDS
+        - BORROWING
+        - INVESTMENTS
+        - INSURANCE
+        - PAYMENTS_FX
+        - SUPPORT
+    PublicCatalogItemType:
+      type: string
+      enum:
+        - CURRENT_ACCOUNT
+        - SAVINGS_ACCOUNT
+        - TIME_DEPOSIT
+        - MULTI_CURRENCY_ACCOUNT
+        - DEBIT_CARD
+        - CREDIT_CARD
+        - PERSONAL_LOAN
+        - MORTGAGE
+        - OVERDRAFT
+        - INVESTMENT_PRODUCT
+        - INSURANCE_PRODUCT
+        - BANKING_SERVICE
+    PublicFeature:
+      type: object
+      additionalProperties: false
+      required:
+        - title
+        - description
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+    PublicFeeSummary:
+      type: object
+      additionalProperties: false
+      required:
+        - label
+        - value
+        - conditions
+      properties:
+        label:
+          type: string
+        value:
+          type: string
+        conditions:
+          type: string
+    PublicEligibilitySummary:
+      type: object
+      additionalProperties: false
+      required:
+        - summary
+        - requirements
+      properties:
+        summary:
+          type: string
+        requirements:
+          type: array
+          items:
+            type: string
+    PublicCallToAction:
+      type: object
+      additionalProperties: false
+      required:
+        - type
+        - label
+        - route
+      properties:
+        type:
+          type: string
+          enum:
+            - LEARN_MORE
+            - SIGN_IN
+            - COMPARE
+            - CONTACT
+        label:
+          type: string
+        route:
+          type: string
+          pattern: ^/(?!/)
+    PublicCatalogItemSummary:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - slug
+        - category
+        - type
+        - title
+        - shortDescription
+        - tags
+        - lastUpdatedAt
+        - environment
+        - fees
+      properties:
+        id:
+          type: string
+        slug:
+          type: string
+        category:
+          $ref: "#/components/schemas/PublicCatalogCategory"
+        type:
+          $ref: "#/components/schemas/PublicCatalogItemType"
+        title:
+          type: string
+        shortDescription:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        lastUpdatedAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+        environment:
+          type: string
+          enum:
+            - DEMO
+        fees:
+          $ref: "#/components/schemas/PublicCatalogItemDetail/properties/fees"
+    PublicCatalogItemDetail:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - slug
+        - category
+        - type
+        - title
+        - shortDescription
+        - tags
+        - lastUpdatedAt
+        - environment
+        - description
+        - highlights
+        - features
+        - eligibility
+        - fees
+        - disclaimers
+        - relatedItemIds
+        - cta
+      properties:
+        id:
+          type: string
+        slug:
+          type: string
+        category:
+          $ref: "#/components/schemas/PublicCatalogCategory"
+        type:
+          $ref: "#/components/schemas/PublicCatalogItemType"
+        title:
+          type: string
+        shortDescription:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        lastUpdatedAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+        environment:
+          type: string
+          enum:
+            - DEMO
+        description:
+          type: string
+        highlights:
+          type: array
+          items:
+            type: string
+        features:
+          type: array
+          items:
+            $ref: "#/components/schemas/PublicFeature"
+        eligibility:
+          $ref: "#/components/schemas/PublicEligibilitySummary"
+        fees:
+          type: array
+          items:
+            $ref: "#/components/schemas/PublicFeeSummary"
+        disclaimers:
+          type: array
+          items:
+            type: string
+        relatedItemIds:
+          type: array
+          items:
+            type: string
+        cta:
+          type: array
+          items:
+            $ref: "#/components/schemas/PublicCallToAction"
+        currency:
+          type: string
+        supportedCurrencies:
+          type: array
+          items:
+            type: string
+    PublicCatalog:
+      type: object
+      additionalProperties: false
+      required:
+        - items
+        - lastUpdatedAt
+        - environment
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/PublicCatalogItemSummary"
+        lastUpdatedAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+        environment:
+          type: string
+          enum:
+            - DEMO
+    SupportCategory:
+      type: string
+      enum:
+        - ACCOUNTS
+        - PAYMENTS
+        - CARDS
+        - SECURITY
+        - DIGITAL_BANKING
+        - INVESTMENTS
+    SupportArticleSummary:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - slug
+        - title
+        - summary
+        - category
+        - tags
+        - lastUpdatedAt
+        - environment
+      properties:
+        id:
+          type: string
+        slug:
+          type: string
+        title:
+          type: string
+        summary:
+          type: string
+        category:
+          $ref: "#/components/schemas/SupportCategory"
+        tags:
+          type: array
+          items:
+            type: string
+        lastUpdatedAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+        environment:
+          type: string
+          enum:
+            - DEMO
+    SupportSection:
+      type: object
+      additionalProperties: false
+      required:
+        - heading
+        - paragraphs
+        - callouts
+      properties:
+        heading:
+          type: string
+        paragraphs:
+          type: array
+          items:
+            type: string
+        callouts:
+          type: array
+          items:
+            type: string
+    SupportArticleDetail:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - slug
+        - title
+        - summary
+        - category
+        - tags
+        - lastUpdatedAt
+        - environment
+        - heading
+        - sections
+        - relatedArticles
+      properties:
+        id:
+          type: string
+        slug:
+          type: string
+        title:
+          type: string
+        summary:
+          type: string
+        category:
+          $ref: "#/components/schemas/SupportCategory"
+        tags:
+          type: array
+          items:
+            type: string
+        lastUpdatedAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+        environment:
+          type: string
+          enum:
+            - DEMO
+        heading:
+          type: string
+        sections:
+          type: array
+          items:
+            $ref: "#/components/schemas/SupportSection"
+        relatedArticles:
+          type: array
+          items:
+            type: string
+    SupportArticles:
+      type: object
+      additionalProperties: false
+      required:
+        - items
+        - lastUpdatedAt
+        - environment
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/SupportArticleSummary"
+        lastUpdatedAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+        environment:
+          type: string
+          enum:
+            - DEMO
+    PublicRate:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - title
+        - kind
+        - value
+        - unit
+        - conditions
+        - lastUpdatedAt
+        - environment
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        kind:
+          type: string
+          enum:
+            - FX
+            - SAVINGS
+            - TIME_DEPOSIT
+        value:
+          type: string
+          pattern: ^[0-9]+(\.[0-9]+)?$
+        unit:
+          type: string
+        conditions:
+          type: string
+        lastUpdatedAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+        environment:
+          type: string
+          enum:
+            - DEMO
+    PublicRates:
+      type: object
+      additionalProperties: false
+      required:
+        - items
+        - asOf
+        - source
+        - disclaimer
+        - lastUpdatedAt
+        - environment
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/PublicRate"
+        asOf:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+        source:
+          type: string
+          enum:
+            - DEMO_RATE
+        disclaimer:
+          type: string
+        lastUpdatedAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+        environment:
+          type: string
+          enum:
+            - DEMO
+    PublicOffer:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - title
+        - summary
+        - category
+        - validFrom
+        - validUntil
+        - termsSummary
+        - route
+        - lastUpdatedAt
+        - environment
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        summary:
+          type: string
+        category:
+          $ref: "#/components/schemas/PublicCatalogCategory"
+        validFrom:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+        validUntil:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+        termsSummary:
+          type: string
+        route:
+          type: string
+        lastUpdatedAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+        environment:
+          type: string
+          enum:
+            - DEMO
+    PublicOffers:
+      type: object
+      additionalProperties: false
+      required:
+        - items
+        - lastUpdatedAt
+        - environment
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/PublicOffer"
+        lastUpdatedAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+        environment:
+          type: string
+          enum:
+            - DEMO
+    PublicSearchResult:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - type
+        - title
+        - summary
+        - route
+        - matchedTerms
+        - lastUpdatedAt
+        - environment
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+            - CATALOG_ITEM
+            - SUPPORT_ARTICLE
+            - OFFER
+        title:
+          type: string
+        summary:
+          type: string
+        route:
+          type: string
+        matchedTerms:
+          type: array
+          items:
+            type: string
+        lastUpdatedAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+        environment:
+          type: string
+          enum:
+            - DEMO
+    PublicSearch:
+      type: object
+      additionalProperties: false
+      required:
+        - items
+        - query
+        - lastUpdatedAt
+        - environment
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/PublicSearchResult"
+        query:
+          type: string
+        lastUpdatedAt:
+          type: string
+          format: date-time
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$
+        environment:
+          type: string
+          enum:
+            - DEMO
+security: []

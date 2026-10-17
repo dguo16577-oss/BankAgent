@@ -1,0 +1,152 @@
+[
+  {
+    "dataset": "agentdojo",
+    "source_task_id": "UserTask2",
+    "area": "SCHEDULE",
+    "path": "src/agentdojo/default_suites/v1/banking/user_tasks.py",
+    "url": "https://raw.githubusercontent.com/ethz-spylab/agentdojo/089ed468cf3ed0322acc66b0211f26d9d90dbf60/src/agentdojo/default_suites/v1/banking/user_tasks.py",
+    "version": "089ed468cf3ed0322acc66b0211f26d9d90dbf60",
+    "sha256": "37af838194f001af80cc040315bcb2d69d0112324d424f9a323473b41b317f82",
+    "finding": "Rent notice changes an existing scheduled amount; evidence for amendments, not a due-job engine. External text never authorizes the write."
+  },
+  {
+    "dataset": "agentdojo",
+    "source_task_id": "UserTask6",
+    "area": "SCHEDULE",
+    "path": "src/agentdojo/default_suites/v1_2_2/banking/user_tasks.py",
+    "url": "https://raw.githubusercontent.com/ethz-spylab/agentdojo/089ed468cf3ed0322acc66b0211f26d9d90dbf60/src/agentdojo/default_suites/v1_2_2/banking/user_tasks.py",
+    "version": "089ed468cf3ed0322acc66b0211f26d9d90dbf60",
+    "sha256": "f3b8417c51b7fe33c0f85571d543a64811f6ef3e4ab9c7ae9568834db66064b2",
+    "finding": "History-derived amount for recurring instruction; recurring=true is not a merchant mandate or proof of occurrence execution."
+  },
+  {
+    "dataset": "agentdojo",
+    "source_task_id": "UserTask9",
+    "area": "SCHEDULE",
+    "path": "src/agentdojo/default_suites/v1/banking/user_tasks.py",
+    "url": "https://raw.githubusercontent.com/ethz-spylab/agentdojo/089ed468cf3ed0322acc66b0211f26d9d90dbf60/src/agentdojo/default_suites/v1/banking/user_tasks.py",
+    "version": "089ed468cf3ed0322acc66b0211f26d9d90dbf60",
+    "sha256": "37af838194f001af80cc040315bcb2d69d0112324d424f9a323473b41b317f82",
+    "finding": "Upstream explicitly calls task underspecified; do not infer next rent from a previous payment without confirmation."
+  },
+  {
+    "dataset": "agentdojo",
+    "source_task_id": "UserTask12",
+    "area": "SCHEDULE",
+    "path": "src/agentdojo/default_suites/v1/banking/user_tasks.py",
+    "url": "https://raw.githubusercontent.com/ethz-spylab/agentdojo/089ed468cf3ed0322acc66b0211f26d9d90dbf60/src/agentdojo/default_suites/v1/banking/user_tasks.py",
+    "version": "089ed468cf3ed0322acc66b0211f26d9d90dbf60",
+    "sha256": "37af838194f001af80cc040315bcb2d69d0112324d424f9a323473b41b317f82",
+    "finding": "Document-driven amendment; shares primitive with UserTask2 rather than a second implementation."
+  },
+  {
+    "dataset": "agentdojo",
+    "source_task_id": "UserTask15",
+    "area": "RECIPIENT",
+    "path": "src/agentdojo/default_suites/v1_1_1/banking/user_tasks.py",
+    "url": "https://raw.githubusercontent.com/ethz-spylab/agentdojo/089ed468cf3ed0322acc66b0211f26d9d90dbf60/src/agentdojo/default_suites/v1_1_1/banking/user_tasks.py",
+    "version": "089ed468cf3ed0322acc66b0211f26d9d90dbf60",
+    "sha256": "d7858d3f9a573fcc334d19d4aa63ba92867cd8d5b99e2d102f7c60840fd42b81",
+    "finding": "New landlord destination plus standing-order edit and refund; supports recipient binding need, not a recipient CRUD/phone-verification API."
+  },
+  {
+    "dataset": "tau_indian",
+    "source_task_id": "rl_edgablk2x_0005",
+    "area": "CARD",
+    "path": "tau2/domains/indian_banking/tasks.json",
+    "url": "https://huggingface.co/datasets/NPCI/tau-indian-banking/resolve/747d97ff1e51f0f9a97374a5603d27bc438984a4/tau2/domains/indian_banking/tasks.json",
+    "version": "747d97ff1e51f0f9a97374a5603d27bc438984a4",
+    "sha256": "e603e45b650bafed5b3509d6da80dac0e5f03ca1908cb1e86b0edd4e64cab75c",
+    "finding": "Read, confirm permanent block, verify; repeat block must not produce another mutation. Distinct from reversible freeze."
+  },
+  {
+    "dataset": "tau_indian",
+    "source_task_id": "rl_sqdisp_0007",
+    "area": "DISPUTE",
+    "path": "tau2/domains/indian_banking/tasks.json",
+    "url": "https://huggingface.co/datasets/NPCI/tau-indian-banking/resolve/747d97ff1e51f0f9a97374a5603d27bc438984a4/tau2/domains/indian_banking/tasks.json",
+    "version": "747d97ff1e51f0f9a97374a5603d27bc438984a4",
+    "sha256": "e603e45b650bafed5b3509d6da80dac0e5f03ca1908cb1e86b0edd4e64cab75c",
+    "finding": "History -> stolen-card block -> transaction-linked unauthorized debit case. Reporting does not imply refund."
+  },
+  {
+    "dataset": "indic",
+    "source_task_id": "cards.agentic.block_and_replacement.001",
+    "area": "CARD",
+    "path": "case_bank/cards/agentic/block_and_replacement.001.json",
+    "url": "https://huggingface.co/datasets/NPCI/IndicBankBench/resolve/f123e13b423591ce6a0c1bc170fc1a02fe17dacb/case_bank/cards/agentic/block_and_replacement.001.json",
+    "version": "f123e13b423591ce6a0c1bc170fc1a02fe17dacb",
+    "sha256": "e506d5b8ba1ddc1c38aad2858f6e7fca0a90ac0903f12cd89d77d647f2154bda",
+    "finding": "Damaged-card block reference feeds replacement request; supports a request-only slice, although damaged replacement is deferred."
+  },
+  {
+    "dataset": "indic",
+    "source_task_id": "cards.agentic.card_block_loss_correction.001",
+    "area": "CARD",
+    "path": "case_bank/cards/agentic/card_block_loss_correction.001.json",
+    "url": "https://huggingface.co/datasets/NPCI/IndicBankBench/resolve/f123e13b423591ce6a0c1bc170fc1a02fe17dacb/case_bank/cards/agentic/card_block_loss_correction.001.json",
+    "version": "f123e13b423591ce6a0c1bc170fc1a02fe17dacb",
+    "sha256": "531496852a0f22b43da640f9dbb68fd05a3a1f3a8c558fbc0673e8a563f1081f",
+    "finding": "Risky source assumption: channel capability alone does not prove which card suffered fraud. Aster requires explicit corrected card confirmation, never auto-switches target."
+  },
+  {
+    "dataset": "indic",
+    "source_task_id": "csc.agentic.dispute_wrong_account.001",
+    "area": "DISPUTE",
+    "path": "case_bank/customer_service_and_catalog/agentic/dispute_wrong_account.001.json",
+    "url": "https://huggingface.co/datasets/NPCI/IndicBankBench/resolve/f123e13b423591ce6a0c1bc170fc1a02fe17dacb/case_bank/customer_service_and_catalog/agentic/dispute_wrong_account.001.json",
+    "version": "f123e13b423591ce6a0c1bc170fc1a02fe17dacb",
+    "sha256": "2acdc681217ccd17523f6f904b98d3ee4b673c39940f71452be428c2150aee46",
+    "finding": "Resolve actual owned account and transaction before confirmed write; original customer label is not authoritative."
+  },
+  {
+    "dataset": "indic",
+    "source_task_id": "csc.agentic.dispute_unauthorized.001",
+    "area": "DISPUTE",
+    "path": "case_bank/customer_service_and_catalog/agentic/dispute_unauthorized.001.json",
+    "url": "https://huggingface.co/datasets/NPCI/IndicBankBench/resolve/f123e13b423591ce6a0c1bc170fc1a02fe17dacb/case_bank/customer_service_and_catalog/agentic/dispute_unauthorized.001.json",
+    "version": "f123e13b423591ce6a0c1bc170fc1a02fe17dacb",
+    "sha256": "ec8fc4570310c1804cad70f6fe60b7bb3cb9fd97f9f7ce9deff58c294728a505",
+    "finding": "Locate specific debit then confirmed request; no promise of money returned."
+  },
+  {
+    "dataset": "tau_knowledge",
+    "source_task_id": "task_077",
+    "area": "CARD",
+    "path": "data/tau2/domains/banking_knowledge/tasks/task_077.json",
+    "url": "https://raw.githubusercontent.com/sierra-research/tau2-bench/5bfa7e37b36656b37dc6d022156be6563c1007f3/data/tau2/domains/banking_knowledge/tasks/task_077.json",
+    "version": "5bfa7e37b36656b37dc6d022156be6563c1007f3",
+    "sha256": "d668f1c5833a48a166ed031a0355d2c4e121a6fdc714cbc3506d881ef8474042",
+    "finding": "Lost wallet includes tier rules, replacements and activation; request intake is only partial. Do not import PIN/CVV questions or shipping rules."
+  },
+  {
+    "dataset": "tau_knowledge",
+    "source_task_id": "task_080",
+    "area": "DISPUTE",
+    "path": "data/tau2/domains/banking_knowledge/tasks/task_080.json",
+    "url": "https://raw.githubusercontent.com/sierra-research/tau2-bench/5bfa7e37b36656b37dc6d022156be6563c1007f3/data/tau2/domains/banking_knowledge/tasks/task_080.json",
+    "version": "5bfa7e37b36656b37dc6d022156be6563c1007f3",
+    "sha256": "8d3c1badb258d872c0ec33c6946d9ef0325b44c04249cbfe546a2845b46557c7",
+    "finding": "Multiple cards plus disputes/provisional credits; source is richer than accepted intake and cannot be marked fully unlocked."
+  },
+  {
+    "dataset": "tau_knowledge",
+    "source_task_id": "task_043",
+    "area": "DISPUTE",
+    "path": "data/tau2/domains/banking_knowledge/tasks/task_043.json",
+    "url": "https://raw.githubusercontent.com/sierra-research/tau2-bench/5bfa7e37b36656b37dc6d022156be6563c1007f3/data/tau2/domains/banking_knowledge/tasks/task_043.json",
+    "version": "5bfa7e37b36656b37dc6d022156be6563c1007f3",
+    "sha256": "90bb6c90d99e5d5f472f1576f7c23559e18f501299c37ecb9bc7a6d8396432d3",
+    "finding": "B0 broad tool mapping includes dispute-history and pending-replacement reads in a closure/retention task. Not direct evidence for creating either resource."
+  },
+  {
+    "dataset": "tau_knowledge",
+    "source_task_id": "task_016",
+    "area": "RECIPIENT",
+    "path": "data/tau2/domains/banking_knowledge/tasks/task_016.json",
+    "url": "https://raw.githubusercontent.com/sierra-research/tau2-bench/5bfa7e37b36656b37dc6d022156be6563c1007f3/data/tau2/domains/banking_knowledge/tasks/task_016.json",
+    "version": "5bfa7e37b36656b37dc6d022156be6563c1007f3",
+    "sha256": "4dfd79048329d154ff6aa04f2393dc6d314be00e029b20f2f4ea27a2e6144ef4",
+    "finding": "B0 RECIPIENT_TRANSFER association is weak: gold user action is a third-party card purchase, not recipient creation or outgoing transfer. Do not count as direct CRUD evidence."
+  }
+]

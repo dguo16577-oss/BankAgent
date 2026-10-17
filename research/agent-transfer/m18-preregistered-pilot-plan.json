@@ -1,0 +1,16 @@
+{
+  "shards": [
+    {
+      "name": "split_calculation",
+      "mode": "read",
+      "manifest": "research/agent-transfer/m18-split-calculation-expansion.jsonl",
+      "case_ids": ["B-CALC-03", "B-CALC-04"]
+    },
+    {
+      "name": "currency_source_boundaries",
+      "mode": "prepare",
+      "manifest": "research/agent-transfer/m18-currency-and-source-boundaries.jsonl",
+      "case_ids": ["UO-USD-DENOMINATION-07", "IF-EXPLICIT-SOURCE-03"]
+    }
+  ]
+}

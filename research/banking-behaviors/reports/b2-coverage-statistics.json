@@ -1,0 +1,52 @@
+{
+  "basis": "B0 frozen family dependencies + B2 code/UI/test evidence; no projected statuses",
+  "validation": "Implementation mapping; test run results are recorded separately in docs/milestones/b2-report.md",
+  "input_hashes": {
+    "research/banking-behaviors/normalized/behavior-families.jsonl": "2f425c790207b60525a87cdc8357e11cf9da6e5b9359cae3e7bae7630c1b9c5a",
+    "research/banking-behaviors/b1-family-capability-map.jsonl": "4f6c179e7b8cfcaafa9bcb3735bf13ad2777357efa9f9d6dc4404827ef4f3f57"
+  },
+  "evidence_hashes": {
+    "services/banking-core/src/main/java/com/asterbank/banking/customer/payment/application/RecipientManagementService.java": "58d800c85c36478bfcd44b6073c617d110eefb26fa95a6341fb3f785d3a81307",
+    "services/banking-core/src/main/java/com/asterbank/banking/customer/payment/application/TransferExecutionService.java": "dbabda0dce9833220ed16a3bbbde3737ddf4c69bda51677ef60a37b49db0840c",
+    "services/banking-core/src/test/java/com/asterbank/banking/RecipientPostgreSqlIT.java": "30d238815bd91047def3feb6285a5417dab56f074d410fe36133245498e86852",
+    "apps/web/src/features/payments/recipient-management.tsx": "31e5b82134dc1b8a3d2adcbc93f952a9d12de7d3a4e62ef94a00bee5f74b1f3d",
+    "apps/web/src/features/payments/recipient-management.test.tsx": "ca9009a8ecadcb2538133c27b8e7b60bda8885d47b0979f575d19c3f058a2909",
+    "apps/web/e2e-shared/recipient-journey.ts": "34634414aa2606fb7ac7424f1043c058af3572fdfb622ba79356b84b2dbcbb41"
+  },
+  "before": {
+    "OUT_OF_SCOPE": 9,
+    "PARTIALLY_SUPPORTED": 20,
+    "SUPPORTED": 19,
+    "MISSING": 19
+  },
+  "after": {
+    "OUT_OF_SCOPE": 9,
+    "PARTIALLY_SUPPORTED": 19,
+    "SUPPORTED": 20,
+    "MISSING": 19
+  },
+  "changed": [
+    {
+      "family_id": "NEW_RECIPIENT_TRANSFER",
+      "before": "PARTIALLY_SUPPORTED",
+      "after": "SUPPORTED",
+      "required_capabilities": [
+        "RECIPIENT_CREATE",
+        "TRANSFER"
+      ],
+      "origin": "ASTER_GAP_HYPOTHESIS",
+      "source_refs": [],
+      "candidate_variant_ids": [
+        "NEW_RECIPIENT_TRANSFER_proposed"
+      ],
+      "new_evidence": [
+        "services/banking-core/src/main/java/com/asterbank/banking/customer/payment/application/RecipientManagementService.java",
+        "services/banking-core/src/main/java/com/asterbank/banking/customer/payment/application/TransferExecutionService.java",
+        "services/banking-core/src/test/java/com/asterbank/banking/RecipientPostgreSqlIT.java",
+        "apps/web/src/features/payments/recipient-management.tsx",
+        "apps/web/src/features/payments/recipient-management.test.tsx",
+        "apps/web/e2e-shared/recipient-journey.ts"
+      ]
+    }
+  ]
+}

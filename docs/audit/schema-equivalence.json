@@ -1,0 +1,18 @@
+{
+  "customer": [
+    ["CardActionIntentStatus", "RenewalReminderIntentStatus"],
+    ["CardActionIntentStatus", "RecurringPaymentActionIntentStatus"],
+    ["ExecuteTransferRequest", "ExecuteRecurringPaymentActionRequest"],
+    ["ExecuteTransferRequest", "ExecuteInvestmentOrderRequest"],
+    ["TransferIntentStatus", "InvestmentOrderIntentStatus"],
+    ["TransferStatus", "InvestmentOrderStatus"],
+    ["ExecuteTransferRequest", "ExecuteRecipientActionRequest"],
+    ["ExecuteTransferRequest", "ExecuteScheduleActionRequest"],
+    ["CardLinkedAccount", "SplitReceivingAccount"],
+    ["SubmitCreditLimitRequest", "ExecuteSplitActionRequest"]
+  ],
+  "retainedReason": "Separate domain lifecycles and execution request names are intentionally retained; no GenericIntent is introduced.",
+  "unreachableButUsed": [
+    "SecurityEvent: store audit events and security tests; internal-model marker"
+  ]
+}

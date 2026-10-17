@@ -1,0 +1,280 @@
+{
+  "retrieval_date": "2026-09-29",
+  "script_version": "b0.1",
+  "script_sha256": {
+    "audit_config.py": "a0f648dcaacd051e052b531cb505b9d71d044a57620bd85711fd996b86c56e8d",
+    "build_coverage.py": "dd409f61d951d372d66ed85b7de0238c5a7d9df1b1a23affbf93e0178556ae00",
+    "discover_sources.py": "a0a90ed74ad61927cefee042339cf9d7beb4eb0a0498591eaa7a2cfa9efb781b",
+    "fetch_sources.py": "b99ab7003f2ca8364d64b99ed6ae7050bb88e6ad8e663ff326b4b4031058d4f7",
+    "inspect_sources.py": "ecc032914025128fcd8e32f0272f231ea4dc716f42553cf6de319cc58653d933",
+    "normalize_sources.py": "9f0c9a25585cbc836f798a4ca712225d0aba97877a4eba3aa79074cd5351a893",
+    "validate_audit.py": "001b9aa758623315837cafe52b572beaa77e33e158172169ad486ef8bf8afb09",
+    "verify_scope.py": "ed23f806822f58401602a9ff56265544afa8030323234093a4525cf08417faf8"
+  },
+  "manifest_sha256": "89400578749c10678cac059007f3d55f1373b40f93b149b2e478af55da82bf34",
+  "filtering": "Six-domain banking behavior, not mere keyword finance; market research excluded; Banking77 language only; unknown rights not redistributed",
+  "dedup": "Explicit outcome mappings in audit_config.py/normalize_sources.py. Identity, amount, dates and failure axes are variants. Source tasks can support multiple families; counts distinguish unique records and memberships.",
+  "sources_inspected": 8,
+  "artifact_sources": 10,
+  "raw_counts": {
+    "behavior_tasks": 1912,
+    "adversarial_goals": 9,
+    "language_utterances": 13083,
+    "financial_research_queries": 295,
+    "spec_operations": 89,
+    "banking_behavior_note": "1912 includes safety/refusal cases inside Indic; not all are normal tasks. Adversarial goals are separate.",
+    "all_non_language_records": 2216
+  },
+  "families": 67,
+  "candidate_families": 45,
+  "candidate_variant_clusters": 498,
+  "origins": {
+    "SOURCE_SUPPORTED": 53,
+    "ASTER_GAP_HYPOTHESIS": 9,
+    "SPECIFICATION_DERIVED": 1,
+    "ASTER_COMPOSED": 4
+  },
+  "adaptability": {
+    "ADAPTABLE": 39,
+    "DIRECT": 6,
+    "INSPIRATION_ONLY": 5,
+    "PARTIAL": 12,
+    "NOT_APPLICABLE": 5
+  },
+  "support": {
+    "OUT_OF_SCOPE": 9,
+    "PARTIALLY_SUPPORTED": 20,
+    "SUPPORTED": 19,
+    "MISSING": 19
+  },
+  "capability_primitives": {
+    "inventoried": 61,
+    "required_by_families": 58,
+    "required_existing": 19,
+    "required_missing": 31,
+    "required_out_of_scope": 8
+  },
+  "native_source_group_keys": 314,
+  "multi_source_families": 27,
+  "domains": {
+    "PAYMENTS": {
+      "unique_source_records_non_language": 444,
+      "language_utterances": 4363,
+      "families": 14,
+      "adaptability": {
+        "DIRECT": 1,
+        "ADAPTABLE": 10,
+        "INSPIRATION_ONLY": 1,
+        "PARTIAL": 1,
+        "NOT_APPLICABLE": 1
+      },
+      "support": {
+        "SUPPORTED": 3,
+        "PARTIALLY_SUPPORTED": 3,
+        "MISSING": 7,
+        "OUT_OF_SCOPE": 1
+      },
+      "multi_source_families": 5,
+      "candidate_variant_clusters": 80,
+      "banking_records_only": 444,
+      "research_queries_excluded": 0,
+      "attack_goals_separate": 0
+    },
+    "SPENDING_AND_TRANSACTIONS": {
+      "unique_source_records_non_language": 215,
+      "language_utterances": 2319,
+      "families": 7,
+      "adaptability": {
+        "DIRECT": 2,
+        "ADAPTABLE": 5
+      },
+      "support": {
+        "SUPPORTED": 2,
+        "PARTIALLY_SUPPORTED": 5
+      },
+      "multi_source_families": 3,
+      "candidate_variant_clusters": 86,
+      "banking_records_only": 215,
+      "research_queries_excluded": 0,
+      "attack_goals_separate": 0
+    },
+    "WEALTH": {
+      "unique_source_records_non_language": 919,
+      "language_utterances": 0,
+      "families": 11,
+      "adaptability": {
+        "PARTIAL": 4,
+        "ADAPTABLE": 1,
+        "INSPIRATION_ONLY": 4,
+        "NOT_APPLICABLE": 2
+      },
+      "support": {
+        "PARTIALLY_SUPPORTED": 1,
+        "MISSING": 5,
+        "SUPPORTED": 3,
+        "OUT_OF_SCOPE": 2
+      },
+      "multi_source_families": 5,
+      "candidate_variant_clusters": 27,
+      "banking_records_only": 624,
+      "research_queries_excluded": 295,
+      "attack_goals_separate": 0
+    },
+    "CARDS": {
+      "unique_source_records_non_language": 303,
+      "language_utterances": 2966,
+      "families": 14,
+      "adaptability": {
+        "ADAPTABLE": 9,
+        "DIRECT": 2,
+        "NOT_APPLICABLE": 1,
+        "PARTIAL": 2
+      },
+      "support": {
+        "PARTIALLY_SUPPORTED": 5,
+        "SUPPORTED": 5,
+        "MISSING": 3,
+        "OUT_OF_SCOPE": 1
+      },
+      "multi_source_families": 9,
+      "candidate_variant_clusters": 143,
+      "banking_records_only": 303,
+      "research_queries_excluded": 0,
+      "attack_goals_separate": 0
+    },
+    "RECURRING_AND_DIRECT_DEBIT": {
+      "unique_source_records_non_language": 106,
+      "language_utterances": 167,
+      "families": 5,
+      "adaptability": {
+        "DIRECT": 1,
+        "ADAPTABLE": 3,
+        "PARTIAL": 1
+      },
+      "support": {
+        "SUPPORTED": 2,
+        "MISSING": 2,
+        "PARTIALLY_SUPPORTED": 1
+      },
+      "multi_source_families": 1,
+      "candidate_variant_clusters": 18,
+      "banking_records_only": 106,
+      "research_queries_excluded": 0,
+      "attack_goals_separate": 0
+    },
+    "CROSS_DOMAIN": {
+      "unique_source_records_non_language": 376,
+      "language_utterances": 3268,
+      "families": 16,
+      "adaptability": {
+        "ADAPTABLE": 11,
+        "PARTIAL": 4,
+        "NOT_APPLICABLE": 1
+      },
+      "support": {
+        "OUT_OF_SCOPE": 5,
+        "MISSING": 2,
+        "PARTIALLY_SUPPORTED": 5,
+        "SUPPORTED": 4
+      },
+      "multi_source_families": 4,
+      "candidate_variant_clusters": 144,
+      "banking_records_only": 367,
+      "research_queries_excluded": 0,
+      "attack_goals_separate": 9
+    }
+  },
+  "layers": {
+    "core_manual": 31,
+    "composite": 6,
+    "robustness": 17,
+    "security": 2,
+    "knowledge_policy": 16
+  },
+  "selection_modes": {
+    "MINIMAL_CORE": [
+      "ACCOUNT_TO_INVESTMENT",
+      "CARD_ANOMALY_PROTECT",
+      "SPENDING_TO_RECURRING_STOP",
+      "CARD_APPLICATION",
+      "CARD_UNFREEZE",
+      "RECIPIENT_TRANSFER",
+      "CARD_CONTROLS"
+    ],
+    "BALANCED": [
+      "ACCOUNT_BALANCE",
+      "ACCOUNT_TO_INVESTMENT",
+      "BUDGET_TO_SCHEDULE",
+      "CARD_ANOMALY_PROTECT",
+      "CARD_APPLICATION",
+      "CARD_CONTROLS",
+      "CARD_DETAILS",
+      "CARD_FREEZE",
+      "CARD_LOST_BLOCK",
+      "CARD_REPLACEMENT",
+      "CARD_UNFREEZE",
+      "FRAUD_PROTECTION_DISPUTE",
+      "PAYMENT_STATUS",
+      "POLICY_RETRIEVAL",
+      "RECIPIENT_TRANSFER",
+      "RECURRING_QUERY",
+      "RECURRING_STOP",
+      "SPENDING_REPORT",
+      "SPENDING_TO_RECURRING_STOP",
+      "STATEMENT_REQUEST",
+      "TRANSACTION_DISPUTE",
+      "TRANSACTION_SEARCH",
+      "TRANSACTION_TO_TRANSFER",
+      "UNSUPPORTED_TOOL_REFUSAL",
+      "WEALTH_DISCOVERY"
+    ],
+    "EXTENDED": [
+      "UNSUPPORTED_TOOL_REFUSAL",
+      "CREDIT_CARD_REPAYMENT",
+      "CARD_CLOSURE",
+      "ACCOUNT_BALANCE",
+      "RECIPIENT_TRANSFER",
+      "NEW_RECIPIENT_TRANSFER",
+      "SCHEDULED_TRANSFER",
+      "SCHEDULE_CHANGE",
+      "TRANSFER_CANCELLATION",
+      "OWN_ACCOUNT_MOVEMENT",
+      "FX_EXCHANGE",
+      "PAYMENT_STATUS",
+      "ACCOUNT_OPEN_CLOSE",
+      "TRANSACTION_SEARCH",
+      "SPENDING_REPORT",
+      "STATEMENT_REQUEST",
+      "TRANSACTION_DISPUTE",
+      "REFUND_TRACKING",
+      "DUPLICATE_CHARGE",
+      "UNRECOGNIZED_CHARGE",
+      "WEALTH_DISCOVERY",
+      "CARD_DETAILS",
+      "CARD_FREEZE",
+      "CARD_UNFREEZE",
+      "CARD_CONTROLS",
+      "CARD_LOST_BLOCK",
+      "CARD_REPLACEMENT",
+      "CARD_LIMIT_CHANGE",
+      "CARD_APPLICATION",
+      "CARD_ACTIVATION",
+      "RECURRING_QUERY",
+      "RECURRING_STOP",
+      "RECURRING_CREATE",
+      "RECURRING_MODIFY",
+      "POLICY_RETRIEVAL",
+      "SECURITY_INJECTION",
+      "SECURITY_PRIVACY",
+      "BILL_TO_TRANSFER",
+      "TRANSACTION_TO_TRANSFER",
+      "FRAUD_PROTECTION_DISPUTE",
+      "SPENDING_TO_RECURRING_STOP",
+      "ACCOUNT_TO_INVESTMENT",
+      "CARD_ANOMALY_PROTECT",
+      "BUDGET_TO_SCHEDULE",
+      "PAYMENT_RISK_ESCALATION"
+    ]
+  },
+  "selection_note": "Family IDs, not final runnable tasks. Layers overlap. Minimal is a deterministic greedy upper bound covering available candidate primitives, not proof of a minimum or complete six-domain coverage."
+}

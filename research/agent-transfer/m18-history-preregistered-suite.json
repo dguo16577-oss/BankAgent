@@ -1,0 +1,10 @@
+{
+  "shards": [
+    {
+      "name": "historical_recipient_h01_h10",
+      "mode": "history",
+      "manifest": "research/agent-transfer/m18-history-preregistered.jsonl",
+      "case_ids": ["H01", "H02", "H03", "H04", "H05", "H06", "H07", "H08", "H09", "H10"]
+    }
+  ]
+}
