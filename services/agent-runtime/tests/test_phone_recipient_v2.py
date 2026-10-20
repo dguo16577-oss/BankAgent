@@ -57,7 +57,7 @@ class PhoneRecipientTests(unittest.IsolatedAsyncioTestCase):
             with self.subTest(query=query):
                 bank = CancellableBank()
                 registry = ToolRegistry(bank)
-                self.assertEqual(len(registry.visible()), 49)
+                self.assertEqual(len(registry.visible()), 50)
                 observation = await registry.call("resolve_recipient", {"query": query}, Task(
                     session_binding="x", customer_id="alice", goal="test"), "SESSION=alice")
                 self.assertEqual(observation.structured_result["status"], expected)

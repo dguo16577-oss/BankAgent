@@ -231,7 +231,7 @@ class CardPostgreSqlIT {
     assertThat(
             db.queryForObject(
                 "select count(*) from flyway_schema_history where success", Long.class))
-        .isEqualTo(33);
+        .isEqualTo(34);
   }
 
   @Test

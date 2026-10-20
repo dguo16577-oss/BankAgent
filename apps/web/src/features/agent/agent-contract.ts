@@ -51,6 +51,8 @@ export type AgentTask = {
     | "WAITING_CONFIRMATION"
     | "WAITING_AUTH"
     | "SUCCEEDED"
+    | "PARTIAL"
+    | "BLOCKED_PROVIDER"
     | "FAILED"
     | "CANCELLED";
   steps: { step_id: string; tool: string; status: string }[];
@@ -73,6 +75,8 @@ export type AgentTask = {
   }[];
   receipt?: Record<string, unknown>;
   receiptKind?: AgentTask["confirmationKind"];
+  completedActionCount: number;
+  failedActionCount: number;
   errorCode?: string;
 };
 export type AgentMessage = AgentReply & { task?: AgentTask };
@@ -170,6 +174,8 @@ export function parseAgentMessage(value: unknown): AgentMessage {
       "WAITING_CONFIRMATION",
       "WAITING_AUTH",
       "SUCCEEDED",
+      "PARTIAL",
+      "BLOCKED_PROVIDER",
       "FAILED",
       "CANCELLED",
     ].includes(String(value.status)) ||
@@ -377,6 +383,10 @@ export function parseAgentMessage(value: unknown): AgentMessage {
       options,
       receipt,
       receiptKind,
+      completedActionCount: completedActions.length,
+      failedActionCount: Array.isArray(value.failed_actions)
+        ? value.failed_actions.length
+        : 0,
       errorCode:
         typeof value.error_code === "string" ? value.error_code : undefined,
     },

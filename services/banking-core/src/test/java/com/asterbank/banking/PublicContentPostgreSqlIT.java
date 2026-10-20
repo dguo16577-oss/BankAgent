@@ -584,7 +584,7 @@ class PublicContentPostgreSqlIT {
     assertThat(
             db.queryForObject(
                 "select count(*) from flyway_schema_history where success", Integer.class))
-        .isEqualTo(33);
+        .isEqualTo(34);
     assertThat(
             db.queryForObject(
                 "select count(*) from pg_tables where schemaname='public' and tablename like 'public_%'",

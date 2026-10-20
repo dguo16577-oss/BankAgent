@@ -25,6 +25,11 @@
     "source": "apps/web/src/app/app/agent/page.tsx"
   },
   {
+    "route": "/app/agent-copilot",
+    "surface": "Customer",
+    "source": "apps/web/src/app/app/agent-copilot/page.tsx"
+  },
+  {
     "route": "/app/applications",
     "surface": "Customer",
     "source": "apps/web/src/app/app/applications/page.tsx"

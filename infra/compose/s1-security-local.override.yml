@@ -1,0 +1,8 @@
+# Disposable S1 test stack: loopback-only direct Bank/PostgreSQL access.
+services:
+  banking-core:
+    ports:
+      - "127.0.0.1:18088:8080"
+  postgres:
+    ports:
+      - "127.0.0.1:15438:5432"

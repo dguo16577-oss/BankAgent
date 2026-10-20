@@ -5,11 +5,14 @@ from __future__ import annotations
 import json
 import os
 import re
+from pathlib import Path
 from typing import Literal
 
 import httpx
+from opentelemetry import trace
 
 from .knowledge import SourceFact
+from .telemetry import traced, outgoing_headers
 
 Intent = Literal["TRANSFER", "ACCOUNTS", "SPENDING", "TRANSACTIONS", "CARDS", "RECURRING", "PUBLIC", "UNKNOWN"]
 INTENTS = frozenset({"TRANSFER", "ACCOUNTS", "SPENDING", "TRANSACTIONS", "CARDS", "RECURRING", "PUBLIC", "UNKNOWN"})
@@ -34,7 +37,14 @@ def _safe_intent_signal(message: str) -> str:
 
 class DeepSeekClassifier:
     def __init__(self, key: str | None = None, *, base_url: str = "https://api.deepseek.com", transport: httpx.AsyncBaseTransport | None = None) -> None:
-        self.key = key if key is not None else os.getenv("DEEPSEEK_API_KEY", "")
+        if key is not None:
+            self.key = key
+        elif key_file := os.getenv("DEEPSEEK_API_KEY_FILE"):
+            self.key = Path(key_file).read_text(encoding="utf-8").strip()
+            if not self.key:
+                raise ValueError("DEEPSEEK_API_KEY_FILE is empty")
+        else:
+            self.key = os.getenv("DEEPSEEK_API_KEY", "")
         self.base_url = base_url.rstrip("/")
         self.model = os.getenv("DEEPSEEK_MODEL", "deepseek-flash")
         self.transport = transport
@@ -95,13 +105,16 @@ class DeepSeekClassifier:
         except (httpx.HTTPError, KeyError, IndexError, TypeError, ValueError):
             return None
 
+    @traced('model.completion')
     async def _json_completion(self, system: str, user: str, max_tokens: int) -> dict:
+        if len((system + user).encode('utf-8')) > int(os.getenv('ASTER_MODEL_MAX_INPUT_BYTES', '500000')):
+            raise ValueError('MODEL_CONTEXT_BUDGET_EXCEEDED')
         # DeepSeek may keep a non-streaming request open while inference is queued.
         # Keep connection/write failures short, but allow a bounded inference wait.
         async with httpx.AsyncClient(timeout=MODEL_HTTP_TIMEOUT, follow_redirects=False, transport=self.transport) as client:
             response = await client.post(
                 f"{self.base_url}/chat/completions",
-                headers={"Authorization": f"Bearer {self.key}"},
+                headers=outgoing_headers({"Authorization": f"Bearer {self.key}"}),
                 json={
                     "model": self.model,
                     "thinking": {"type": "disabled"},
@@ -112,7 +125,13 @@ class DeepSeekClassifier:
                 },
             )
         response.raise_for_status()
-        content = response.json()["choices"][0]["message"]["content"]
+        payload = response.json()
+        usage = payload.get('usage', {})
+        for key in ('prompt_tokens', 'completion_tokens', 'total_tokens'):
+            value = usage.get(key) if isinstance(usage, dict) else None
+            if isinstance(value, int) and not isinstance(value, bool) and value >= 0:
+                trace.get_current_span().set_attribute('model.' + key, value)
+        content = payload["choices"][0]["message"]["content"]
         result = json.loads(content)
         if not isinstance(result, dict):
             raise ValueError("Expected JSON object")

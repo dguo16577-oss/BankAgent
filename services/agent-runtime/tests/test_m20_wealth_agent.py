@@ -113,7 +113,7 @@ class WealthAgentCases(unittest.IsolatedAsyncioTestCase):
 
     async def test_w01_w02_w03_w04_w05_products_compare_and_evidence(self):
         names = [t["name"] for t in self.registry.visible()]
-        self.assertEqual(len(names), 49)
+        self.assertEqual(len(names), 50)
         self.assertFalse(any(name.startswith("execute_") for name in names))
         listed = await self.observed("list_investment_products", {})
         self.assertEqual(len(listed["products"]), 2)

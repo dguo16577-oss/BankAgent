@@ -14,6 +14,16 @@ docker compose --env-file .env.demo -f infra/compose/demo.compose.yml up -d --bu
 docker compose --env-file .env.demo -f infra/compose/demo.compose.yml ps
 ```
 
+### Agent 演示
+
+基础银行服务可以独立运行。若要启用真实模型 Agent，将测试用 DeepSeek 密钥保存在仓库外的受限 UTF-8 文件中，在被忽略的 `.env.demo` 设置 `DEEPSEEK_API_KEY_FILE` 为该文件的绝对路径，然后启动 Agent overlay：
+
+```sh
+docker compose --env-file .env.demo -f infra/compose/demo.compose.yml -f infra/compose/agent.compose.yml up -d --build --wait --wait-timeout 180
+```
+
+Web 经容器内部地址 `agent-runtime:8001` 转发到 Agent；Agent 经 `banking-core:8080` 访问银行服务。Agent 不发布主机端口，使用单 worker。密钥作为只读 Compose secret 挂载到 `/run/secrets/deepseek_api_key`。不要将密钥值写入 `.env.demo`、命令行或源码包。单容器健康检查不能替代登录、真实模型调用和金融确认的完整联调。
+
 所有服务共享隔离的 internal 网络；仅 Nginx 另接入口网络，使 Docker Desktop/Linux 能将其主机端口发布。
 默认仅 Nginx 绑定主机 `127.0.0.1:8088`。不占用本机 8080，不暴露数据库、Java 或 Node 端口。
 需要局域网展示时显式设置 `DEMO_BIND_ADDRESS=0.0.0.0`，并由主机防火墙限制访问。

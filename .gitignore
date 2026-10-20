@@ -1,4 +1,7 @@
 node_modules/
+.venv/
+**/.venv-mcp/
+.pytest_cache/
 .next/
 out/
 dist/
@@ -10,47 +13,25 @@ test-results/
 !.env.example
 *.log
 .DS_Store
-.idea/
-.vscode/
-*.pem
-*.key
-*.p12
-*.pfx
-*.jks
-*.keystore
-credentials*.json
-secrets*.json
-*_credentials.json
-*.db
-*.sqlite
-*.sqlite3
-*.bak
-*.dump
 services/banking-core/target/
 services/banking-core/target-*/
 
 !.env.production.example
 backups/
+artifacts/
 
 services/agent-runtime/.venv/
-services/agent-runtime/venv/
 services/agent-runtime/**/__pycache__/
 
-# Local handoff bundles are kept outside Git history.
-/*.zip
-/*.zip.sha256
-/README-SELECT-THIS-PACKAGE.md
-
-# Generated execution evidence may contain prompts, responses, demo-account
-# snapshots, or machine-local details. Keep only reviewed, authored evaluation
-# fixtures and compact summaries; all raw or generated evidence remains local.
-/artifacts/**
-!/artifacts/README.HANDOFF.md
-!/artifacts/agent-eval/
-!/artifacts/agent-eval/**
-!/artifacts/m18-benchmark-cases.json
-!/artifacts/m18-benchmark-manifest.json
-!/artifacts/m18-final-benchmark-cases.json
-!/artifacts/m18-final-benchmark-manifest.json
-!/artifacts/m18-final-benchmark-summary.json
-!/artifacts/six-domain-handoff-audit.json
+# Local caches, handoff archives and runtime evidence are not source releases.
+**/__pycache__/
+*.py[cod]
+.local-backups/
+.publish/
+deliverables/
+docs.zip
+docs/screenshots/
+*.pem
+*.pfx
+*.p12
+*.key

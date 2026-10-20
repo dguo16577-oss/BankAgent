@@ -1,0 +1,6 @@
+# Local-only R1 browser acceptance. Never use this overlay for public deployment.
+services:
+  banking-core:
+    environment:
+      ASTER_WEB_ALLOWED_ORIGINS_0: http://127.0.0.1:3000
+      ASTER_WEB_ALLOWED_ORIGINS_1: http://localhost:3000

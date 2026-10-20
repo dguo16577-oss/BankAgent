@@ -1,6 +1,7 @@
 packages:
   - apps/*
 allowBuilds:
+  "@scarf/scarf": false
   esbuild: true
   msw: true
   sharp: true

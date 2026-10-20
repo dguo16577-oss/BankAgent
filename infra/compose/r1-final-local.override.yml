@@ -1,0 +1,5 @@
+# Local-only Agent endpoint for R1 acceptance against the isolated bank.
+services:
+  agent-runtime:
+    ports:
+      - "127.0.0.1:${R1_AGENT_PORT:-18091}:8001"

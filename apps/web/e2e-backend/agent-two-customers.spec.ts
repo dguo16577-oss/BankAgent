@@ -52,15 +52,11 @@ test("Agent proposal settles once between two isolated customer sessions", async
       .fill("转给 Lin Wei 10 元");
     await alexPage.getByRole("button", { name: "Send message" }).click();
     await expect(
-      alexPage.getByRole("button", { name: "Review transfer proposal" }),
+      alexPage.getByRole("button", { name: "Confirm transfer" }),
     ).toBeVisible();
     expect(await balance(alex, "acc_current")).toBe(alexBefore);
     expect(await balance(lin, "acc_lin_current")).toBe(linBefore);
 
-    await alexPage
-      .getByRole("button", { name: "Review transfer proposal" })
-      .click();
-    await expect(alexPage).toHaveURL(/\/app\/payments\/transfers\/review\//);
     await alexPage.screenshot({
       path: "docs/screenshots/competition-agent-transfer-review-1440.png",
       fullPage: true,
@@ -69,8 +65,8 @@ test("Agent proposal settles once between two isolated customer sessions", async
     await alexPage.getByRole("button", { name: "Confirm transfer" }).click();
     await completeVerification(alexPage);
     await expect(
-      alexPage.getByRole("heading", { name: "Transfer completed" }),
-    ).toBeVisible();
+      alexPage.getByText(/^Transfer completed\. Reference:/),
+    ).toBeVisible({ timeout: 30_000 });
     await alexPage.screenshot({
       path: "docs/screenshots/competition-agent-transfer-receipt-1440.png",
       fullPage: true,

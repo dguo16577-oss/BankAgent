@@ -167,3 +167,20 @@ it("labels a completed receipt from its action rather than the next pending acti
   expect(response.task?.confirmationKind).toBe("RECURRING_STOP");
   expect(response.task?.receiptKind).toBe("RENEWAL_REMINDER");
 });
+
+it("accepts a bank-rejected partially completed task and retains action counts", () => {
+  const response = parseAgentMessage({
+    task_id: "e".repeat(32),
+    status: "PARTIAL",
+    mode: "DEEPSEEK",
+    message: "The bank rejected the second action; the first remains complete.",
+    steps: [],
+    completed_actions: [{ kind: "CARD_ACTION", receipt_id: "card_receipt" }],
+    failed_actions: [{ kind: "RECURRING_STOP", status: "REJECTED" }],
+    error_code: "RECURRING_PAYMENT_CHANGED",
+  });
+  expect(response.task?.status).toBe("PARTIAL");
+  expect(response.task?.completedActionCount).toBe(1);
+  expect(response.task?.failedActionCount).toBe(1);
+  expect(response.task?.confirmation).toBeUndefined();
+});

@@ -167,7 +167,7 @@ class CrossDomainTests(unittest.IsolatedAsyncioTestCase):
         rejected = await runtime.confirm(second.task_id,
             ConfirmRequest(intent_id="stop_intent_1", intent_hash="e" * 64,
                            action_authorization_id="auth_stop_1"), self.cookie)
-        self.assertEqual(rejected.status.value, "FAILED")
+        self.assertEqual(rejected.status.value, "PARTIAL")
         self.assertEqual(bank.card["status"], "FROZEN")
         self.assertEqual(bank.debits, 0)
         self.assertEqual(bank.stop_intent["status"], "CANCELLED")
@@ -301,7 +301,7 @@ class CrossDomainTests(unittest.IsolatedAsyncioTestCase):
         prepared = await runtime.chat("锁卡后再转账", self.cookie)
         final = await runtime.confirm(prepared.task_id,
             ConfirmRequest(intent_id="card_intent_1", intent_hash="c" * 64), self.cookie)
-        self.assertEqual(final.status.value, "FAILED")
+        self.assertEqual(final.status.value, "PARTIAL")
         self.assertEqual(bank.card["status"], "FROZEN")
         self.assertEqual(bank.debits, 0)
         self.assertEqual(len(final.completed_actions), 1)

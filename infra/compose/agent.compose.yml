@@ -1,0 +1,67 @@
+# Compose overlay for the demo or production stack. The key remains in an ignored host file.
+services:
+  web:
+    environment:
+      ASTER_AGENT_RUNTIME_URL: http://agent-runtime:8001
+      ASTER_BANKING_CORE_URL: http://banking-core:8080
+      AGENT_UI_V2_ENABLED: "true"
+      COPILOTKIT_TELEMETRY_DISABLED: "true"
+  agent-runtime:
+    image: aster-agent-runtime:v1.1-dev
+    build:
+      context: ../..
+      dockerfile: services/agent-runtime/Dockerfile
+    environment:
+      AGENT_RUNTIME_VERSION: v2
+      ASTER_OTEL_ENABLED: ${ASTER_OTEL_ENABLED:-0}
+      ASTER_MCP_ENABLED: ${ASTER_MCP_ENABLED:-0}
+      ASTER_MCP_BASE_URL: http://127.0.0.1:8001
+      BANKING_API_BASE_URL: http://banking-core:8080
+      AGENT_STATE_ENABLED: "1"
+      PGHOST: postgres
+      PGPORT: "5432"
+      PGDATABASE: ${DB_NAME:-asterbank}
+      PGUSER: ${DB_USER:-asterbank}
+      PGPASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in an ignored env file}
+      DEEPSEEK_API_KEY_FILE: /run/secrets/deepseek_api_key
+    secrets: [deepseek_api_key]
+    depends_on:
+      banking-core: { condition: service_healthy }
+      agent-state-migrate: { condition: service_completed_successfully }
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/health', timeout=3)"
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 15s
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    read_only: true
+    tmpfs: [/tmp]
+    pids_limit: 128
+    restart: unless-stopped
+    networks: [aster, agent-egress]
+  agent-state-migrate:
+    image: postgres:17-alpine
+    environment:
+      PGHOST: postgres
+      PGPORT: "5432"
+      PGDATABASE: ${DB_NAME:-asterbank}
+      PGUSER: ${DB_USER:-asterbank}
+      PGPASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in an ignored env file}
+    volumes:
+      - ../../services/agent-runtime/sql/001_agent_state.sql:/schema/001_agent_state.sql:ro
+    command:
+      ["psql", "-v", "ON_ERROR_STOP=1", "-f", "/schema/001_agent_state.sql"]
+    depends_on:
+      postgres: { condition: service_healthy }
+    networks: [aster]
+secrets:
+  deepseek_api_key:
+    file: ${DEEPSEEK_API_KEY_FILE:?Set path to an ignored file containing a test key}
+networks:
+  agent-egress: {}

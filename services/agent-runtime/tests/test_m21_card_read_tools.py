@@ -91,7 +91,7 @@ class CardReadToolsTest(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(detail.trust, "UNTRUSTED_EXTERNAL_DATA")
         comparison = await self.observed("compare_card_products", {"slugs": ["everyday-debit-card", "travel-credit-card"]})
         self.assertIn("type", comparison.structured_result["differences"])
-        self.assertEqual(len(self.registry.visible()), 49)
+        self.assertEqual(len(self.registry.visible()), 50)
 
 
 if __name__ == "__main__":

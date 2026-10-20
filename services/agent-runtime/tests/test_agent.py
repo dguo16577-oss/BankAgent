@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import json
+import os
 import pathlib
 import sys
+import tempfile
 import unittest
 from datetime import datetime, timedelta, timezone
+from unittest.mock import patch
 
 import httpx
 
@@ -22,6 +25,17 @@ class DeepSeekTimeoutTests(unittest.TestCase):
         self.assertGreaterEqual(MODEL_HTTP_TIMEOUT.read, 60)
         self.assertLessEqual(MODEL_HTTP_TIMEOUT.connect, 20)
         self.assertLessEqual(MODEL_HTTP_TIMEOUT.write, 10)
+
+    def test_key_file_is_used_without_exposing_its_contents(self):
+        with tempfile.TemporaryDirectory() as directory:
+            secret = pathlib.Path(directory) / "key"
+            secret.write_text("test-only-key\n", encoding="utf-8")
+            with patch.dict(os.environ, {"DEEPSEEK_API_KEY_FILE": str(secret), "DEEPSEEK_API_KEY": "ignored"}):
+                self.assertEqual(DeepSeekClassifier().key, "test-only-key")
+            secret.write_text("\n", encoding="utf-8")
+            with patch.dict(os.environ, {"DEEPSEEK_API_KEY_FILE": str(secret)}):
+                with self.assertRaisesRegex(ValueError, "DEEPSEEK_API_KEY_FILE is empty"):
+                    DeepSeekClassifier()
 
 
 class FakeClassifier:

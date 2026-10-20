@@ -183,7 +183,7 @@ class PostgreSqlIT {
     assertThat(
             jdbc.queryForObject(
                 "select count(*) from flyway_schema_history where success", Integer.class))
-        .isEqualTo(33);
+        .isEqualTo(34);
     assertThat(context.getEnvironment().getProperty("spring.jpa.hibernate.ddl-auto"))
         .isEqualTo("validate");
     assertThat(

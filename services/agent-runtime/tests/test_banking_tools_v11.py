@@ -139,6 +139,7 @@ class ToolV11Tests(unittest.IsolatedAsyncioTestCase):
     async def test_registry_has_read_and_prepare_tools_without_execute(self):
         tools = self.registry.visible()
         self.assertEqual([entry["name"] for entry in tools], [
+            "search_bank_knowledge",
             "list_accounts", "get_account", "list_cards", "get_card",
             "get_card_controls", "get_card_limits", "list_card_products", "get_card_product", "compare_card_products",
             "list_card_applications", "get_card_application", "list_credit_limit_applications", "get_credit_limit_application",

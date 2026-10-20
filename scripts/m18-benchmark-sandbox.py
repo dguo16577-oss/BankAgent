@@ -206,6 +206,10 @@ def main() -> int:
                         help="Run real DeepSeek schedule/AA create-and-cancel through trusted confirmation")
     parser.add_argument("--m19-bill-smoke", action="store_true",
                         help="Run nine real DeepSeek read-only bill-analysis cases in the disposable bank")
+    parser.add_argument("--agui-real-smoke", action="store_true",
+                        help="Run real DeepSeek AG-UI read/prepare transport cases in the disposable bank")
+    parser.add_argument("--agui-browser-smoke", action="store_true",
+                        help="Run the packaged CopilotKit UI against real DeepSeek and disposable Spring/PostgreSQL")
     parser.add_argument("--history-output", type=Path,
                         help="Run-specific history evidence path; keeps prior convenience evidence intact")
     options = parser.parse_args()
@@ -257,7 +261,7 @@ def main() -> int:
     container = f"aster-m18-{suffix}"
     database, user = "aster_m18", "aster_m18"
     password = secrets.token_urlsafe(24)
-    spring_port = free_port()
+    spring_port = 18080 if options.agui_browser_smoke else free_port()
     spring = None
     log = None
     created = False
@@ -280,7 +284,9 @@ def main() -> int:
                             "DB_NAME": database, "DB_USER": user, "DB_PASSWORD": password})
         spring = subprocess.Popen([str(java), "-Xmx512m", "-XX:+UseSerialGC", "-jar", str(JAR),
             "--spring.profiles.active=local,demo,test", f"--server.port={spring_port}",
-            "--server.address=127.0.0.1"], cwd=JAR.parent.parent, env=environment,
+            "--server.address=127.0.0.1",
+            *(["--aster.web.allowed-origins[0]=http://localhost:3000"]
+              if options.agui_browser_smoke else [])], cwd=JAR.parent.parent, env=environment,
             stdout=log, stderr=subprocess.STDOUT,
             creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         origin = f"http://127.0.0.1:{spring_port}"
@@ -295,6 +301,24 @@ def main() -> int:
         pilot_environment.update({"BANKING_API_BASE_URL": origin,
             "ASTER_BENCHMARK_SANDBOX": "1", "ASTER_BENCHMARK_POSTGRES_CONTAINER": container,
             "ASTER_BENCHMARK_DB_NAME": database, "ASTER_BENCHMARK_DB_USER": user})
+        if options.agui_browser_smoke:
+            browser = subprocess.run(["node", str(ROOT / "scripts/test-agui-browser-live.mjs")],
+                cwd=ROOT, env=pilot_environment, capture_output=True, text=True,
+                encoding="utf-8", errors="replace", timeout=1800)
+            if browser.returncode != 0:
+                raise RuntimeError(f"Isolated AG-UI browser smoke failed; see {log_path}:\n"
+                                   f"{browser.stdout[-800:]}\n{browser.stderr[-2000:]}")
+            print(browser.stdout, end="")
+            return 0
+        if options.agui_real_smoke:
+            agui = subprocess.run([sys.executable, str(ROOT / "scripts/agui-real-smoke.py")],
+                cwd=ROOT, env=pilot_environment, capture_output=True, text=True,
+                encoding="utf-8", errors="replace", timeout=900)
+            if agui.returncode != 0:
+                raise RuntimeError(f"Isolated AG-UI real-model smoke failed; see {log_path}:\n"
+                                   f"{agui.stdout[-800:]}\n{agui.stderr[-1800:]}")
+            print(agui.stdout, end="")
+            return 0
         if options.m19_bill_smoke:
             key = os.getenv("DEEPSEEK_API_KEY") or Path(os.getenv(
                 "DEEPSEEK_API_KEY_FILE", "E:/deeoseekapikey.txt")).read_text(encoding="utf-8").strip()

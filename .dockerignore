@@ -1,6 +1,7 @@
 **/node_modules
 **/.next
 **/target
+**/target-*
 **/coverage
 **/test-results
 **/playwright-report
@@ -13,5 +14,7 @@
 artifacts
 backups
 docs/screenshots
-
-services/banking-core/target-b4
+deliverables
+research
+docs.zip
+**/*.zip

@@ -164,6 +164,8 @@ const dependencies = (r) => {
   if (r === "/login") return "/customer/session; /customer/auth/login";
   if (r.startsWith("/app")) {
     const token = r.split("/")[2];
+    if (token === "agent-copilot")
+      return "Customer session; CopilotKit proxy; Agent v2";
     return (
       {
         overview: "/customer/overview",
@@ -248,9 +250,11 @@ const routeDoc =
           : r.route.split("/").at(-1) || "Public home",
       entry(r.route),
       dependencies(r.route),
-      ["/app/agent", "/app/settings"].includes(r.route)
-        ? "Intentional informational shell"
-        : "Active",
+      r.route === "/app/agent-copilot"
+        ? "Experimental; feature flag"
+        : ["/app/agent", "/app/settings"].includes(r.route)
+          ? "Intentional informational shell"
+          : "Active",
     ]),
   );
 const backendPath = "docs/backend/implementation-matrix.md";

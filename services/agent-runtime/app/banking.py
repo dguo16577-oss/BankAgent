@@ -13,6 +13,7 @@ from typing import Any
 from urllib.parse import unquote, urlparse
 
 import httpx
+from .telemetry import traced, outgoing_headers
 
 
 CUSTOMER_GET_PATHS = frozenset(
@@ -291,6 +292,7 @@ class BankingGateway:
         assert result is not None
         return result
 
+    @traced('bank.read')
     async def _get(self, path: str, headers: dict[str, str], *, params: dict[str, str | int] | None = None,
                    allow_not_found: bool = False) -> dict[str, Any] | None:
         try:
@@ -300,7 +302,7 @@ class BankingGateway:
                 timeout=httpx.Timeout(5.0),
                 follow_redirects=False,
             ) as client:
-                response = await client.get(path, headers=headers, params=params)
+                response = await client.get(path, headers=outgoing_headers(headers), params=params)
         except httpx.HTTPError as exc:
             raise BankingUnavailableError from exc
         if response.status_code == 401:

@@ -10,6 +10,14 @@
 docker compose --env-file .env.production -f infra/compose/prod.compose.yml up -d --build --wait --wait-timeout 180
 ```
 
+如需在目标环境运行 Agent，在未提交的 `.env.production` 中设置 `DEEPSEEK_API_KEY_FILE` 为主机上受限密钥文件的绝对路径，并附加 `infra/compose/agent.compose.yml`：
+
+```sh
+docker compose --env-file .env.production -f infra/compose/prod.compose.yml -f infra/compose/agent.compose.yml up -d --build --wait --wait-timeout 180
+```
+
+此配置只提供容器互通及只读密钥挂载。实际部署前仍需在目标机验证 HTTPS、模型出站、数据库 TLS、密钥轮换、镜像扫描，以及浏览器中的完整金融确认流程。
+
 只发布 Nginx 80/443；80 固定跳转配置的 HTTPS hostname，443 终止 TLS。证书私钥由主机只读挂载。服务间使用 web:3000、banking-core:8080。数据库可以是受控网络中的 managed PostgreSQL 17。
 生产模板需要按托管数据库要求配置传输 TLS/信任根、网络 allowlist 和备份策略；本轮不代为配置云服务。
 

@@ -27,6 +27,10 @@ class ContextBuilder:
             "current_time_utc": datetime.now(timezone.utc).isoformat(),
             "conversation": [{"text": turn["text"], "role": turn["role"], "trust": "TRUSTED_USER_INTENT" if turn["role"] == "user" else "TRUSTED_SYSTEM"} for turn in task.conversation],
             "state": {"status": task.status, "revision": task.revision, "step_count": task.step_count,
+                      "intent_profile": task.intent_profile,
+                      "task_ledger": [{key: _model_safe(step.get(key)) for key in (
+                          "step_id", "goal", "kind", "status", "dependencies", "evidence_tools",
+                          "evidence_refs", "observation_floor", "failure_reason")} for step in task.ledger],
                       "selected_recipient_id": task.selected_recipient_id,
                       "has_prepared_intent": task.active_intent is not None,
                       "analytical_scope": task.analytical_scope,

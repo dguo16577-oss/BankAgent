@@ -1,7 +1,10 @@
 name: aster-demo
 services:
   reverse-proxy:
-    image: nginx:1.28.3-alpine
+    image: aster-proxy:v1.1-dev
+    build:
+      context: ../..
+      dockerfile: infra/nginx/Dockerfile
     ports:
       - "${DEMO_BIND_ADDRESS:-127.0.0.1}:${DEMO_PORT:-8088}:80"
     volumes:

@@ -1,0 +1,41 @@
+# Compose overlay: add after demo.compose.yml and agent.compose.yml.
+services:
+  knowledge-service:
+    image: aster-knowledge-service:v1.1-dev
+    build:
+      context: ../..
+      dockerfile: services/knowledge-service/Dockerfile
+      additional_contexts:
+        embedding-cache: ${ASTER_EMBEDDING_CACHE:?Set approved local multilingual-e5-small model cache path}
+    environment:
+      PGHOST: postgres
+      PGPORT: 5432
+      PGDATABASE: ${DB_NAME:-asterbank}
+      PGUSER: ${DB_USER:-asterbank}
+      PGPASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in an ignored env file}
+    depends_on:
+      banking-core: { condition: service_healthy }
+    networks: [aster]
+    read_only: true
+    mem_limit: 1800m
+    cpus: 2
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8002/health', timeout=3)",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+  agent-runtime:
+    environment:
+      ASTER_MCP_ENABLED: "1"
+      KNOWLEDGE_SERVICE_URL: http://knowledge-service:8002
+    depends_on:
+      knowledge-service: { condition: service_healthy }

@@ -2,6 +2,8 @@
 
 `compose/postgres.compose.yml` 提供仅绑定 `127.0.0.1:5432` 的本地 PostgreSQL；`demo.compose.yml`、`e2e.compose.yml`、`packaged-test.compose.yml` 和 `prod.compose.yml` 是不同用途的组合，不应混用。`nginx/` 是演示代理，Web/Banking Core Dockerfile 分别位于各模块。启动前阅读根 [交接入口](../HANDOFF-README.md) 和 [部署基础](../docs/deployment/production-foundation.md)。
 
+需要自然语言 Agent 时，在 Demo 或 Prod Compose 后附加 `compose/agent.compose.yml`。该 overlay 构建 Python Agent、设置容器内服务地址，并从受限主机文件挂载只读密钥。见 [Demo 部署](../docs/deployment/demo-deployment.md)。
+
 ## 本地数据库
 
 ```powershell

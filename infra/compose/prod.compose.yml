@@ -2,7 +2,10 @@
 name: aster-prod
 services:
   reverse-proxy:
-    image: nginx:1.28.3-alpine
+    image: aster-proxy:v1.1-dev
+    build:
+      context: ../..
+      dockerfile: infra/nginx/Dockerfile
     environment:
       PUBLIC_HOST: ${PUBLIC_HOST:?Set the external DNS hostname without scheme or port}
     ports: ["80:80", "443:443"]

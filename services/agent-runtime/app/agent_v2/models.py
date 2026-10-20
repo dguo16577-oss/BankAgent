@@ -50,6 +50,8 @@ class Status(StrEnum):
     WAITING_CONFIRMATION = "WAITING_CONFIRMATION"
     WAITING_AUTH = "WAITING_AUTH"
     BLOCKED = "BLOCKED"
+    BLOCKED_PROVIDER = "BLOCKED_PROVIDER"
+    PARTIAL = "PARTIAL"
     SUCCEEDED = "SUCCEEDED"
     FAILED = "FAILED"
     CANCELLED = "CANCELLED"
@@ -60,11 +62,19 @@ class Observation(StrictModel):
     success: bool
     structured_result: dict[str, Any] = Field(default_factory=dict)
     error: str | None = None
-    trust: Literal["TRUSTED_BANK_STATE", "UNTRUSTED_EXTERNAL_DATA"] = "TRUSTED_BANK_STATE"
+    trust: Literal["TRUSTED_BANK_STATE", "TRUSTED_UI_REGISTRY", "UNTRUSTED_EXTERNAL_DATA"] = "TRUSTED_BANK_STATE"
 
 
 class Task(StrictModel):
     task_id: str = Field(default_factory=lambda: uuid4().hex)
+    conversation_id: str | None = None
+    state_version: int = 0
+    ledger: list[dict[str, Any]] = Field(default_factory=list)
+    intent_profile: dict[str, Any] = Field(default_factory=dict)
+    read_only_overlay: bool = False
+    query_ledger: list[dict[str, Any]] = Field(default_factory=list)
+    pending_tool: dict[str, Any] | None = None
+    last_error: dict[str, str] | None = None
     session_binding: str
     customer_id: str
     goal: str

@@ -5,7 +5,8 @@ export async function recipientJourney(page: Page) {
   await page.goto("/app/payments");
   await page.getByRole("link", { name: "Add recipient", exact: true }).click();
   await expect(page).toHaveURL(/\/app\/payments\/recipients\/new$/);
-  await page.getByLabel("Demo destination reference").fill("demo-lin");
+  // The demo seed already saves demo-lin for Alex. This journey uses a fresh test database.
+  await page.getByLabel("Demo destination reference").fill("demo-lin-savings");
   await page
     .getByRole("button", { name: "Review recipient", exact: true })
     .click();
@@ -67,7 +68,7 @@ export async function recipientJourney(page: Page) {
   await page.goto("/app/payments/transfers/new");
   await expect(
     page.getByLabel("Recipient", { exact: true }).locator("option"),
-  ).not.toContainText(["Lin Wei"]);
+  ).not.toContainText(["•••• 6202"]);
   await page.goto(receipt);
   await expect(
     page.getByRole("heading", { name: "Transfer completed" }),

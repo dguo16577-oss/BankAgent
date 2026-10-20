@@ -3,11 +3,14 @@
 from __future__ import annotations
 
 import os
+from contextlib import AsyncExitStack, asynccontextmanager
 from collections.abc import Callable
 from datetime import datetime
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
+from ag_ui.core import RunAgentInput
+from fastapi.responses import StreamingResponse
 
 from .banking import BankingApiError, BankingAuthenticationError, BankingGateway, BankingUnavailableError
 from .deepseek import DeepSeekClassifier
@@ -19,6 +22,9 @@ from .transfer_planner import DeepSeekToolPlanner, Planner
 from .transfer_runtime import TransferRuntime, looks_like_transfer_command
 from .agent_v2.planner import DeepSeekPlanner, Planner as V2Planner
 from .agent_v2.runtime import AgentRuntimeV2
+from .agui_adapter import AgUiAdapter
+from .telemetry import configure
+from opentelemetry import trace, propagate
 
 
 def create_app(
@@ -29,19 +35,60 @@ def create_app(
     agent_v2_planner: V2Planner | None = None,
     agent_version: str | None = None,
 ) -> FastAPI:
-    app = FastAPI(title="Aster Bank Agent Runtime", version="0.1.0")
-    app.state.gateway = gateway or BankingGateway()
+    selected_gateway = gateway or BankingGateway()
+    configure()
+    mcp_bridge = None
+    if os.getenv("ASTER_MCP_ENABLED", "0") == "1":
+        from .mcp_pilot import MCPBridge
+        mcp_bridge = MCPBridge(selected_gateway)
+
+    @asynccontextmanager
+    async def lifespan(_app: FastAPI):
+        if state_store is not None:
+            state_store.verify_schema()
+        if mcp_bridge is None:
+            yield
+            return
+        async with AsyncExitStack() as stack:
+            await stack.enter_async_context(mcp_bridge.knowledge.session_manager.run())
+            await stack.enter_async_context(mcp_bridge.banking.session_manager.run())
+            yield
+
+    app = FastAPI(title="Aster Bank Agent Runtime", version="0.1.0", lifespan=lifespan)
+    app.state.gateway = selected_gateway
+    app.state.mcp_bridge = mcp_bridge
     app.state.classifier = classifier or DeepSeekClassifier()
     app.state.now_provider = now_provider
     app.state.transfer = TransferRuntime(app.state.gateway, transfer_planner or DeepSeekToolPlanner(app.state.classifier))
     app.state.agent_version = agent_version or os.getenv("AGENT_RUNTIME_VERSION", "v2")
     if app.state.agent_version not in {"v1", "v2"}:
         raise ValueError("AGENT_RUNTIME_VERSION must be v1 or v2")
-    app.state.agent_v2 = AgentRuntimeV2(app.state.gateway, agent_v2_planner or DeepSeekPlanner(app.state.classifier))
+    state_store = None
+    if os.getenv("AGENT_STATE_ENABLED") == "1" or os.getenv("AGENT_STATE_DATABASE_URL"):
+        from .agent_v2.state_store import PostgresTaskStore
+        state_store = PostgresTaskStore()
+    app.state.agent_v2 = AgentRuntimeV2(app.state.gateway, agent_v2_planner or DeepSeekPlanner(app.state.classifier),
+                                        mcp_bridge=mcp_bridge, state_store=state_store)
+    app.state.agui = AgUiAdapter(app.state.agent_v2)
+
+    if mcp_bridge is not None:
+        app.mount("/internal/mcp/knowledge", mcp_bridge.knowledge_app)
+        app.mount("/internal/mcp/banking", mcp_bridge.banking_app)
 
     @app.middleware("http")
     async def no_store(request: Request, call_next):
-        response = await call_next(request)
+        if request.url.path.startswith("/internal/mcp/"):
+            if request.headers.get("origin") or request.url.hostname not in {"localhost", "127.0.0.1"}:
+                return JSONResponse(status_code=403, content={"error": "MCP_ORIGIN_DENIED"})
+            content_length = request.headers.get("content-length", "0")
+            if not content_length.isdecimal() or int(content_length) > 64 * 1024:
+                return JSONResponse(status_code=413, content={"error": "MCP_REQUEST_TOO_LARGE"})
+        with trace.get_tracer('aster.agent').start_as_current_span('agent.http',
+                context=propagate.extract(dict(request.headers)), record_exception=False,
+                set_status_on_exception=False) as span:
+            response = await call_next(request)
+            span.set_attribute('http.response.status_code', response.status_code)
+            response.headers['X-Trace-Id'] = format(span.get_span_context().trace_id, '032x')
         response.headers["Cache-Control"] = "no-store"
         return response
 
@@ -124,6 +171,19 @@ def create_app(
                 raise HTTPException(status_code=400, detail="Unsafe transfer request")
             return await request.app.state.transfer.chat(body.message.strip(), cookie, body.task_id)
         return await chat(ChatRequest(message=body.message, locale=body.locale), request)
+
+    @app.post("/agent/ag-ui")
+    async def agent_agui(body: RunAgentInput, request: Request) -> StreamingResponse:
+        if request.app.state.agent_version != "v2":
+            raise HTTPException(status_code=404, detail="Agent v2 is required")
+        return await request.app.state.agui.stream(body, request.headers.get("cookie", ""))
+
+    @app.get("/agent/ag-ui/thread-state/{thread_id}")
+    async def agent_agui_thread_state(thread_id: str, request: Request) -> dict:
+        if request.app.state.agent_version != "v2":
+            raise HTTPException(status_code=404, detail="Agent v2 is required")
+        return {"task": await request.app.state.agui.thread_state(
+            thread_id, request.headers.get("cookie", ""))}
 
     @app.get("/agent/tasks/{task_id}", response_model=AgentResponse)
     async def agent_task(task_id: str, request: Request) -> AgentResponse:

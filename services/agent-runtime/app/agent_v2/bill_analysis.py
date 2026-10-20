@@ -130,9 +130,17 @@ def period_metadata(start_text: str, end_text: str, *, now: datetime | None = No
     effective_end = min(requested_end, current)
     days = max(0, (effective_end.date() - start.date()).days + (effective_end.time() != datetime.min.time()))
     next_month = (start.replace(day=28) + timedelta(days=4)).replace(day=1)
-    partial_calendar_month = start.day == 1 and requested_end < next_month
+    # A historical interval is not a current period merely because its API
+    # end is 23:59:59 rather than the next exclusive midnight. Completeness
+    # here is retrieval coverage; absence of transactions alone is not a gap.
+    partial_calendar_month = (start.year == current.year and start.month == current.month
+                              and start <= current and requested_end >= current)
     return {"period_start": start.isoformat(), "period_end": effective_end.isoformat(),
-            "requested_end": requested_end.isoformat(), "days_covered": days,
+            "requested_start": start.isoformat(), "requested_end": requested_end.isoformat(),
+            "covered_start": start.isoformat(), "covered_end": effective_end.isoformat(),
+            "as_of_time": current.isoformat(), "missing_periods": [],
+            "coverage_status": "PARTIAL_CURRENT_PERIOD" if requested_end > current or partial_calendar_month else "COMPLETE",
+            "days_covered": days,
             "is_partial_period": requested_end > current or partial_calendar_month}
 
 

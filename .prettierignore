@@ -1,4 +1,6 @@
 node_modules
+**/.venv-mcp/
+.pytest_cache/
 .next
 pnpm-lock.yaml
 apps/web/public/mockServiceWorker.js

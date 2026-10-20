@@ -1,6 +1,8 @@
 # AI Banking — Aster Bank 比赛演示
 
-> **GitHub 仓库说明：** 本仓库由已校验的 2026-10-11 源码交接包展开。为避免泄露或重复存储，原始 ZIP、校验旁文件、运行日志、模型原始轨迹、运行历史和本机环境文件不进入 Git；`PACKAGE-MANIFEST.json` 仅对应原始交接包快照，不代表后续 Git 工作树清单。
+> **当前版本：2026-10-20。** 请先读 [CURRENT-VERSION.md](CURRENT-VERSION.md)
+> 和 [启动说明](START-README.md)。最新 KG/RAG 已部署验证，S1/R1 仍为 PARTIAL。
+> 下方各里程碑段落按历史日期保留，不代表当前功能状态。
 
 > **2026-10-11 交接快照：** 新评测人请先读 [交接总览](HANDOFF-README.md)、[逐项测试矩阵](docs/handoff/manual-test-matrix.md)和[已知问题](docs/handoff/known-issues.md)。下方含多个历史里程碑快照，其旧 API 数量、Agent 工具数和测试结果不能代替本次交接状态。
 
@@ -27,7 +29,7 @@ docker compose --env-file .env.demo -f infra/compose/demo.compose.yml up -d --bu
 推荐 Node.js 24 LTS、pnpm 11.19.0。首次使用：
 
 ```powershell
-cd C:\path\to\BankAgent
+cd D:\BankProject
 pnpm install --frozen-lockfile
 # 先按集成文档启动 PostgreSQL 和 local Spring :18080
 pnpm dev
@@ -38,7 +40,7 @@ pnpm dev
 
 Agent 还需单独启动 `pnpm dev:agent`（Python 依赖见 [Agent Runtime](services/agent-runtime/README.md)）。若 8001 端口不可用，可以改用其他端口，并将 Web 服务端的 `ASTER_AGENT_RUNTIME_URL` 指向它；本机演示使用 18101。在 Agent 进程环境设置 `DEEPSEEK_API_KEY` 才启用 DeepSeek；密钥不传给浏览器。两个客户同时登录要使用普通窗口加无痕窗口，或两个独立浏览器配置；同一浏览器中的不同 localhost 端口仍共享 Cookie。
 
-本机已构建的 Web 与 Agent 可用一条 CMD 命令重启：`scripts\restart-local.cmd all`。也可传 `web` 或 `agent` 单独重启。脚本分别打开日志窗口；保持窗口开启。它只停止占用 3000/8001 且命令行匹配本项目的进程，其他进程占用端口时会报错。Web 需先完成构建，Spring/PostgreSQL 仍需单独运行；Agent 启动脚本会尝试本机默认的密钥文件候选路径，也可优先通过 `DEEPSEEK_API_KEY_FILE` 显式指定，Python 可执行文件通过 `ASTER_AGENT_PYTHON` 指定。脚本不会打印密钥。
+本机已构建的 Web 与 Agent 可用一条 CMD 命令重启：`scripts\restart-local.cmd all`。也可传 `web` 或 `agent` 单独重启。脚本分别打开日志窗口；保持窗口开启。它只停止占用 3000/8001 且命令行匹配本项目的进程，其他进程占用端口时会报错。Web 需先完成构建，Spring/PostgreSQL 仍需单独运行；Agent 默认从 `E:\deeoseekapikey.txt` 读取密钥，可用 `DEEPSEEK_API_KEY_FILE` 指定其他文件，用 `ASTER_AGENT_PYTHON` 指定 Python 可执行文件。脚本不会打印密钥。
 
 生产构建与启动必须明确提供 API origin，例如：
 
