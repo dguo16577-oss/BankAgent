@@ -1,4 +1,6 @@
-# Aster Bank 当前功能缺口清单
+# Aster Bank 功能缺口历史快照（2026-10-02）
+
+> 本文件保留 B4 时点的排查证据，不是当前缺口清单。当前状态见 [项目进度](../project-progress.md)、[综合验收](../milestones/aster-integrated-final-acceptance.md) 和 [剩余问题](../security/integrated-remaining-issues.md)。
 
 核查日期：2026-10-02。依据当前 `v1.1-dev / B4` 源码、OpenAPI 实现矩阵和已保存的验收报告；不把历史 M24 的 48 个接口数当作当前版本。
 

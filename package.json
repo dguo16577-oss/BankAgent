@@ -20,7 +20,7 @@
     "format:check": "prettier --check .",
     "contract:check": "redocly lint contracts/openapi/customer.yaml contracts/openapi/public.yaml && node scripts/audit.mjs",
     "audit:update": "node scripts/audit.mjs --write && node scripts/error-inventory.mjs",
-    "check": "pnpm lint && pnpm typecheck && pnpm contract:check && pnpm test",
+    "check": "pnpm repo:check && pnpm lint && pnpm typecheck && pnpm contract:check && pnpm test",
     "dev:backend": "node scripts/web-runtime.mjs dev backend",
     "dev:agent": "python -m uvicorn app.main:app --app-dir services/agent-runtime --host 127.0.0.1 --port 8001",
     "dev:mock": "node scripts/web-runtime.mjs dev mock",
@@ -30,7 +30,8 @@
     "test:agent:eval": "python scripts/agent-eval.py",
     "agent:eval:export": "python scripts/export-agent-eval.py",
     "integration:check": "node scripts/frontend-integration-audit.mjs",
-    "test:e2e:packaged": "node scripts/packaged-e2e.mjs"
+    "test:e2e:packaged": "node scripts/packaged-e2e.mjs",
+    "repo:check": "node scripts/repository-hygiene.mjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",

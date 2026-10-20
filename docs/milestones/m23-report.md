@@ -6,7 +6,7 @@
 
 1. **RC 定义**：Aster Bank Web RC1 是可重复验证的 Competition Demo；不代表可处理真实资金，也未部署到云端。
 2. **Contract**：Customer 1.9.0、Public 1.2.0 保持冻结；没有修改 YAML、freeze.json 或生成 DTO。开始检查通过，结束检查见下方验证表。
-3. **架构**：Browser → Next.js UI → Spring Security → Application/Domain → PostgreSQL。Public 与 Customer 边界分开，MSW 仅测试或显式启用。详见 [系统架构](../architecture/web-system.md)。
+3. **架构**：Browser → Next.js UI → Spring Security → Application/Domain → PostgreSQL。Public 与 Customer 边界分开，MSW 仅测试或显式启用。详见 [系统架构](../architecture/overview.md)。
 4. **安全覆盖**：保留全部历史后端验证，新增所有冻结 POST 的 CSRF 测试、会话存储故障处理、真实浏览器 Cookie/跨客户/恢复测试。详见 [安全审查](../security/web-security-review.md)。
 5. **Session**：BCrypt 登录、失败统一语义、固定时钟过期、logout 旧 Cookie 拒绝、JDBC 持久化重启继续有效。浏览器重复登录验证 Session ID 轮换。
 6. **Cookie**：SESSION 为 HttpOnly、Lax、Path=/；default Secure=true，local HTTP 例外。XSRF-TOKEN 可由 JS 读取，`document.cookie` 不能读取 SESSION。
