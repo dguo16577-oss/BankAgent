@@ -128,13 +128,18 @@ class SupervisorRegistry(ToolRegistry):
                 or session_binding(cookie) != task.session_binding):
             raise RegistryError("DELEGATION_SCOPE_MISMATCH")
         role, _ = ROLES[name]
-        key = hashlib.sha256(f"{task.task_id}:{task.revision}:{role}:{args.step_id}:{args.delegated_goal}".encode()).hexdigest()
+        step = next(s for s in task.ledger if s["step_id"] == args.step_id)
+        # A new query may reuse the same conversation/task ID and goal wording.
+        # Checkpoint replay is only for this ledger generation and exact scope,
+        # never a cache of an earlier query's balances or policy version.
+        key = hashlib.sha256(json.dumps([task.task_id, task.revision, role, args.step_id,
+            args.delegated_goal, step.get("observation_floor", 0), task.analytical_scope],
+            ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
         existing = next((r for r in task.delegations if r.get("delegation_id") == key), None)
         if existing and existing.get("status") == "SUCCEEDED":
             return Observation(tool_name=name, success=True, structured_result=existing["result"], trust="UNTRUSTED_EXTERNAL_DATA")
         if existing is None and len(task.delegations) >= 4:
             raise RegistryError("DELEGATION_LIMIT_REACHED")
-        step = next(s for s in task.ledger if s["step_id"] == args.step_id)
         step["delegation_required"] = True
         step["delegation_status"] = "RUNNING"
         record = existing or {"delegation_id": key, "parent_task_id": task.task_id, "child_step_id": args.step_id,

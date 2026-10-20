@@ -22,6 +22,29 @@ def parent(customer="alice"):
 
 
 class MultiAgentTests(unittest.IsolatedAsyncioTestCase):
+    async def test_same_wording_new_query_does_not_replay_stale_delegation(self):
+        class Child:
+            async def decide(self, context):
+                if not context["observations"]:
+                    return PlannerDecision(type="TOOL_CALL", tool_call={"tool_name": "list_accounts", "arguments": {}})
+                return PlannerDecision(type="COMPLETE", final_message="已查询当前账户。")
+        factories = []
+        def factory(role):
+            factories.append(role)
+            return Child()
+        current = parent()
+        registry = SupervisorRegistry(CancellableBank(), save_task=lambda _: None, specialist_factory=factory)
+        args = {"step_id": "g1", "delegated_goal": "查询余额"}
+        first = await registry.call("delegate_financial_analysis", args, current, "SESSION=alice")
+        self.assertTrue(first.success)
+        # Runtime creates a new ledger generation for a fresh user query.
+        current.ledger = [copy.deepcopy(parent().ledger[0])]
+        current.ledger[0]["observation_floor"] = len(current.observations)
+        second = await registry.call("delegate_financial_analysis", args, current, "SESSION=alice")
+        self.assertTrue(second.success)
+        self.assertEqual(len(factories), 2)
+        self.assertEqual(len(current.delegations), 2)
+        self.assertEqual(current.delegation_model_calls, 4)
     async def test_supervisor_runtime_uses_independent_specialists_before_completion(self):
         class Child:
             def __init__(self):
