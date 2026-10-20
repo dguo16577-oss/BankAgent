@@ -13,6 +13,7 @@ services:
       dockerfile: services/agent-runtime/Dockerfile
     environment:
       AGENT_RUNTIME_VERSION: v2
+      MULTI_AGENT_ENABLED: ${MULTI_AGENT_ENABLED:-0}
       ASTER_OTEL_ENABLED: ${ASTER_OTEL_ENABLED:-0}
       ASTER_MCP_ENABLED: ${ASTER_MCP_ENABLED:-0}
       ASTER_MCP_BASE_URL: http://127.0.0.1:8001

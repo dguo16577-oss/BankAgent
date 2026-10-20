@@ -25,6 +25,34 @@ def _calendar_data(match: re.Match) -> str:
     return ' '
 
 
+def _numeric_terms(text: str) -> list[str]:
+    amount_context = _CARD_SUFFIX.sub(" ", _CHINESE_CLOCK.sub(
+        " ", _CLOCK.sub(" ", _CALENDAR.sub(_calendar_data, without_complete_phones(text)))))
+    return _NUMBER.findall(amount_context)
+
+
+def has_explicit_amount(text: str) -> bool:
+    """Security evidence check only: never extracts a normal business argument."""
+    return bool(_numeric_terms(text))
+
+
+def matches_bound_amount_revision(text: str, previous: str, proposed: str) -> bool:
+    """Validate an old→new correction against cancelled, bank-bound prior terms.
+
+    Does not extract an amount for business use. Both values must already exist
+    as the trusted previous binding and the model's proposed argument.
+    """
+    match = re.fullmatch(
+        r"\s*把(?:刚才的|原来的|之前的)?\s*(\d+(?:\.\d+)?)\s*(?:元|块|人民币|CNY)?\s*"
+        r"改成\s*(\d+(?:\.\d+)?)\s*(?:元|块|人民币|CNY)?\s*[。.!！]?\s*", text, re.IGNORECASE)
+    if not match:
+        return False
+    try:
+        return Decimal(match[1]) == Decimal(previous) and Decimal(match[2]) == Decimal(proposed)
+    except InvalidOperation:
+        return False
+
+
 def contradicts_explicit_user_amount(turns: list[dict[str, str]], proposed: str) -> bool:
     """Reject clear numeric conflicts in the latest relevant user turn.
 
@@ -37,9 +65,7 @@ def contradicts_explicit_user_amount(turns: list[dict[str, str]], proposed: str)
         text = turn.get("text", "")
         if not re.search(r"转|汇|金额|改成|send|transfer|元|块|CNY|RMB", text, re.IGNORECASE):
             continue
-        amount_context = _CARD_SUFFIX.sub(" ", _CHINESE_CLOCK.sub(
-            " ", _CLOCK.sub(" ", _CALENDAR.sub(_calendar_data, without_complete_phones(text)))))
-        values = _NUMBER.findall(amount_context)
+        values = _numeric_terms(text)
         if not values:
             continue
         try:

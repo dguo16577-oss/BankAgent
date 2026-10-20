@@ -17,6 +17,7 @@ class StrictModel(BaseModel):
 class ToolCall(StrictModel):
     tool_name: str
     arguments: dict[str, Any]
+    step_id: str | None = None
     continue_after_confirmation: bool = False
     scope_clear: list[Literal["account_id", "card_id", "category", "merchant", "currency",
                               "direction", "type", "search", "note_query", "counterparty"]] = Field(default_factory=list)
@@ -70,6 +71,11 @@ class Task(StrictModel):
     conversation_id: str | None = None
     state_version: int = 0
     ledger: list[dict[str, Any]] = Field(default_factory=list)
+    selected_financial_step_id: str | None = None
+    financial_terms: list[dict[str, Any]] = Field(default_factory=list)
+    delegations: list[dict[str, Any]] = Field(default_factory=list)
+    delegation_model_calls: int = 0
+    delegation_tokens_reserved: int = 0
     intent_profile: dict[str, Any] = Field(default_factory=dict)
     read_only_overlay: bool = False
     query_ledger: list[dict[str, Any]] = Field(default_factory=list)

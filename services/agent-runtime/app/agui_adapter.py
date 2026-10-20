@@ -36,6 +36,15 @@ from .banking import BankingAuthenticationError
 from .deepseek import model_progress_sink
 
 _THREAD_ID = re.compile(r"[A-Za-z0-9_-]{1,128}\Z")
+
+
+def _delegations(runtime, task_id: str) -> list[dict]:
+    task = getattr(runtime, "tasks", {}).get(task_id)
+    return [{"role": row["agent_role"], "stepId": row["child_step_id"], "status": row["status"]}
+            for row in getattr(task, "delegations", [])
+            if row.get("agent_role") in {"financial_analyst", "bank_knowledge"}
+            and re.fullmatch(r"g[1-8]", str(row.get("child_step_id", "")))
+            and row.get("status") in {"RUNNING", "SUCCEEDED", "FAILED", "PARTIAL", "CANCELLED"}][:4]
 _LONG_NUMBER = re.compile(r"(?<!\d)\d{12,19}(?!\d)")
 _GROUPED_NUMBER = re.compile(r"(?<!\d)(?:\d[ -]?){12,19}(?!\d)")
 _SECRET = re.compile(
@@ -199,6 +208,7 @@ class AgUiAdapter:
                 "failedActionCount": len(task.failed_actions),
                 "resultCards": _result_cards(self.runtime, task.task_id),
                 "presentation": _presentation(self.runtime, task.task_id),
+                "delegations": _delegations(self.runtime, task.task_id),
                 "lastUserMessage": _safe_text(last_user)[:2000],
                 "lastAssistantMessage": _safe_text(last_answer)[:6000]
                 if task.status.value == "SUCCEEDED" else ""}
@@ -258,6 +268,12 @@ class AgUiAdapter:
                 kind, tool = event
                 if kind in {"MODEL_STARTED", "MODEL_FINISHED", "MODEL_FAILED"}:
                     yield self.encoder.encode(CustomEvent(name="aster.progress", value={"phase": kind}))
+                elif kind in {"DELEGATION_STARTED", "DELEGATION_SUCCEEDED", "DELEGATION_FAILED", "DELEGATION_PARTIAL", "DELEGATION_CANCELLED"}:
+                    match = re.fullmatch(r"(financial_analyst|bank_knowledge)\|(g[1-8])", tool)
+                    if match:
+                        yield self.encoder.encode(CustomEvent(name="aster.delegation", value={
+                            "role": match[1], "stepId": match[2],
+                            "status": "RUNNING" if kind == "DELEGATION_STARTED" else kind.removeprefix("DELEGATION_")}))
                 elif kind == "TOOL_STARTED":
                     call_id = uuid4().hex
                     call_ids[tool] = call_id
@@ -291,6 +307,7 @@ class AgUiAdapter:
                 "failedActionCount": len(result.failed_actions),
                 "resultCards": _result_cards(self.runtime, result.task_id),
                 "presentation": _presentation(self.runtime, result.task_id),
+                "delegations": _delegations(self.runtime, result.task_id),
             }))
             message_id = uuid4().hex
             yield self.encoder.encode(TextMessageStartEvent(message_id=message_id, role="assistant"))

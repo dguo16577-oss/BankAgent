@@ -6,6 +6,7 @@ import asyncio
 import hashlib
 import json
 import logging
+import os
 import re
 import httpx
 from pydantic import ValidationError
@@ -23,6 +24,7 @@ from .analytical_scope import effective_arguments, record_scope
 from .grounding import coverage_notice, validate_analytical_reply
 from .analysis_safety import readonly_user_turn
 from .completeness import mark_cancelled_financial_step, preparation_blocker, update_ledger
+from .financial_terms import select_financial_step, bind_prepared_intent, bind_execution_receipt, validate_execution_binding
 from .lifecycle import CancellationUncertain, LifecycleCoordinator
 from .models import Observation, PlannerDecision, Status, Task
 from .planner import Planner
@@ -74,6 +76,9 @@ class AgentRuntimeV2:
         self.gateway = gateway
         self.planner = planner
         self.registry = ToolRegistry(gateway, mcp_bridge=mcp_bridge)
+        if os.getenv("MULTI_AGENT_ENABLED", "0") == "1":
+            from .multi_agent import SupervisorRegistry
+            self.registry = SupervisorRegistry(gateway, mcp_bridge=mcp_bridge, save_task=self._save)
         self.context_builder = ContextBuilder()
         self.lifecycle = LifecycleCoordinator(gateway)
         self.policy = TransferPolicy()
@@ -303,6 +308,10 @@ class AgentRuntimeV2:
                         self._save(task)
                         return self._response(task, "旧转账尚未确认作废，不能准备新转账。", "BANK_INTENT_STATE_UNKNOWN")
                     task.revision += 1
+                    revised = next((s for s in task.ledger if s.get("step_id") == task.selected_financial_step_id), None)
+                    if revised is not None:
+                        revised["source_quote"] = message.strip()
+                        revised.pop("financial_binding", None)
                     task.observations.clear()
                     task.selected_recipient_id = None
                     task.presented_option_ids.clear()
@@ -418,11 +427,12 @@ class AgentRuntimeV2:
                                    "result": observation.structured_result, "trust": observation.trust})
                 task.pending_tool = None
                 if task.active_intent is not None:
+                    bind_prepared_intent(task, tool, pending["arguments"], task.active_intent)
                     signature = hashlib.sha256(json.dumps(
                         [tool, pending["arguments"]], ensure_ascii=False, sort_keys=True,
                         separators=(",", ":")).encode()).hexdigest()
                     task.pending_prepare = {"tool": tool, "arguments": pending["arguments"],
-                                            "signature": signature}
+                                            "signature": signature, "step_id": task.selected_financial_step_id}
                     task.status = Status.WAITING_CONFIRMATION
                     self._save(task)
                     return self._response(task, "已用原请求键核对银行预备意图；请复核同一份待确认操作。")
@@ -598,7 +608,12 @@ class AgentRuntimeV2:
                                         if turn["role"] == "user"), task.goal)
                     if readonly_user_turn(latest_user):
                         raise RegistryError("READ_ONLY_REQUEST_CANNOT_PREPARE")
-                    blocker = preparation_blocker(task, call.tool_name)
+                    try:
+                        selected_step = select_financial_step(task, call.tool_name, call.step_id)
+                    except ValueError as exc:
+                        raise RegistryError(str(exc)) from exc
+                    task.selected_financial_step_id = selected_step["step_id"] if selected_step else None
+                    blocker = preparation_blocker(task, call.tool_name, task.selected_financial_step_id)
                     if blocker:
                         task.trace.append({"kind": "FINANCIAL_DEPENDENCY_REJECTED",
                                            "tool": call.tool_name, "code": blocker})
@@ -644,7 +659,12 @@ class AgentRuntimeV2:
                                      "state": "IN_FLIGHT", "step": task.step_count}
                 self._save(task)
                 try:
-                    observation = await self.registry.call(call.tool_name, arguments, task, cookie)
+                    from .multi_agent import delegation_progress_sink
+                    progress_token = delegation_progress_sink.set(event_sink)
+                    try:
+                        observation = await self.registry.call(call.tool_name, arguments, task, cookie)
+                    finally:
+                        delegation_progress_sink.reset(progress_token)
                 except Exception:
                     if event_sink:
                         await event_sink("TOOL_FAILED", call.tool_name)
@@ -661,8 +681,12 @@ class AgentRuntimeV2:
                         and not observation.structured_result.get("evidence")):
                     task.trace.append({"kind": "KNOWLEDGE_GAP", "code": "RAG_NO_EVIDENCE"})
                 if call.tool_name in {"prepare_transfer", "prepare_scheduled_transfer", "prepare_cancel_scheduled_transfer", "prepare_split_request", "prepare_cancel_split_request", "prepare_investment_purchase", "prepare_investment_redemption", "prepare_card_action", "prepare_card_application", "prepare_credit_limit_application", "prepare_stop_recurring_payment", "prepare_renewal_reminder"} and task.active_intent is not None:
+                    try:
+                        bind_prepared_intent(task, call.tool_name, arguments, task.active_intent)
+                    except ValueError as exc:
+                        raise RegistryError(str(exc)) from exc
                     task.pending_prepare = {"tool": call.tool_name, "arguments": arguments,
-                                            "signature": signature}
+                                            "signature": signature, "step_id": task.selected_financial_step_id}
                     task.status = Status.WAITING_CONFIRMATION
                     task.trace.append({"kind": "WAITING_CONFIRMATION", "intent_id": task.active_intent["id"]})
                     self._save(task)
@@ -804,6 +828,14 @@ class AgentRuntimeV2:
             if body.intent_id != intent.get("id") or body.intent_hash != intent.get("intentHash"):
                 raise BankingApiError(409, "TRANSFER_INTENT_HASH_MISMATCH")
             kind = task.active_intent_kind or "TRANSFER"
+            if task.execution_uncertain and kind in {"CARD_APPLICATION", "CREDIT_LIMIT_APPLICATION"}:
+                # These submission APIs have no authoritative intent/receipt
+                # lookup. The cached PREPARED snapshot cannot prove no commit.
+                task.status = Status.PARTIAL
+                task.last_error = {"code": "BANKING_RESULT_UNKNOWN", "phase": "EXECUTION_RECONCILIATION"}
+                self._save(task)
+                return self._response(task, "申请提交结果需要银行核实；当前接口没有可核验回执，系统不会重复提交。",
+                                      "BANKING_RESULT_UNKNOWN")
             path = (f"/customer/scheduled-payment-intents/{body.intent_id}" if kind == "SCHEDULE" else
                     f"/customer/split-action-intents/{body.intent_id}" if kind == "SPLIT" else
                     f"/customer/recurring-payment-action-intents/{body.intent_id}" if kind == "RECURRING_STOP" else
@@ -817,6 +849,10 @@ class AgentRuntimeV2:
             allowed = {"PREPARED", "EXECUTED"} if task.execution_uncertain else {"PREPARED"}
             if bank.get("status", "PREPARED") not in allowed or bank.get("intentHash") != body.intent_hash:
                 raise BankingApiError(409, "TRANSFER_INTENT_UNAVAILABLE")
+            try:
+                validate_execution_binding(task, bank)
+            except ValueError as exc:
+                raise BankingApiError(409, str(exc)) from exc
             if task.execution_uncertain and bank.get("status") == "EXECUTED" and kind != "TRANSFER":
                 task.status = Status.PARTIAL
                 task.last_error = {"code": "BANKING_RESULT_UNKNOWN", "phase": "EXECUTION_RECONCILIATION"}
@@ -879,6 +915,7 @@ class AgentRuntimeV2:
                 return self._response(task, "银行响应暂不可确认；可使用同一授权安全重试。", "EXECUTION_OUTCOME_UNKNOWN")
             except BankingApiError as exc:
                 task.failed_actions.append({"kind": kind, "intent_id": body.intent_id,
+                                            "step_id": (task.pending_prepare or {}).get("step_id"),
                                             "status": "REJECTED", "error_code": exc.code})
                 task.trace.append({"kind": "ACTION_REJECTED", "intent_id": body.intent_id,
                                    "bank_code": exc.code})
@@ -888,16 +925,28 @@ class AgentRuntimeV2:
                                       + str(len(task.completed_actions))
                                       + " 项操作仍有效；后续操作已停止，未自动回滚或执行。")
                 return failed
-            task.receipt = receipt
-            task.execution_uncertain = False
-            task.last_error = None
-            task.trace.append({"kind": "ACTION_EXECUTED", "intent_id": body.intent_id})
+            task.receipt = None
             receipt_id = receipt.get("id")
             if not isinstance(receipt_id, str) or not receipt_id:
-                task.status = Status.BLOCKED
+                task.execution_uncertain = True
+                task.status = Status.PARTIAL
+                task.last_error = {"code": "EXECUTION_OUTCOME_UNKNOWN", "phase": "INVALID_RECEIPT"}
                 self._save(task)
                 return self._response(task, "银行操作可能已执行，但回执不完整；请先核实银行状态。",
                                       "EXECUTION_OUTCOME_UNKNOWN")
+            try:
+                receipt_binding = bind_execution_receipt(task, bank, receipt)
+            except ValueError:
+                task.status = Status.PARTIAL
+                task.execution_uncertain = True
+                task.last_error = {"code": "FINANCIAL_RECEIPT_BINDING_UNVERIFIED", "phase": "CONFIRM"}
+                self._save(task)
+                return self._response(task, "银行回执已返回，但无法核实对应的任务条款；请先对账，不能继续执行。",
+                                      "FINANCIAL_RECEIPT_BINDING_UNVERIFIED")
+            task.execution_uncertain = False
+            task.last_error = None
+            task.receipt = receipt
+            task.trace.append({"kind": "ACTION_EXECUTED", "intent_id": body.intent_id})
             prepare = task.pending_prepare or {}
             task.completed_intents.append({"intent_id": body.intent_id,
                                            "intent_hash": body.intent_hash,
@@ -925,7 +974,7 @@ class AgentRuntimeV2:
                                  "RENEWAL_REMINDER": "confirmed_renewal_reminder"}.get(
                                      kind, "confirmed_" + kind.lower()))
             task.observations.append(Observation(tool_name=observation_name,
-                success=True, structured_result=observed, trust="TRUSTED_BANK_STATE"))
+                success=True, structured_result={**observed, **receipt_binding}, trust="TRUSTED_BANK_STATE"))
             task.active_intent = None
             task.active_intent_kind = None
             task.pending_prepare = None

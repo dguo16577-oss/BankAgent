@@ -28,6 +28,16 @@ def step(step_id: str, tool: str, *, kind: str = "FINANCIAL_ACTION",
             "status": "PENDING", "evidence_refs": [], "failure_reason": None}
 
 
+def bound_receipt(current: Task, step_id: str, receipt_id: str) -> dict:
+    """A verified bank receipt fixture, not an order-only observation."""
+    binding = {"step_id": step_id, "intent_id": "intent-" + step_id,
+               "terms_hash": "hash-" + step_id, "execution_key": "key-" + step_id,
+               "receipt_id": receipt_id, "status": "EXECUTED"}
+    current.financial_terms = [row for row in current.financial_terms if row.get("step_id") != step_id] + [binding]
+    next(row for row in current.ledger if row["step_id"] == step_id)["financial_binding"] = dict(binding)
+    return dict(binding)
+
+
 class LedgerSecurityTests(unittest.TestCase):
     def test_failed_prerequisite_rejects_prepare_before_bank_call(self):
         current = task(step("g1", "confirmed_card_action"),
@@ -78,7 +88,7 @@ class LedgerSecurityTests(unittest.TestCase):
                          "FINANCIAL_ACTION_NOT_IN_TASK_LEDGER")
         current = task(step("g1", "confirmed_transfer"))
         current.observations.append(Observation(tool_name="confirmed_transfer", success=True,
-            structured_result={"receipt_id": "bank_receipt_1"}))
+            structured_result=bound_receipt(current, "g1", "bank_receipt_1")))
         self.assertEqual(preparation_blocker(current, "prepare_transfer"),
                          "FINANCIAL_ACTION_NOT_IN_TASK_LEDGER")
 
@@ -99,11 +109,11 @@ class LedgerSecurityTests(unittest.TestCase):
         current = task(step("g1", "confirmed_transfer"),
                        step("g2", "confirmed_transfer", dependencies=["g1"]))
         current.observations.append(Observation(tool_name="confirmed_transfer", success=True,
-            structured_result={"receipt_id": "receipt_one"}))
+            structured_result=bound_receipt(current, "g1", "receipt_one")))
         update_ledger(current)
         self.assertEqual([row["status"] for row in current.ledger], ["SUCCEEDED", "PENDING"])
         current.observations.append(Observation(tool_name="confirmed_transfer", success=True,
-            structured_result={"receipt_id": "receipt_two"}))
+            structured_result=bound_receipt(current, "g2", "receipt_two")))
         self.assertEqual(update_ledger(current), [])
         self.assertEqual(current.ledger[1]["evidence_refs"], ["observation:1"])
 
@@ -117,7 +127,7 @@ class LedgerSecurityTests(unittest.TestCase):
                        step("g2", "confirmed_transfer", dependencies=["g1"]))
         for _ in range(2):
             current.observations.append(Observation(tool_name="confirmed_transfer", success=True,
-                structured_result={"receipt_id": "same_bank_receipt"}))
+                structured_result=bound_receipt(current, "g1", "same_bank_receipt")))
         missing = update_ledger(current)
         self.assertEqual([row["status"] for row in current.ledger], ["SUCCEEDED", "PENDING"])
         self.assertEqual(missing[0]["step_id"], "g2")

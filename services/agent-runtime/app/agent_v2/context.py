@@ -13,7 +13,7 @@ def _model_safe(value: Any) -> Any:
     """Keep confirmation secrets and session material out of planner observations."""
     if isinstance(value, dict):
         return {key: _model_safe(item) for key, item in value.items()
-                if key.casefold() not in {"intent_hash", "intenthash", "actionauthorizationid", "cookie", "session"}}
+                if key.casefold() not in {"intent_hash", "intenthash", "terms_hash", "execution_key", "query_reference_hash", "actionauthorizationid", "cookie", "session"}}
     if isinstance(value, list):
         return [_model_safe(item) for item in value]
     return value
@@ -29,8 +29,10 @@ class ContextBuilder:
             "state": {"status": task.status, "revision": task.revision, "step_count": task.step_count,
                       "intent_profile": task.intent_profile,
                       "task_ledger": [{key: _model_safe(step.get(key)) for key in (
-                          "step_id", "goal", "kind", "status", "dependencies", "evidence_tools",
-                          "evidence_refs", "observation_floor", "failure_reason")} for step in task.ledger],
+                          "step_id", "goal", "kind", "status", "dependencies", "evidence_tools", "source_quote",
+                          "evidence_refs", "observation_floor", "failure_reason", "delegation_status")} for step in task.ledger],
+                      "delegations": [{key: record.get(key) for key in ("child_step_id", "agent_role", "status", "model_calls", "failure_reason")}
+                                      for record in task.delegations],
                       "selected_recipient_id": task.selected_recipient_id,
                       "has_prepared_intent": task.active_intent is not None,
                       "analytical_scope": task.analytical_scope,

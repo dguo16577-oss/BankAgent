@@ -1,8 +1,11 @@
 "use client";
 
 import { useLocale } from "@/lib/i18n/locale";
+import { z } from "zod";
 
 export const taskStepLabels: Record<string, string> = {
+  delegate_financial_analysis: "Delegate financial analysis",
+  delegate_bank_knowledge: "Delegate policy research",
   list_accounts: "Query accounts",
   get_account: "View account details",
   list_cards: "Query cards",
@@ -56,6 +59,8 @@ export const taskStepLabels: Record<string, string> = {
 };
 
 const additionalChinese: Record<string, string> = {
+  delegate_financial_analysis: "委派财务分析",
+  delegate_bank_knowledge: "委派银行知识检索",
   search_bank_knowledge: "检索银行政策与来源",
   list_recurring_payments: "查询定期扣款",
   get_recurring_payment: "查看定期扣款详情",
@@ -72,6 +77,18 @@ export type ProgressStep = {
   tool: string;
   status: "RUNNING" | "SUCCEEDED" | "FAILED";
 };
+const delegationSchema = z
+  .object({
+    role: z.enum(["financial_analyst", "bank_knowledge"]),
+    stepId: z.string().regex(/^g[1-8]$/),
+    status: z.enum(["RUNNING", "SUCCEEDED", "FAILED", "PARTIAL", "CANCELLED"]),
+  })
+  .strict();
+export type DelegationStep = z.infer<typeof delegationSchema>;
+export function parseDelegation(value: unknown): DelegationStep | undefined {
+  const result = delegationSchema.safeParse(value);
+  return result.success ? result.data : undefined;
+}
 export type ProgressPhase =
   | "CONNECTING"
   | "MODEL_STARTED"
@@ -86,15 +103,23 @@ export function AgentProgress({
   phase,
   steps,
   taskStatus,
+  delegations = [],
 }: {
   busy: boolean;
   phase: ProgressPhase;
   steps: ProgressStep[];
   taskStatus?: unknown;
+  delegations?: DelegationStep[];
 }) {
   const { locale, t } = useLocale();
   const zh = locale === "zh-CN";
-  if (!busy && !steps.length && phase !== "FAILED" && phase !== "MODEL_FAILED")
+  if (
+    !busy &&
+    !steps.length &&
+    !delegations.length &&
+    phase !== "FAILED" &&
+    phase !== "MODEL_FAILED"
+  )
     return null;
   const hasFailure =
     phase === "FAILED" || phase === "MODEL_FAILED" || taskStatus === "FAILED";
@@ -139,6 +164,54 @@ export function AgentProgress({
         {busy ? "◌ " : ""}
         {title}
       </p>
+      {delegations.length > 0 && (
+        <section
+          aria-label="Specialist collaboration"
+          className="mt-3 space-y-2"
+        >
+          <p className="text-xs font-medium">
+            {zh
+              ? "协作任务（Supervisor 汇总）"
+              : "Specialist tasks — Supervisor coordination"}
+          </p>
+          {delegations.map((item) => (
+            <p
+              key={`${item.role}-${item.stepId}`}
+              className="rounded border bg-white/70 p-2 text-xs"
+            >
+              {item.role === "financial_analyst"
+                ? zh
+                  ? "金融分析助手"
+                  : "Financial Analyst"
+                : zh
+                  ? "银行知识助手"
+                  : "Bank Knowledge"}
+              <span className="ml-2">
+                {item.stepId} ·{" "}
+                {item.status === "SUCCEEDED"
+                  ? zh
+                    ? "已返回结果"
+                    : "Results returned"
+                  : item.status === "RUNNING"
+                    ? zh
+                      ? "正在处理"
+                      : "Working"
+                    : item.status === "CANCELLED"
+                      ? zh
+                        ? "已取消"
+                        : "Cancelled"
+                      : item.status === "PARTIAL"
+                        ? zh
+                          ? "缺少信息或证据"
+                          : "Information or evidence missing"
+                        : zh
+                          ? "处理失败"
+                          : "Failed"}
+              </span>
+            </p>
+          ))}
+        </section>
+      )}
       <p className="mt-1 text-xs text-muted-foreground">
         {zh
           ? "以下为实际执行进度；资金或卡片操作仍需独立确认。"

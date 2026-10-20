@@ -53,6 +53,9 @@ class LifecycleCoordinator:
             # The task cannot revise an already executed transfer.
             raise CancellationUncertain("BANK_INTENT_ALREADY_EXECUTED")
         task.trace.append({"kind": "INTENT_CANCELLED", "intent_id": intent_id, "bank_status": status, "reason": reason})
+        for binding in task.financial_terms:
+            if binding.get("intent_id") == intent_id:
+                binding["status"] = status
         task.active_intent = None
         task.active_intent_kind = None
         return status

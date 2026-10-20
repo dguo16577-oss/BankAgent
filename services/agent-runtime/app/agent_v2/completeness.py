@@ -21,7 +21,7 @@ _PREPARE_RECEIPTS = {
 }
 
 
-def preparation_blocker(task: Task, tool_name: str) -> str | None:
+def preparation_blocker(task: Task, tool_name: str, step_id: str | None = None) -> str | None:
     """Check model-declared dependencies before a financial PREPARE reaches the bank."""
     if task.execution_uncertain:
         return "EXECUTION_OUTCOME_UNKNOWN"
@@ -31,12 +31,13 @@ def preparation_blocker(task: Task, tool_name: str) -> str | None:
     if receipt_name is None:
         return "UNKNOWN_FINANCIAL_PREPARATION"
     update_ledger(task)
-    targets = [step for step in task.ledger
-               if step.get("kind") == "FINANCIAL_ACTION"
-               and receipt_name in step.get("evidence_tools", [])
-               and step.get("status") != "SUCCEEDED"]
+    targets = [step for step in task.ledger if step.get("kind") == "FINANCIAL_ACTION"
+               and receipt_name in step.get("evidence_tools", []) and step.get("status") != "SUCCEEDED"
+               and (step_id is None or step.get("step_id") == step_id)]
     if not targets:
         return "FINANCIAL_ACTION_NOT_IN_TASK_LEDGER"
+    if len(targets) != 1:
+        return "FINANCIAL_STEP_AMBIGUOUS"
     target = targets[0]
     if target.get("status") in {"BLOCKED", "FAILED", "SKIPPED_CONDITION_FALSE"}:
         return "PREREQUISITE_NOT_SUCCEEDED"
@@ -52,10 +53,15 @@ def mark_cancelled_financial_step(task: Task, prepare_tool: str | None) -> None:
     receipt_name = _PREPARE_RECEIPTS.get(prepare_tool or "")
     if receipt_name is None:
         return
-    for step in task.ledger:
+    target_id = (task.pending_prepare or {}).get("step_id") or task.selected_financial_step_id
+    eligible = [step for step in task.ledger if step.get("kind") == "FINANCIAL_ACTION"
+                and receipt_name in step.get("evidence_tools", []) and step.get("status") != "SUCCEEDED"]
+    if not target_id and len(eligible) != 1:
+        return
+    for step in eligible:
         if (step.get("kind") == "FINANCIAL_ACTION"
                 and receipt_name in step.get("evidence_tools", [])
-                and step.get("status") != "SUCCEEDED"):
+                and step.get("status") != "SUCCEEDED" and (target_id is None or step.get("step_id") == target_id)):
             step["status"] = "CANCELLED"
             step["failure_reason"] = "USER_CANCELLED"
             step["evidence_refs"] = []
@@ -110,6 +116,11 @@ def update_ledger(task: Task) -> list[dict[str, object]]:
 def _update_step_evidence(task: Task, step: dict[str, object],
                           used_financial_receipts: set[str], used_failures: set[int]) -> None:
     """A bank receipt can prove only one financial subgoal; a rejection proves none."""
+    if step.get("delegation_required") and step.get("delegation_status") != "SUCCEEDED":
+        step["status"] = "FAILED" if step.get("delegation_status") == "FAILED" else "PENDING"
+        step["failure_reason"] = "DELEGATION_INCOMPLETE"
+        step["evidence_refs"] = []
+        return
     evidence: list[str] = []
     floor = step.get("observation_floor", 0)
     floor = floor if isinstance(floor, int) and floor >= 0 else 0
@@ -117,11 +128,13 @@ def _update_step_evidence(task: Task, step: dict[str, object],
     if not isinstance(tools, list):
         tools = []
     if step.get("kind") == "FINANCIAL_ACTION":
+        from .financial_terms import receipt_matches
         # A prepared intent is never evidence of an executed bank operation.
         for index, observation in enumerate(task.observations):
             if (index >= floor and
                     observation.success and observation.tool_name.startswith("confirmed_") and
                     observation.tool_name in tools and
+                    receipt_matches(task, step, observation.structured_result) and
                     isinstance(observation.structured_result.get("receipt_id"), str) and
                     observation.structured_result["receipt_id"] and
                     observation.structured_result["receipt_id"] not in used_financial_receipts):
@@ -133,7 +146,11 @@ def _update_step_evidence(task: Task, step: dict[str, object],
                 if index in used_failures or not isinstance(failure, dict):
                     continue
                 receipt_name = "confirmed_" + str(failure.get("kind", "")).lower()
-                if receipt_name in tools:
+                siblings = [s for s in task.ledger if s.get("kind") == "FINANCIAL_ACTION"
+                            and receipt_name in s.get("evidence_tools", [])]
+                bound_failure = (failure.get("step_id") == step.get("step_id") if failure.get("step_id")
+                                 else len(siblings) == 1)
+                if receipt_name in tools and bound_failure:
                     used_failures.add(index)
                     step["status"] = "FAILED"
                     step["failure_reason"] = str(failure.get("error_code") or "BANK_REJECTED")

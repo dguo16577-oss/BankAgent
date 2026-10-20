@@ -37,6 +37,42 @@ class PaymentRequiredPlanner:
 
 
 class R1CompletenessTests(unittest.IsolatedAsyncioTestCase):
+    async def test_incomplete_bank_receipt_remains_unknown_not_executed(self):
+        from test_agent_v2 import SequencePlanner
+        from app.task_models import ConfirmRequest
+        class MissingReceipt(CancellableBank):
+            async def execute_transfer(self, cookie, body, key):
+                await super().execute_transfer(cookie, body, key)
+                return {}
+        bank = MissingReceipt(); runtime = AgentRuntimeV2(bank, SequencePlanner())
+        response = await runtime.chat("给张三转500", "SESSION=alice")
+        intent = response.confirmation
+        response = await runtime.confirm(response.task_id, ConfirmRequest(intent_id=intent["id"],
+            intent_hash=intent["intentHash"], action_authorization_id="test-auth"), "SESSION=alice")
+        task = runtime.tasks[response.task_id]
+        self.assertEqual(response.status.value, "PARTIAL")
+        self.assertTrue(task.execution_uncertain)
+        self.assertFalse(any(t.get("kind") == "ACTION_EXECUTED" for t in task.trace))
+        self.assertEqual(task.completed_actions, [])
+        self.assertEqual(bank.debits, 1)
+
+    async def test_uncertain_application_without_authoritative_lookup_is_not_replayed(self):
+        from app.agent_v2.models import Task, Status
+        from app.agent_v2.runtime import session_binding
+        from app.task_models import ConfirmRequest
+        for kind in ["CARD_APPLICATION", "CREDIT_LIMIT_APPLICATION"]:
+            runtime = AgentRuntimeV2(CancellableBank(), object())
+            task = Task(customer_id="alice", session_binding=session_binding("SESSION=alice"),
+                goal="申请", status=Status.WAITING_AUTH, execution_uncertain=True,
+                active_intent_kind=kind, active_intent={"id": "intent-a", "intentHash": "hash-a", "status": "PREPARED"})
+            runtime.tasks[task.task_id] = task
+            response = await runtime.confirm(task.task_id, ConfirmRequest(intent_id="intent-a", intent_hash="hash-a",
+                action_authorization_id="test-auth"), "SESSION=alice")
+            self.assertEqual(response.error_code, "BANKING_RESULT_UNKNOWN")
+            self.assertEqual(response.status.value, "PARTIAL")
+            self.assertTrue(task.execution_uncertain)
+            self.assertEqual(task.completed_actions, [])
+
     async def test_mixed_action_and_analysis_is_not_vetoed_as_read_only(self):
         self.assertFalse(readonly_user_turn("冻结1937，然后查询异常交易，最后创建续费提醒。"))
         self.assertTrue(readonly_user_turn("为什么我的卡被冻结了？"))

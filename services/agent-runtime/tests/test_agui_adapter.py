@@ -71,6 +71,27 @@ def events(response):
 
 
 class AgUiAdapterTests(unittest.IsolatedAsyncioTestCase):
+    async def test_actual_delegation_events_and_refresh_snapshot_are_bounded(self):
+        class DelegatingRuntime(FakeRuntime):
+            async def chat(self, message, cookie, task_id, request_id, sink):
+                await sink("DELEGATION_STARTED", "financial_analyst|g1")
+                await sink("DELEGATION_FAILED", "bank_knowledge|g2")
+                await sink("DELEGATION_SUCCEEDED", "executor|g1")
+                await sink("DELEGATION_SUCCEEDED", "bank_knowledge|attacker.example")
+                return await super().chat(message, cookie, task_id, request_id, sink)
+        self.app.state.agui = AgUiAdapter(DelegatingRuntime())
+        response = await self.request(payload())
+        delegated = [event["value"] for event in events(response)
+                     if event.get("name") == "aster.delegation"]
+        self.assertEqual(delegated, [
+            {"role": "financial_analyst", "stepId": "g1", "status": "RUNNING"},
+            {"role": "bank_knowledge", "stepId": "g2", "status": "FAILED"}])
+        self.assertNotIn("attacker.example", response.text)
+        from app.agui_adapter import _delegations
+        runtime = SimpleNamespace(tasks={"a": SimpleNamespace(delegations=[
+            {"agent_role": "bank_knowledge", "child_step_id": "g2", "status": "SUCCEEDED", "checkpoint": "PRIVATE"}])})
+        self.assertEqual(_delegations(runtime, "a"), [{"role": "bank_knowledge", "stepId": "g2", "status": "SUCCEEDED"}])
+
     async def test_model_phase_events_exclude_reasoning_and_preserve_confirmation(self):
         from app.deepseek import DeepSeekClassifier
         class ModelRuntime(FakeRuntime):

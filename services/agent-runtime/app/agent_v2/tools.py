@@ -1,6 +1,7 @@
 """Only registry-approved reads and intent preparation are model-visible."""
 
 from __future__ import annotations
+import hashlib
 
 import asyncio
 import os
@@ -15,6 +16,7 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_valida
 
 from ..banking import BankingGateway
 from .amount_safety import contradicts_explicit_user_amount, contradicts_half_holding_request
+from .financial_terms import authorize_transfer_terms
 from ..telemetry import traced
 from .timing_safety import conflicts_with_immediate_transfer
 from .history_link import verified_recipient_id
@@ -430,7 +432,7 @@ OUTPUT_FIELDS: dict[str, dict[str, str]] = {
     "prepare_stop_recurring_payment": {"id": "string", "intent_hash": "string", "status": "string", "recurring_payment_id": "string", "expiresAt": "string"},
     "prepare_renewal_reminder": {"id": "string", "intent_hash": "string", "status": "string", "action_type": "string", "target_type": "string", "recurring_payment_id": "string", "pattern_reference": "string", "due_at": "string", "date_basis": "string", "expiresAt": "string"},
     "list_recipients": {"recipients": "array"},
-    "resolve_recipient": {"status": "string", "candidates": "array", "recipient": "object"},
+    "resolve_recipient": {"status": "string", "candidates": "array", "recipient": "object", "query_reference": "string"},
     "get_transfer_intent": {"id": "string", "status": "string", "amount": "object", "recipient": "object"},
     "list_scheduled_transfers": {"schedules": "array"},
     "get_scheduled_transfer": {"schedule": "object"},
@@ -571,7 +573,11 @@ class ToolRegistry:
         if name in {"prepare_transfer", "prepare_scheduled_transfer"}:
             if name == "prepare_transfer" and conflicts_with_immediate_transfer(task.conversation):
                 raise RegistryError("IMMEDIATE_TRANSFER_CONFLICTS_WITH_USER_TIMING")
-            if contradicts_explicit_user_amount(task.conversation, args.amount):
+            try:
+                step_proof = authorize_transfer_terms(task, args.model_dump(mode="json"), name)
+            except ValueError as exc:
+                raise RegistryError(str(exc)) from exc
+            if step_proof is None and contradicts_explicit_user_amount(task.conversation, args.amount):
                 raise RegistryError("AMOUNT_NOT_USER_AUTHORIZED")
             if args.note and not any(args.note in turn.get("text", "") for turn in task.conversation if turn.get("role") == "user"):
                 raise RegistryError("NOTE_NOT_USER_AUTHORIZED")
@@ -1149,6 +1155,8 @@ class ToolRegistry:
                                        "phone_masked": row.get("phoneMasked")})
             candidates = candidates[:20]
             result = {"status": "RESOLVED" if len(candidates) == 1 else "AMBIGUOUS" if candidates else "NOT_FOUND",
+                      "query_reference": "[phone]" if phone else args.query,
+                      "query_reference_hash": hashlib.sha256(phone.encode()).hexdigest() if phone else None,
                       "candidates": candidates}
             if len(candidates) == 1:
                 result["recipient"] = candidates[0]

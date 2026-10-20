@@ -19,6 +19,8 @@ import { RichPresentation } from "./rich-presentation";
 import { getService } from "./service-catalog";
 import {
   AgentProgress,
+  parseDelegation,
+  type DelegationStep,
   type ProgressPhase,
   type ProgressStep,
 } from "./agent-progress";
@@ -617,6 +619,7 @@ function AgentConversation({ threadId }: { threadId: string }) {
   const [bankResult, setBankResult] = useState<AgentMessage>();
   const [steps, setSteps] = useState<ProgressStep[]>([]);
   const [phase, setPhase] = useState<ProgressPhase>("CONNECTING");
+  const [delegations, setDelegations] = useState<DelegationStep[]>([]);
   const [hydrated, setHydrated] = useState(false);
   const [recoveredMessages, setRecoveredMessages] = useState<Message[]>([]);
   const state = agent.state as Record<string, unknown> | undefined;
@@ -820,6 +823,7 @@ function AgentConversation({ threadId }: { threadId: string }) {
     setError(undefined);
     setBankResult(undefined);
     setSteps([]);
+    setDelegations([]);
     setPhase("CONNECTING");
     setDraft("");
     const previousTask =
@@ -843,6 +847,19 @@ function AgentConversation({ threadId }: { threadId: string }) {
         {},
         {
           onCustomEvent: ({ event }) => {
+            if (event.name === "aster.delegation") {
+              const item = parseDelegation(event.value);
+              if (item)
+                setDelegations((old) => [
+                  ...old.filter(
+                    (previous) =>
+                      previous.role !== item.role ||
+                      previous.stepId !== item.stepId,
+                  ),
+                  item,
+                ]);
+              return;
+            }
             if (
               event.name !== "aster.progress" ||
               !event.value ||
@@ -1010,6 +1027,15 @@ function AgentConversation({ threadId }: { threadId: string }) {
             phase={phase}
             steps={steps}
             taskStatus={displayState?.status}
+            delegations={
+              delegations.length
+                ? delegations
+                : Array.isArray(displayState?.delegations)
+                  ? displayState.delegations
+                      .map(parseDelegation)
+                      .filter((item): item is DelegationStep => !!item)
+                  : []
+            }
           />
         </div>
         <form onSubmit={submit} className="mt-6 flex gap-3 border-t pt-5">
