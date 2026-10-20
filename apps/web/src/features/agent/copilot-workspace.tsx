@@ -17,6 +17,11 @@ import {
 } from "./agent-contract";
 import { RichPresentation } from "./rich-presentation";
 import { getService } from "./service-catalog";
+import {
+  AgentProgress,
+  type ProgressPhase,
+  type ProgressStep,
+} from "./agent-progress";
 
 function confirmationPolicy(task: AgentTask) {
   const kind = task.confirmationKind;
@@ -610,9 +615,8 @@ function AgentConversation({ threadId }: { threadId: string }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string>();
   const [bankResult, setBankResult] = useState<AgentMessage>();
-  const [steps, setSteps] = useState<
-    { id: string; tool: string; done: boolean }[]
-  >([]);
+  const [steps, setSteps] = useState<ProgressStep[]>([]);
+  const [phase, setPhase] = useState<ProgressPhase>("CONNECTING");
   const [hydrated, setHydrated] = useState(false);
   const [recoveredMessages, setRecoveredMessages] = useState<Message[]>([]);
   const state = agent.state as Record<string, unknown> | undefined;
@@ -816,6 +820,7 @@ function AgentConversation({ threadId }: { threadId: string }) {
     setError(undefined);
     setBankResult(undefined);
     setSteps([]);
+    setPhase("CONNECTING");
     setDraft("");
     const previousTask =
       typeof state?.taskId === "string" ? state : recoveredState;
@@ -837,27 +842,54 @@ function AgentConversation({ threadId }: { threadId: string }) {
       const runResult = await agent.runAgent(
         {},
         {
-          onToolCallStartEvent: ({ event }) =>
+          onCustomEvent: ({ event }) => {
+            if (
+              event.name !== "aster.progress" ||
+              !event.value ||
+              typeof event.value !== "object"
+            )
+              return;
+            const phase = (event.value as Record<string, unknown>).phase;
+            if (
+              phase === "MODEL_STARTED" ||
+              phase === "MODEL_FINISHED" ||
+              phase === "MODEL_FAILED"
+            )
+              setPhase(phase);
+          },
+          onToolCallStartEvent: ({ event }) => {
+            setPhase("TOOL_RUNNING");
             setSteps((old) => [
               ...old,
               {
                 id: event.toolCallId,
                 tool: event.toolCallName,
-                done: false,
+                status: "RUNNING",
               },
-            ]),
-          onToolCallResultEvent: ({ event }) =>
+            ]);
+          },
+          onToolCallResultEvent: ({ event }) => {
+            setPhase("REVIEWING");
             setSteps((old) =>
               old.map((item) =>
-                item.id === event.toolCallId ? { ...item, done: true } : item,
+                item.id === event.toolCallId
+                  ? {
+                      ...item,
+                      status:
+                        event.content === "Failed" ? "FAILED" : "SUCCEEDED",
+                    }
+                  : item,
               ),
-            ),
+            );
+          },
         },
       );
-      if (!runResult?.newMessages?.length)
+      if (!runResult?.newMessages?.length) {
+        setPhase("FAILED");
         setError("The assistant did not start. Please retry.");
-      else sessionStorage.removeItem(`aster-agui-inflight-${threadId}`);
+      } else sessionStorage.removeItem(`aster-agui-inflight-${threadId}`);
     } catch (cause) {
+      setPhase("FAILED");
       setError(cause instanceof Error ? cause.message : "Agent unavailable");
     } finally {
       setBusy(false);
@@ -973,18 +1005,12 @@ function AgentConversation({ threadId }: { threadId: string }) {
               <p className="whitespace-pre-wrap">{bankResult.reply}</p>
             </article>
           )}
-          {steps.length > 0 && (
-            <section
-              className="rounded-xl border bg-teal-50 p-3 text-xs"
-              aria-label="Tool progress"
-            >
-              {steps.map((step) => (
-                <p key={step.id}>
-                  {step.done ? "✓" : "…"} {step.tool}
-                </p>
-              ))}
-            </section>
-          )}
+          <AgentProgress
+            busy={busy}
+            phase={phase}
+            steps={steps}
+            taskStatus={displayState?.status}
+          />
         </div>
         <form onSubmit={submit} className="mt-6 flex gap-3 border-t pt-5">
           <label className="sr-only" htmlFor="aster-copilot-message">

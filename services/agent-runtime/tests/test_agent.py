@@ -416,7 +416,7 @@ class ToolBoundaryTests(unittest.IsolatedAsyncioTestCase):
         for secret in ("Lin Wei", "10 元", "123456", "hunter2"):
             self.assertNotIn(secret, body)
         self.assertIn("transfer", body)
-        self.assertEqual(captured[0]["thinking"], {"type": "disabled"})
+        self.assertEqual(captured[0]["thinking"], {"type": "enabled"})
 
 
 if __name__ == "__main__":

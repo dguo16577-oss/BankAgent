@@ -24,6 +24,9 @@ services:
       PGUSER: ${DB_USER:-asterbank}
       PGPASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in an ignored env file}
       DEEPSEEK_API_KEY_FILE: /run/secrets/deepseek_api_key
+      DEEPSEEK_THINKING_ENABLED: ${DEEPSEEK_THINKING_ENABLED:-1}
+      DEEPSEEK_REASONING_EFFORT: ${DEEPSEEK_REASONING_EFFORT:-low}
+      DEEPSEEK_THINKING_MAX_TOKENS: ${DEEPSEEK_THINKING_MAX_TOKENS:-8192}
     secrets: [deepseek_api_key]
     depends_on:
       banking-core: { condition: service_healthy }

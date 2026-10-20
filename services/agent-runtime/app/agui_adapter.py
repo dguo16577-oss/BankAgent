@@ -12,6 +12,7 @@ import re
 from uuid import uuid4
 
 from ag_ui.core import (
+    CustomEvent,
     RunAgentInput,
     RunErrorEvent,
     RunFinishedEvent,
@@ -32,6 +33,7 @@ from fastapi.responses import StreamingResponse
 from .agent_v2.runtime import AgentRuntimeV2
 from .agent_v2.presentation import build_presentation
 from .banking import BankingAuthenticationError
+from .deepseek import model_progress_sink
 
 _THREAD_ID = re.compile(r"[A-Za-z0-9_-]{1,128}\Z")
 _LONG_NUMBER = re.compile(r"(?<!\d)\d{12,19}(?!\d)")
@@ -224,6 +226,7 @@ class AgUiAdapter:
                 queue.put_nowait((kind, tool))
 
             async def run():
+                progress_token = model_progress_sink.set(sink)
                 try:
                     async with thread_lock:
                         task_id = (self.runtime.state_store.thread_lookup(customer, binding, body.thread_id)
@@ -241,6 +244,7 @@ class AgUiAdapter:
                         self._threads[thread_key] = result.task_id
                     return result
                 finally:
+                    model_progress_sink.reset(progress_token)
                     queue.put_nowait(None)
 
             # A disconnected event consumer does not cancel an already submitted
@@ -252,7 +256,9 @@ class AgUiAdapter:
                 if event is None:
                     break
                 kind, tool = event
-                if kind == "TOOL_STARTED":
+                if kind in {"MODEL_STARTED", "MODEL_FINISHED", "MODEL_FAILED"}:
+                    yield self.encoder.encode(CustomEvent(name="aster.progress", value={"phase": kind}))
+                elif kind == "TOOL_STARTED":
                     call_id = uuid4().hex
                     call_ids[tool] = call_id
                     yield self.encoder.encode(ToolCallStartEvent(

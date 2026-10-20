@@ -11,6 +11,7 @@ import { formatMoney } from "@/lib/money";
 import { useLocale } from "@/lib/i18n/locale";
 import { usePrepareTransfer } from "@/features/payments/use-payments";
 import { parseAgentMessage, type AgentMessage } from "./agent-contract";
+import { taskStepLabels } from "./agent-progress";
 
 type Turn =
   | { id: number; role: "user"; message: string }
@@ -33,50 +34,6 @@ const prompts = [
   "Show low-risk investment products",
   "What investments do I currently hold?",
 ];
-
-const taskStepLabels: Record<string, string> = {
-  list_accounts: "Query accounts",
-  get_account: "View account details",
-  list_cards: "Query cards",
-  get_card: "View card details",
-  get_card_controls: "View card controls",
-  get_card_limits: "View card limits",
-  list_card_products: "List card products",
-  get_card_product: "View card product",
-  compare_card_products: "Compare card products",
-  list_card_applications: "List card applications",
-  get_card_application: "View card application",
-  list_credit_limit_applications: "List credit limit applications",
-  get_credit_limit_application: "View credit limit application",
-  prepare_card_action: "Prepare card action",
-  prepare_card_application: "Prepare card application",
-  prepare_credit_limit_application: "Prepare credit limit application",
-  list_transactions: "Query transactions",
-  summarize_spending: "Analyze spending",
-  detect_transaction_anomalies: "Check unusual transactions",
-  list_recipients: "List saved recipients",
-  resolve_recipient: "Find recipient",
-  get_transfer_intent: "View transfer intent",
-  prepare_transfer: "Prepare transfer",
-  list_scheduled_transfers: "List scheduled transfers",
-  get_scheduled_transfer: "View scheduled transfer",
-  prepare_scheduled_transfer: "Prepare scheduled transfer",
-  prepare_cancel_scheduled_transfer: "Prepare schedule cancellation",
-  calculate_split: "Calculate shares",
-  list_split_requests: "List AA requests",
-  get_split_request: "View AA request",
-  prepare_split_request: "Prepare AA request",
-  prepare_cancel_split_request: "Prepare AA cancellation",
-  list_investment_products: "List investment products",
-  get_investment_product: "View investment product",
-  compare_investment_products: "Compare investment products",
-  get_risk_profile: "View risk profile",
-  check_investment_suitability: "Check suitability",
-  list_holdings: "List holdings",
-  get_holding: "View holding",
-  prepare_investment_purchase: "Prepare investment purchase",
-  prepare_investment_redemption: "Prepare investment redemption",
-};
 
 const taskStepStatuses: Record<string, string> = {
   SUCCEEDED: "Completed",
@@ -1094,7 +1051,9 @@ export function AgentChat() {
         )}
         {pending && (
           <p role="status" className="text-sm text-muted-foreground">
-            {t("Aster Agent is thinking…")}
+            {locale === "zh-CN"
+              ? "正在处理请求并核对银行数据，请稍候…"
+              : "Processing your request and checking bank data…"}
           </p>
         )}
         {error && (

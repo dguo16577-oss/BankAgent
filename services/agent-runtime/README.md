@@ -28,6 +28,10 @@ pnpm test:agent
 
 R1 在单独的 PostgreSQL `agent_state` schema 中加入可选的持久任务状态、请求去重、线程绑定和租约。启用及验收范围见 [`durable-agent-runtime.md`](../../docs/architecture/durable-agent-runtime.md) 和 [`r1-reliability-acceptance.md`](../../docs/milestones/r1-reliability-acceptance.md)；R1 当前仍为 **PARTIAL**。未启用 `AGENT_STATE_ENABLED` 时仍是原来的进程内任务存储。跨域动作只保证逐项确认与部分成功披露，不提供跨域原子回滚。评测重点：工具注入、跨客户 ID、重复确认、过期意图、银行状态变化、模型超时、恶意交易备注、每一步 observation 是否真正回传模型，以及成功/失败答复是否和数据库一致。2026-10-11 的 Rent STOP 浏览器复核单未获最终确认，已到期，不能作为代扣停止成功的证据。
 
+## 推理与执行进度
+
+DeepSeek 默认开启思考模式，使用 `low` 强度和 8192 token 总输出预算；内部推理不写入任务、不进入 AG-UI，也不作为金融授权。可以用 `DEEPSEEK_THINKING_ENABLED=0` 显式关闭。配置与实际部署边界见 [推理及进度验证](../../docs/testing/agent-reasoning-progress.md)。
+
 ## 兼容与恢复
 
 `AGENT_RUNTIME_VERSION=v2` 为默认模式；`v1` 和旧 `/chat` 入口仍有兼容调用，不能仅因名称含 v1 删除。Legacy 页面与 Runtime 版本不是同一概念。持久任务恢复的实际边界见 [Durable Runtime](../../docs/architecture/durable-agent-runtime.md)。KG/RAG 通过现有只读知识工具和 MCP 接入；检索结果不授予金融执行权限。

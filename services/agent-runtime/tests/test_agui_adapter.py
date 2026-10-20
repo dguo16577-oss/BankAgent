@@ -71,6 +71,23 @@ def events(response):
 
 
 class AgUiAdapterTests(unittest.IsolatedAsyncioTestCase):
+    async def test_model_phase_events_exclude_reasoning_and_preserve_confirmation(self):
+        from app.deepseek import DeepSeekClassifier
+        class ModelRuntime(FakeRuntime):
+            async def chat(self, *args, **kwargs):
+                classifier = DeepSeekClassifier("test", transport=httpx.MockTransport(lambda _: httpx.Response(200,
+                    json={"choices": [{"message": {"content": '{}', "reasoning_content": "PRIVATE_REASONING_SENTINEL"}}]})))
+                await classifier._json_completion("private system", "private goal", 64)
+                return await super().chat(*args, **kwargs)
+        self.app.state.agui = AgUiAdapter(ModelRuntime())
+        response = await self.request(payload())
+        stream = events(response)
+        phases = [e["value"]["phase"] for e in stream if e["type"] == "CUSTOM" and e["name"] == "aster.progress"]
+        self.assertEqual(phases, ["MODEL_STARTED", "MODEL_FINISHED"])
+        self.assertNotIn("PRIVATE_REASONING_SENTINEL", response.text)
+        snapshot = next(e["snapshot"] for e in stream if e["type"] == "STATE_SNAPSHOT")
+        self.assertEqual(snapshot["status"], "WAITING_CONFIRMATION")
+
     async def test_spending_card_contains_only_bounded_aggregates(self):
         observation = SimpleNamespace(tool_name="summarize_spending", success=True,
             structured_result={

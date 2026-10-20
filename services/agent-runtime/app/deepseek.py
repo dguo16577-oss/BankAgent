@@ -1,4 +1,4 @@
-"""Optional intent classification; never receives cookies, IDs or bank records."""
+"""Structured DeepSeek requests with bounded reasoning and status-only progress."""
 
 from __future__ import annotations
 
@@ -7,6 +7,8 @@ import os
 import re
 from pathlib import Path
 from typing import Literal
+from contextvars import ContextVar
+from collections.abc import Awaitable, Callable
 
 import httpx
 from opentelemetry import trace
@@ -17,6 +19,8 @@ from .telemetry import traced, outgoing_headers
 Intent = Literal["TRANSFER", "ACCOUNTS", "SPENDING", "TRANSACTIONS", "CARDS", "RECURRING", "PUBLIC", "UNKNOWN"]
 INTENTS = frozenset({"TRANSFER", "ACCOUNTS", "SPENDING", "TRANSACTIONS", "CARDS", "RECURRING", "PUBLIC", "UNKNOWN"})
 MODEL_HTTP_TIMEOUT = httpx.Timeout(connect=20.0, read=90.0, write=10.0, pool=10.0)
+# Per-request progress carries fixed status codes only, never model reasoning.
+model_progress_sink: ContextVar[Callable[[str, str], Awaitable[None]] | None] = ContextVar("model_progress_sink", default=None)
 
 _SIGNALS = (
     (r"转账|转给|汇款|汇给|打钱|\btransfer\b|\bsend\s+money\b", "transfer"),
@@ -47,6 +51,13 @@ class DeepSeekClassifier:
             self.key = os.getenv("DEEPSEEK_API_KEY", "")
         self.base_url = base_url.rstrip("/")
         self.model = os.getenv("DEEPSEEK_MODEL", "deepseek-flash")
+        self.thinking_enabled = os.getenv("DEEPSEEK_THINKING_ENABLED", "1") == "1"
+        self.reasoning_effort = os.getenv("DEEPSEEK_REASONING_EFFORT", "low")
+        if self.reasoning_effort not in {"low", "high", "max"}:
+            raise ValueError("DEEPSEEK_REASONING_EFFORT must be low, high or max")
+        self.thinking_max_tokens = int(os.getenv("DEEPSEEK_THINKING_MAX_TOKENS", "8192"))
+        if not 4096 <= self.thinking_max_tokens <= 32768:
+            raise ValueError("DEEPSEEK_THINKING_MAX_TOKENS must be between 4096 and 32768")
         self.transport = transport
 
     async def classify(self, message: str) -> Intent | None:
@@ -107,6 +118,20 @@ class DeepSeekClassifier:
 
     @traced('model.completion')
     async def _json_completion(self, system: str, user: str, max_tokens: int) -> dict:
+        sink = model_progress_sink.get()
+        if sink:
+            await sink("MODEL_STARTED", "")
+        try:
+            result = await self._request_json(system, user, max_tokens)
+        except Exception:
+            if sink:
+                await sink("MODEL_FAILED", "")
+            raise
+        if sink:
+            await sink("MODEL_FINISHED", "")
+        return result
+
+    async def _request_json(self, system: str, user: str, max_tokens: int) -> dict:
         if len((system + user).encode('utf-8')) > int(os.getenv('ASTER_MODEL_MAX_INPUT_BYTES', '500000')):
             raise ValueError('MODEL_CONTEXT_BUDGET_EXCEEDED')
         # DeepSeek may keep a non-streaming request open while inference is queued.
@@ -117,9 +142,9 @@ class DeepSeekClassifier:
                 headers=outgoing_headers({"Authorization": f"Bearer {self.key}"}),
                 json={
                     "model": self.model,
-                    "thinking": {"type": "disabled"},
-                    "temperature": 0,
-                    "max_tokens": max_tokens,
+                    "thinking": {"type": "enabled" if self.thinking_enabled else "disabled"},
+                    **({"reasoning_effort": self.reasoning_effort} if self.thinking_enabled else {"temperature": 0}),
+                    "max_tokens": max(max_tokens, self.thinking_max_tokens) if self.thinking_enabled else max_tokens,
                     "response_format": {"type": "json_object"},
                     "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
                 },
@@ -131,7 +156,11 @@ class DeepSeekClassifier:
             value = usage.get(key) if isinstance(usage, dict) else None
             if isinstance(value, int) and not isinstance(value, bool) and value >= 0:
                 trace.get_current_span().set_attribute('model.' + key, value)
-        content = payload["choices"][0]["message"]["content"]
+        choice = payload["choices"][0]
+        if choice.get("finish_reason") == "length":
+            raise ValueError("MODEL_OUTPUT_BUDGET_EXCEEDED")
+        # reasoning_content is intentionally neither returned, persisted nor streamed.
+        content = choice["message"]["content"]
         result = json.loads(content)
         if not isinstance(result, dict):
             raise ValueError("Expected JSON object")
