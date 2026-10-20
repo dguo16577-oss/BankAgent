@@ -125,4 +125,4 @@ M24 提供 HTTPS 模板和基础备份恢复，但生产身份渠道、目标云
 
 ## M24 部署入口
 
-[Release](../RELEASE.md) · [Demo 部署](deployment/demo-deployment.md) · [Runbook](operations/runbook.md)。默认代理入口 http://localhost:8088；部署机只需 Docker + Compose。
+[Release](milestones/m24-report.md) · [Demo 部署](deployment/demo-deployment.md) · [Runbook](operations/runbook.md)。默认代理入口 http://localhost:8088；部署机只需 Docker + Compose。

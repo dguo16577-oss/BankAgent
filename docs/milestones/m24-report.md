@@ -86,7 +86,7 @@
 | Public 1.2.0   |          9 | 460387a9a26548941a692bcd7e7036e21d136b4d6a9cb570faa0a4fc1ac106ef |
 
 50. **Known limitations**：Demo credentials/code/rates/products；无真实支付/卡/证券网络、KYC、真实通知、Admin、Mobile、Agent、HA、多节点 Session 拓扑、托管秘密、监控告警平台、生产 DR/PITR。CSP inline-script 限制延续 M23。基础镜像仍有扫描告警，未完成全镜像漏洞认证。未部署公网或证明银行级 production readiness。备份/trace 包含安全状态或测试输入，禁止随源码分享。
-51. **Docs created**：[RELEASE](../../RELEASE.md)、[Demo 部署](../deployment/demo-deployment.md)、[生产基础](../deployment/production-foundation.md)、[配置表](../deployment/configuration.md)、[Runbook](../operations/runbook.md)；更新 architecture/security review、README 和项目进度。测试截图包括 [desktop](../screenshots/m24-overview-1440.png)、[mobile](../screenshots/m24-overview-390.png)。
+51. **Docs created**：[发布冻结记录](../../contracts/openapi/releases/README.md)、[Demo 部署](../deployment/demo-deployment.md)、[生产基础](../deployment/production-foundation.md)、[配置表](../deployment/configuration.md)、[Runbook](../operations/runbook.md)；更新 architecture/security review、README 和项目进度。测试截图包括 [desktop](../screenshots/m24-overview-1440.png)、[mobile](../screenshots/m24-overview-390.png)。
 52. **Final Web V1 status**：
 
 ```text

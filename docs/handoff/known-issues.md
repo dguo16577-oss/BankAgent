@@ -23,6 +23,6 @@
 
 ## P2：交付可复现性
 
-- 模块旧 `README.md` 和早期里程碑保留历史数字。当前快照以根 `HANDOFF-README.md`、各 `README.HANDOFF.md`、`pnpm contract:check` 和最新验收矩阵为准。
+- 早期里程碑保留当时数字。重复交接 README 已合并；当前入口为根 README、各模块 README、`pnpm contract:check` 和最新验收矩阵。
 - 本包不含 Docker Volume、密钥、本机配置、`node_modules`、`.next`、Maven `target*`、运行日志或原始镜像 TAR。这些可依交接指南重建。历史容器扫描只打包原始 SARIF/SBOM与清单，缓存/扫描器二进制省略。
 - Spring 最近 637 项全量测试与 Web 504/Agent 238 项是开发者环境的执行结果。接收方必须在自己的机器上重跑，并记录失败/跳过原因与工具版本。
