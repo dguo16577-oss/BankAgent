@@ -1,5 +1,7 @@
 # RC Multi-Agent Evaluation
 
+> Later closure — 2026-10-21: see [rc-final-closure.md](rc-final-closure.md). Prior run records below remain unchanged. Current main service is rolled back to five core containers, Knowledge/MCP paused; final history fix is source-tested but not deployed.
+
 2026-10-21。**MULTI_AGENT_VERIFIED = PARTIAL；默认 MULTI_AGENT_ENABLED=0。** 独立调用和隔离边界已得到证据，任务正确性尚未达到单 Agent 基线。
 
 ## 实际架构

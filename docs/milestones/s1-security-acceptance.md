@@ -1,5 +1,11 @@
 # S1 Security-First Architecture Audit & Hardening — acceptance
 
+## RC Final Closure — 2026-10-21
+
+S1保持 **PARTIAL**，不随R1或Web测试自动升级。新增分阶段取消和只读重新认证历史没有放宽金融确认权限；原session绑定、银行对象归属、确认幂等和只读子Agent硬allowlist继续生效。Web535通过，Agent全量371项（359通过/12环境skip），隔离PG12项全通过；这些不能代替未完成的真实RAG/MCP注入送达和审计门禁。
+
+网络曾真实HTTP200，后来原批准路径发生TCP超时/TLS EOF；本次是环境阻塞，不是新的policy拒绝。历史blocked by policy保留，未改DNS/代理/TLS或绕过审批。多Agent正常任务仍失败且默认关闭。主服务回滚到旧兼容镜像、MCP/Knowledge暂停，新源码不冒充已部署。详见 [RC Final Closure](../final-sprint/rc-final-closure.md)。
+
 ## Integrated update — 2026-10-16
 
 **S1 remains PARTIAL.** Pending read queries have an explicit PREPARE veto;

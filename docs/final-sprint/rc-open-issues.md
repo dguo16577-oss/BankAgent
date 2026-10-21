@@ -1,0 +1,18 @@
+# RC Final Closure — open issues
+
+2026-10-21. Historical failures remain in `rc-results.json`; no frozen oracle was changed.
+
+| ID | Severity | Current evidence | Required closure |
+| --- | --- | --- | --- |
+| RC-NET | Blocking environment | DeepSeek initially HTTP200; later original container path DNS changed from 198.18.0.26 to 198.18.0.113, TCP timeout/TLS unexpected EOF. MA03/06 stopped before ledger planning. Docker Registry also timed out. | Restore the existing approved path; do not change proxy/DNS/TLS or retry indefinitely. Repeat only blocked real-model/deployment cases. |
+| RC-MA01 | High product correctness | Latest completed comparison: single SUCCEEDED 34.141s, multi PARTIAL 66.026s. Analyst succeeded in two calls; Knowledge returned invalid JSON twice including one bounded repair. | Diagnose provider structured content without hidden reasoning, then repeat MA01/03/06. Keep multi flag 0. Failed-child replay already prevents additional child-model calls. |
+| RC-AB01 | High incomplete evidence | Two original goals remain visible. Deterministic real Spring/PG: first100 prepared, cancel only first, second200 independently prepared, old confirmation rejected, no debit. | Real DeepSeek + browser staged flow; distinct user confirmations; preserve original simultaneous-PREPARE benchmark as separately PARTIAL. |
+| RC-AB07 | High reliability | Real commit-then-response-loss faults passed for card freeze, recurring stop and schedule creation. Exactly one effect each, no money change; retry reads executed bank intent and does not resubmit. | Existing APIs do not expose an immutable receipt lookup for these kinds; retain PARTIAL/UNKNOWN. Do not infer a complete receipt from current entity state. |
+| RC-AB10 | High incomplete live evidence | Reauthenticated read-only history implemented; customer SQL filter and old session mutation binding retained. 3 unit tests and isolated PG passed. Browser list worked; transfer detail exposed incorrect gateway method. Source fixed to existing optional GET. | Build/deploy `6183c47` Agent and finish live verified receipt/new-login/refresh/SSE tests. The previously deployed Agent image does not contain this last fix. |
+| RC-S1 | High incomplete safety evidence | Existing real note attack evidence retained; deterministic child scope and financial authorization tests pass. | Real RAG/MCP injection delivery proof and all frozen S1 attack paths remain incomplete. No upgrade to S1 PASS. |
+| RC-AB17 | Medium evidence | Existing chart reuse component behavior has supporting tests. | Still missing latest deployed browser measurement of real model and Banking Core call counts. |
+| RC-AB19 | Medium evaluator | Strict independent tool/argument and monetary bank-fact scoring implemented; 6 negative tests passed, including missing labels, wrong arguments, wrong facts and missing live prerequisites. | Full independently labelled benchmark and verified live-result scoring remain incomplete. Grader does not authenticate artifact provenance or score narrative entailment. |
+| RC-AB20 | Medium audit | Durable checkpoints and semantic intent/step/receipt bindings retained. | Full unified audit linkage and external immutable evidence retention not implemented. |
+| RC-RESOURCE | Blocking environment | Commit headroom fell to ~1.6GiB; project sandbox stopped; no unrelated processes terminated. | Honor start guards; restore retained service only when headroom meets its 4GiB knowledge-stack requirement. No pagefile or system security changes. |
+
+No production-readiness claim. No financial mutation was performed on the retained demonstration bank. All deliberate commit/fault tests used `aster-final-sprint-20261020` only.

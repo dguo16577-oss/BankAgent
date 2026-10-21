@@ -1,5 +1,11 @@
 # R1 Agent Runtime Reliability — acceptance record
 
+## RC Final Closure — 2026-10-21
+
+R1保持 **PARTIAL**。Agent全量371项（359通过/12缺隔离PG跳过），隔离PG随后12项0skip通过。新增只读重新认证历史保留旧session mutation绑定；真实浏览器发现回执查询网关错误，源码`6183c47`修正后3项定向通过，最终镜像构建因Registry连接超时阻塞。
+
+本轮真实Spring/PostgreSQL卡片冻结、代扣停止、预约创建各一次提交后响应丢失：一次副作用、核查不重提、资金不变。因为现有API不能定位不可变回执，任务仍PARTIAL/待银行核实，不伪造成功。完整跨登录/SSE联合验收及非转账回执恢复仍未关闭。详见 [RC Final Closure](../final-sprint/rc-final-closure.md)；旧轮次证据如下保留。
+
 ## Integrated update — 2026-10-16
 
 **R1 remains PARTIAL independently of S1.** Ten current-source PostgreSQL

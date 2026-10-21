@@ -172,7 +172,10 @@
             "path": "artifacts/rc/bank-20261021T023221.jsonl",
             "sha256": "decd443c40324f8ba47fec72259253c489636f45fbbe947f1440633b9a7118ae"
           },
-          "limitations": ["", ""]
+          "limitations": [
+            "",
+            ""
+          ]
         }
       ],
       "assessment": "真实银行取消旧意图并拒绝旧 grant；本轮缺浏览器金额修改的完整链路。",
@@ -301,7 +304,10 @@
             "path": "artifacts/rc/ab05-initial.json",
             "sha256": "7345db01077708469e4870427335f3ac54994ca62a66538fbb1210b6e2eef90d"
           },
-          "limitations": ["", ""]
+          "limitations": [
+            "",
+            ""
+          ]
         },
         {
           "record_type": "CASE_EVIDENCE",
@@ -587,7 +593,10 @@
             "path": "artifacts/rc/lease-green/postgres-recovery-evidence.jsonl",
             "sha256": "d4c4f11027b89677ebcdc4eaf38b5fd10d00dbf9853cec3bcd1ff928cd14c827"
           },
-          "limitations": ["", ""]
+          "limitations": [
+            "",
+            ""
+          ]
         },
         {
           "record_type": "CASE_EVIDENCE",
@@ -644,7 +653,10 @@
             "path": "artifacts/rc/bank-20261021T020222.jsonl",
             "sha256": "5fa6d5adecbe9c8d9385d7af1c0b28dd6c8991c416abe12685b033fe5c4a2526"
           },
-          "limitations": ["", ""]
+          "limitations": [
+            "",
+            ""
+          ]
         }
       ],
       "assessment": "真实 PG 租约过期与接管，旧 worker 保存拒绝，Spring 一次效果；确定性延迟注入。",
@@ -729,7 +741,10 @@
             "path": "artifacts/rc/ab10-initial-refresh-defect.json",
             "sha256": "2d5710bace25833a0ea173fd22e824444c4344380e5bdfd8097c3dc0278f839f"
           },
-          "limitations": ["", ""]
+          "limitations": [
+            "",
+            ""
+          ]
         },
         {
           "record_type": "SUPPORTING_EVIDENCE",
@@ -933,7 +948,10 @@
             "path": "artifacts/rc/provider-http-rc3.json",
             "sha256": "6bc82012064e0112eb633036b14c0a29e01bd35db1437c8265e6d5feb11c234f"
           },
-          "limitations": ["", ""]
+          "limitations": [
+            "",
+            ""
+          ]
         }
       ],
       "assessment": "真实 PG 保存注入超时/402/无效输出；未知金融结果不误报。完整业务拒绝与 provider 联合矩阵未齐。",
@@ -1056,7 +1074,10 @@
             "path": "artifacts/rc/bank-20261021T023221.jsonl",
             "sha256": "decd443c40324f8ba47fec72259253c489636f45fbbe947f1440633b9a7118ae"
           },
-          "limitations": ["", ""]
+          "limitations": [
+            "",
+            ""
+          ]
         }
       ],
       "assessment": "两真实银行客户并发只读子任务对象集合隔离通过；模型并发复合查询与泄漏面未全齐。",
@@ -1154,7 +1175,10 @@
             "path": "artifacts/rc/model-AB16-20261021T022625.jsonl",
             "sha256": "5e1757feae8a7347042abffa3f382ebf343d2848a5882cdcd0a34e0c74ffaf5f"
           },
-          "limitations": ["", ""],
+          "limitations": [
+            "",
+            ""
+          ],
           "usage": [
             {
               "role": "supervisor",
@@ -1390,7 +1414,10 @@
             "path": "artifacts/rc/lease-green/postgres-recovery-evidence.jsonl",
             "sha256": "d4c4f11027b89677ebcdc4eaf38b5fd10d00dbf9853cec3bcd1ff928cd14c827"
           },
-          "limitations": ["", ""]
+          "limitations": [
+            "",
+            ""
+          ]
         }
       ],
       "assessment": "PG checkpoint 及金融条款/回执绑定可查，旧41条证据链验证通过；完整统一关联字段及外部封存未实现。",
@@ -1463,7 +1490,10 @@
             "path": "artifacts/rc/model-MA06-20261021T022701.jsonl",
             "sha256": "f5c635018f0d9a8399e4095f92ced97310a0b711a16522837c796fbd1b3187c6"
           },
-          "limitations": ["", ""],
+          "limitations": [
+            "",
+            ""
+          ],
           "usage": [
             {
               "role": "supervisor",
@@ -1607,7 +1637,10 @@
             "path": "artifacts/rc/model-MA06-20261021T022701.jsonl",
             "sha256": "f5c635018f0d9a8399e4095f92ced97310a0b711a16522837c796fbd1b3187c6"
           },
-          "limitations": ["", ""],
+          "limitations": [
+            "",
+            ""
+          ],
           "usage": [
             {
               "role": "supervisor",
@@ -1968,7 +2001,10 @@
             "path": "artifacts/rc/model-MA02-20261021T023129.jsonl",
             "sha256": "163d82472636a458af95d65126057db89ca0df4b8d039b9a0bc10dfbe01f0aa9"
           },
-          "limitations": ["", ""],
+          "limitations": [
+            "",
+            ""
+          ],
           "usage": [
             {
               "role": "supervisor",
@@ -2238,7 +2274,10 @@
             "path": "artifacts/rc/model-MA02-20261021T024009.jsonl",
             "sha256": "3037350ea7836e8883d0d4787836c82c774e8e4deace684697330e22d6aced85"
           },
-          "limitations": ["", ""],
+          "limitations": [
+            "",
+            ""
+          ],
           "usage": [],
           "model_metadata_limitation": "No hidden reasoning; absent provider usage/model version is not inferred."
         }
@@ -2314,7 +2353,10 @@
             "path": "artifacts/rc/model-MA03-20261021T022944.jsonl",
             "sha256": "ad427bbb5c8b3bc4eb3de4b3d611752976507fa316c6639564a6961029fbf5e6"
           },
-          "limitations": ["", ""],
+          "limitations": [
+            "",
+            ""
+          ],
           "usage": [
             {
               "role": "supervisor",
@@ -2404,7 +2446,10 @@
             "path": "artifacts/rc/model-MA03-20261021T023944.jsonl",
             "sha256": "2aa3a429d6676f4fd0787701bd0d0cf1f898d0448d6a3ae55d0fbc595a2db734"
           },
-          "limitations": ["", ""],
+          "limitations": [
+            "",
+            ""
+          ],
           "usage": [],
           "model_metadata_limitation": "No hidden reasoning; absent provider usage/model version is not inferred."
         },
@@ -2457,7 +2502,10 @@
             "path": "artifacts/rc/model-MA03-20261021T024038.jsonl",
             "sha256": "a03d70285edec035c5dc685a5a74f7157e19b1f91a9a277fe124ee0b3eaeefcb"
           },
-          "limitations": ["", ""],
+          "limitations": [
+            "",
+            ""
+          ],
           "usage": [
             {
               "role": "supervisor",
@@ -2578,7 +2626,10 @@
             "path": "artifacts/rc/model-MA06-20261021T022701.jsonl",
             "sha256": "f5c635018f0d9a8399e4095f92ced97310a0b711a16522837c796fbd1b3187c6"
           },
-          "limitations": ["", ""],
+          "limitations": [
+            "",
+            ""
+          ],
           "usage": [
             {
               "role": "supervisor",
@@ -2722,7 +2773,10 @@
             "path": "artifacts/rc/model-MA06-20261021T022701.jsonl",
             "sha256": "f5c635018f0d9a8399e4095f92ced97310a0b711a16522837c796fbd1b3187c6"
           },
-          "limitations": ["", ""],
+          "limitations": [
+            "",
+            ""
+          ],
           "usage": [
             {
               "role": "supervisor",
@@ -3089,7 +3143,10 @@
             "path": "artifacts/rc/bank-20261021T023221.jsonl",
             "sha256": "decd443c40324f8ba47fec72259253c489636f45fbbe947f1440633b9a7118ae"
           },
-          "limitations": ["", ""]
+          "limitations": [
+            "",
+            ""
+          ]
         }
       ],
       "assessment": "真实 Spring 双客户+确定性 child Planner 并发隔离通过；不冒称真实并发 DeepSeek。",
@@ -3163,7 +3220,10 @@
             "path": "artifacts/rc/model-MA06-20261021T022701.jsonl",
             "sha256": "f5c635018f0d9a8399e4095f92ced97310a0b711a16522837c796fbd1b3187c6"
           },
-          "limitations": ["", ""],
+          "limitations": [
+            "",
+            ""
+          ],
           "usage": [
             {
               "role": "supervisor",
@@ -3307,7 +3367,10 @@
             "path": "artifacts/rc/model-MA06-20261021T022701.jsonl",
             "sha256": "f5c635018f0d9a8399e4095f92ced97310a0b711a16522837c796fbd1b3187c6"
           },
-          "limitations": ["", ""],
+          "limitations": [
+            "",
+            ""
+          ],
           "usage": [
             {
               "role": "supervisor",
@@ -3626,5 +3689,247 @@
   },
   "execution_policy": "单 worker / 串行重负载 / 独立可抛弃金融数据库 / multi-agent默认关闭",
   "status_semantics": "rc_status为完整case；evidence可包含明确标记的支持性结果，历史5PASS不计入新结果。",
-  "final_environment_artifact": "artifacts/rc/environment-aster-acceptance-20261012-20261021T025926.json"
+  "final_environment_artifact": "artifacts/rc/environment-aster-acceptance-20261012-20261021T025926.json",
+  "final_closure_20261021": {
+    "recorded_at": "2026-10-21T09:02:29.016816+00:00",
+    "source_commit": "6183c475a415a63dcd22cda1b7b8f0bfa9f573f5",
+    "model_runs": [
+      {
+        "case_id": "MA01",
+        "mode": "single",
+        "raw_status": "PASS",
+        "assessed_status": "PASS",
+        "runtime_status": "SUCCEEDED",
+        "elapsed_seconds": 34.141,
+        "http_attempts": 8,
+        "http_200": 8,
+        "calls_by_role": {
+          "supervisor": 8
+        },
+        "prompt_tokens": 114640,
+        "completion_tokens": 5155,
+        "total_tokens": 119795,
+        "monetary_cost": null,
+        "cost_limitation": "No inferred provider price; actual token usage only",
+        "parent_tool_calls": 3,
+        "child_tool_calls": 0,
+        "artifact": "artifacts/rc-closure/second/model-MA01-20261021T083548.jsonl"
+      },
+      {
+        "case_id": "MA01",
+        "mode": "multi",
+        "raw_status": "FAIL",
+        "assessed_status": "FAIL",
+        "runtime_status": "PARTIAL",
+        "elapsed_seconds": 66.026,
+        "http_attempts": 17,
+        "http_200": 17,
+        "calls_by_role": {
+          "supervisor": 13,
+          "financial_analyst": 2,
+          "bank_knowledge": 2
+        },
+        "prompt_tokens": 263306,
+        "completion_tokens": 9829,
+        "total_tokens": 273135,
+        "monetary_cost": null,
+        "cost_limitation": "No inferred provider price; actual token usage only",
+        "parent_tool_calls": 8,
+        "child_tool_calls": 1,
+        "artifact": "artifacts/rc-closure/second/model-MA01-20261021T083548.jsonl"
+      },
+      {
+        "case_id": "MA03",
+        "mode": "single",
+        "raw_status": "FAIL",
+        "assessed_status": "ENVIRONMENT_BLOCKED",
+        "runtime_status": "PARTIAL",
+        "elapsed_seconds": 5.135,
+        "http_attempts": 1,
+        "http_200": 0,
+        "calls_by_role": {
+          "supervisor": 1
+        },
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0,
+        "monetary_cost": null,
+        "cost_limitation": "No inferred provider price; actual token usage only",
+        "parent_tool_calls": 0,
+        "child_tool_calls": 0,
+        "artifact": "artifacts/rc-closure/second/model-MA03-20261021T083828.jsonl"
+      },
+      {
+        "case_id": "MA03",
+        "mode": "multi",
+        "raw_status": "FAIL",
+        "assessed_status": "ENVIRONMENT_BLOCKED",
+        "runtime_status": "PARTIAL",
+        "elapsed_seconds": 5.217,
+        "http_attempts": 1,
+        "http_200": 0,
+        "calls_by_role": {
+          "supervisor": 1
+        },
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0,
+        "monetary_cost": null,
+        "cost_limitation": "No inferred provider price; actual token usage only",
+        "parent_tool_calls": 0,
+        "child_tool_calls": 0,
+        "artifact": "artifacts/rc-closure/second/model-MA03-20261021T083828.jsonl"
+      },
+      {
+        "case_id": "MA06",
+        "mode": "single",
+        "raw_status": "FAIL",
+        "assessed_status": "ENVIRONMENT_BLOCKED",
+        "runtime_status": "PARTIAL",
+        "elapsed_seconds": 5.149,
+        "http_attempts": 1,
+        "http_200": 0,
+        "calls_by_role": {
+          "supervisor": 1
+        },
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0,
+        "monetary_cost": null,
+        "cost_limitation": "No inferred provider price; actual token usage only",
+        "parent_tool_calls": 0,
+        "child_tool_calls": 0,
+        "artifact": "artifacts/rc-closure/second/model-MA06-20261021T084055.jsonl"
+      },
+      {
+        "case_id": "MA06",
+        "mode": "multi",
+        "raw_status": "FAIL",
+        "assessed_status": "ENVIRONMENT_BLOCKED",
+        "runtime_status": "PARTIAL",
+        "elapsed_seconds": 5.178,
+        "http_attempts": 1,
+        "http_200": 0,
+        "calls_by_role": {
+          "supervisor": 1
+        },
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0,
+        "monetary_cost": null,
+        "cost_limitation": "No inferred provider price; actual token usage only",
+        "parent_tool_calls": 0,
+        "child_tool_calls": 0,
+        "artifact": "artifacts/rc-closure/second/model-MA06-20261021T084055.jsonl"
+      }
+    ],
+    "gates": {
+      "CODE_COMPLETE": "PARTIAL",
+      "LIVE_E2E_VERIFIED": "PARTIAL",
+      "MULTI_AGENT_VERIFIED": "FAIL_DEFAULT_OFF",
+      "S1": "PARTIAL",
+      "R1": "PARTIAL",
+      "DEMO_READY": false,
+      "PRODUCTION_READY": false
+    },
+    "evidence_manifest": "artifacts/rc-closure/closure-evidence-manifest.json",
+    "evidence_manifest_sha256": "6a06b48ae3b7b6b5420e08214605db474ec25b3a97ed2d9465ce6587e93a7335",
+    "local_evidence_only": true,
+    "limitations": [
+      "Latest completed MA01 multi still failed; MA03/MA06 transport blocked",
+      "Final receipt gateway fix source-tested; image rebuild registry-blocked",
+      "No hidden reasoning stored; no network/TLS/security bypass",
+      "AB01 safe staging is user-approved supplemental oracle; original simultaneous prepare oracle remains incomplete"
+    ],
+    "restored_environment_artifact": "artifacts/rc/environment-aster-acceptance-20261012-20261021T085859.json",
+    "runtime": {
+      "project": "aster-acceptance-20261012",
+      "port": 18088,
+      "core_services_healthy": 5,
+      "knowledge_running": false,
+      "mcp_enabled": false,
+      "multi_agent_enabled": false,
+      "rolled_back": true,
+      "agent_image": "sha256:87b3d5c72c68440a647b24db24aaa04b71e210ede2f69f6aa44ba5c78475da71",
+      "web_image": "sha256:ea121a13495eb5701002c75050a286924f6dd9be86dc89d993f7bc3cd8936d0a",
+      "protected_tables_unchanged": true,
+      "source_image_parity": false
+    },
+    "tests": {
+      "agent_full": {
+        "run": 371,
+        "passed": 359,
+        "skipped": 12,
+        "artifact": "artifacts/rc-closure/agent-final-regression.log"
+      },
+      "isolated_postgres": {
+        "run": 12,
+        "passed": 12,
+        "skipped": 0,
+        "artifact": "artifacts/rc-closure/history-pg-recovered/postgres-recovery-evidence.jsonl"
+      },
+      "web_full": {
+        "run": 535,
+        "passed": 535,
+        "skipped": 0,
+        "workers": 1,
+        "artifact": "artifacts/rc-closure/web-full.log"
+      },
+      "final_history_targeted": {
+        "run": 3,
+        "passed": 3,
+        "artifact": "artifacts/rc-closure/history-optional-get-green.log"
+      }
+    },
+    "case_statuses": {
+      "AB01": "PARTIAL",
+      "AB02": "PASS",
+      "AB03": "PARTIAL",
+      "AB04": "PASS",
+      "AB05": "PASS",
+      "AB06": "PASS",
+      "AB07": "PARTIAL",
+      "AB08": "PASS",
+      "AB09": "PASS",
+      "AB10": "PARTIAL",
+      "AB11": "PARTIAL",
+      "AB12": "PARTIAL",
+      "AB13": "PARTIAL",
+      "AB14": "PARTIAL",
+      "AB15": "PARTIAL",
+      "AB16": "PARTIAL",
+      "AB17": "NOT_RUN",
+      "AB18": "NOT_APPLICABLE",
+      "AB19": "PARTIAL",
+      "AB20": "PARTIAL",
+      "MA01": "FAIL",
+      "MA02": "ENVIRONMENT_BLOCKED",
+      "MA03": "ENVIRONMENT_BLOCKED",
+      "MA04": "PARTIAL",
+      "MA05": "PARTIAL",
+      "MA06": "FAIL",
+      "MA07": "PARTIAL",
+      "MA08": "PASS"
+    },
+    "assessment_policy": "Prior case records and raw FAIL retained; closure case_statuses reports latest assessed state. AB01 supplemental staging success does not close the frozen real-model oracle.",
+    "independent_grader": {
+      "status": "PARTIAL",
+      "tests": 6,
+      "passed": 6,
+      "artifact": "artifacts/rc-closure/grader-independent.log",
+      "axes": [
+        "strict ordered tool names and arguments",
+        "Decimal monetary facts with currency"
+      ],
+      "remaining": [
+        "full independent benchmark labels",
+        "verified live-result scoring"
+      ],
+      "limitations": [
+        "No narrative entailment scoring",
+        "No artifact provenance authentication"
+      ]
+    },
+    "final_readonly_health_artifact": "artifacts/rc-closure/final-readonly-health.json"
+  }
 }

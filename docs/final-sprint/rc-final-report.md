@@ -1,5 +1,7 @@
 # Aster Bank — Final RC Report
 
+> Later closure — 2026-10-21: see [rc-final-closure.md](rc-final-closure.md). Prior run records below remain unchanged. Current main service is rolled back to five core containers, Knowledge/MCP paused; final history fix is source-tested but not deployed.
+
 更新：2026-10-21（UTC+08）。基线 `16110e91d8b5c9208ad1cf300db9b51857284ef9`；仅修改 `D:\BankProject-AGUI-20261012`。原项目未覆盖。
 
 ## 发布门禁

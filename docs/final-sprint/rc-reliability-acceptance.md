@@ -1,5 +1,7 @@
 # RC 恢复验收
 
+> Later closure — 2026-10-21: see [rc-final-closure.md](rc-final-closure.md). Prior run records below remain unchanged. Current main service is rolled back to five core containers, Knowledge/MCP paused; final history fix is source-tested but not deployed.
+
 2026-10-21，基线16110e9。历史结果不算本轮通过。RC1应用05ab50f、RC2 Web 0c1121b；运行镜像另由部署证据固定。金融测试只在aster-final-sprint-20261020的真实Spring/PostgreSQL中进行。
 
 ## 已发现与修复

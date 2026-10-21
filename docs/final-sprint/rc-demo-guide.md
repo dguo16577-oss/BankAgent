@@ -1,5 +1,7 @@
 # RC 比赛演示与回滚
 
+> Later closure — 2026-10-21: see [rc-final-closure.md](rc-final-closure.md). Prior run records below remain unchanged. Current main service is rolled back to five core containers, Knowledge/MCP paused; final history fix is source-tested but not deployed.
+
 2026-10-21。当前 **不具备完整 DEMO_READY 门禁**：最新模型连接失败，多 Agent 正常任务有失败，部分恢复/安全证据未齐。页面和六项服务可用不等于比赛全链路已通过。
 
 ## 当前入口

@@ -1,5 +1,7 @@
 # RC 基线与缺口矩阵
 
+> Final Closure更新：下表保留上一轮原始状态；最新增量及最终部署见文末和 [rc-final-closure.md](rc-final-closure.md)。主服务当前回滚为五项核心服务，Knowledge/MCP暂停。
+
 2026-10-21（UTC+08）。本轮总体 **PARTIAL**。原始基线16110e9；历史完整PASS为AB02/04/06/08/12，原记录不修改。本轮不是一次连续全量运行。
 
 | Case | 历史    | 本轮完整状态        | 缺口分类                 | 证据与剩余条件                                                                                            |
@@ -42,6 +44,41 @@
 3. 按非转账操作逐项补权威回执查询和故障证据；没有关联能力继续 UNKNOWN/PARTIAL。
 4. 完成 RAG/MCP 注入送达真实模型、范围继承/图表计数、统一审计字段和评分器负例。
 5. 最新部署完成 DEMO01–10 后再评估 DEMO_READY；S1/R1 保持独立 PARTIAL。
+
+## Final Closure — 2026-10-21 增量
+
+| Case | 本轮增量后的完整状态 | 证据 / 剩余问题 |
+| --- | --- | --- |
+| AB01 | PARTIAL | 用户批准的安全分阶段协议已实现；确定性真实银行保留双目标、单笔取消、旧确认拒绝、零扣款通过。原同时准备oracle和真实模型/browser未闭合。 |
+| AB02 | PASS | 本轮新部署真实银行错误金额/收款人拒绝回归通过。 |
+| AB03 | PARTIAL | 对象/授权范围已有真实银行证据；完整客户/会话/条款组合仍按原门禁保留。 |
+| AB04 | PASS | 本轮真实银行执行键/条款回归通过；旧hash不可借用。 |
+| AB05 | PASS | 保留上一轮精确镜像下真实数据库双标签并发证据；未冒称本轮再次运行。 |
+| AB06 | PASS | 本轮真实Spring提交后丢响应恢复通过。 |
+| AB07 | PARTIAL | 三类真实非转账故障各一次副作用、不重提；缺不可变回执查询，因此安全UNKNOWN/PARTIAL。 |
+| AB08 | PASS | 本轮乱序/重复回执绑定真实银行回归通过。 |
+| AB09 | PASS | 原lease SQL未再改变；当前PG12项含过期owner/CAS回归通过。 |
+| AB10 | PARTIAL | 只读重新认证历史实现；PG/单元通过；浏览器详情发现错误网关调用，源码修正后镜像构建网络阻塞。SSE/重新登录联合证据未齐。 |
+| AB11 | PARTIAL | 保留业务拒绝、Provider/网络安全失败证据；最新真实模型ConnectError不代表完整case通过。 |
+| AB12 | PARTIAL | 原取消/重放与本轮PG恢复通过；完整最新部署模型联合链路尚缺。 |
+| AB13 | PARTIAL | 原分析范围继承证据保留，未无理由重复；完整冻结门禁仍缺。 |
+| AB14 | PARTIAL | SQL客户过滤和新历史跨客户单元通过，不能替代完整跨客户复合模型查询。 |
+| AB15 | PARTIAL | Web535及原图表真实性定向通过，最新完整联合链路未闭合。 |
+| AB16 | PARTIAL | 保留真实note攻击送达；RAG/MCP真实送达仍阻塞，不能用离线结果替代。 |
+| AB17 | NOT_RUN | 尚无最新浏览器真实model/bank调用计数。 |
+| AB18 | NOT_APPLICABLE | 没有新增跨请求模型缓存，不为验收强建缓存。 |
+| AB19 | PARTIAL | 原负例保留；新增独立参数/银行金额事实评分器，6项负例通过；完整独立标签与真实结果评分仍缺。 |
+| AB20 | PARTIAL | Durable/条款/回执绑定存在；完整统一审计字段和外部封存未实现。 |
+| MA01 | FAIL | 最新single PASS34.141s；multi PARTIAL66.026s，Knowledge两次无效JSON。 |
+| MA02 | ENVIRONMENT_BLOCKED | 保留原澄清与网络阻塞，未再次消耗模型调用。 |
+| MA03 | ENVIRONMENT_BLOCKED | 最新single/multi ledger前ConnectError，HTTP200=0；旧不合格ledger失败保留。 |
+| MA04 | PARTIAL | 原确定性一成一败不误报成功证据保留；真实模型未齐。 |
+| MA05 | PARTIAL | 原恶意子结果硬边界证据保留；真实攻击链未齐。 |
+| MA06 | FAIL | 最近完成的对照不及single，默认关闭；本轮新尝试网络阻塞。 |
+| MA07 | PARTIAL | 原真实双客户/确定性子模型并发隔离保留；不冒充真实并发DeepSeek。 |
+| MA08 | PASS | 原真实越权拒绝保留；本轮registry Schema及硬拒绝回归通过。 |
+
+本轮原始模型harness将连接失败写FAIL，原文件不改；最新环境分类单独记录于 `rc-results.json.final_closure_20261021.model_runs`。无结果不推断token费用；无模型响应不算业务失败或成功。新旧原始产物都保留。
 
 ## 资源与部署
 

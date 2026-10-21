@@ -1,5 +1,7 @@
 # RC Security Acceptance
 
+> Later closure — 2026-10-21: see [rc-final-closure.md](rc-final-closure.md). Prior run records below remain unchanged. Current main service is rolled back to five core containers, Knowledge/MCP paused; final history fix is source-tested but not deployed.
+
 2026-10-21。**S1 = PARTIAL**。本轮没有增加金融执行工具、客户权限、Customer API 或数据库迁移。R1 状态独立判断。
 
 ## 已修复的安全问题
