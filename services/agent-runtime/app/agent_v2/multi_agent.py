@@ -11,6 +11,7 @@ from contextvars import ContextVar
 from datetime import datetime, timedelta, timezone
 from typing import Any, Callable
 
+import httpx
 from pydantic import Field
 
 from ..deepseek import DeepSeekClassifier
@@ -58,6 +59,20 @@ class SpecialistPlanner:
         self.classifier = DeepSeekClassifier()
 
     async def decide(self, context: dict) -> PlannerDecision:
+        # The child decoder describes only its actual read capability. The
+        # generic Supervisor schema includes controls that a child cannot use.
+        tools = context.get('available_tools', [])
+        names = [tool['name'] for tool in tools if isinstance(tool.get('name'), str)]
+        schema = copy.deepcopy(PlannerDecision.model_json_schema())
+        properties = schema['$defs']['ToolCall']['properties']
+        properties['tool_name']['enum'] = names
+        properties['scope_clear']['maxItems'] = 0
+        properties['continue_after_confirmation']['const'] = False
+        safe_context = copy.deepcopy(context)
+        state = safe_context.get('state', {})
+        fields = set().union(*(SUPPORTED.get(name, set()) for name in names)) if names else set()
+        safe_context['state'] = {'analytical_scope': {key: value for key, value in
+            state.get('analytical_scope', {}).items() if key in fields}}
         instructions = (
             f"You are the independent {self.role} specialist in a banking system. "
             "Use ONLY the supplied read-only tools. Return one JSON decision conforming to decision_schema. "
@@ -71,9 +86,13 @@ class SpecialistPlanner:
             "preserve product scope/version/effective dates; no evidence means ASK_USER or explain the gap."
         )
         result = await self.classifier._json_completion(instructions,
-            json.dumps({**context, "decision_schema": PlannerDecision.model_json_schema()},
+            json.dumps({**safe_context, "decision_schema": schema},
                        ensure_ascii=False, separators=(",", ":")), 1500)
-        return PlannerDecision.model_validate(result)
+        decision = PlannerDecision.model_validate(result)
+        if decision.type == 'TOOL_CALL' and (decision.tool_call.tool_name not in names
+                or decision.tool_call.scope_clear or decision.tool_call.continue_after_confirmation):
+            raise RegistryError('SPECIALIST_TOOL_NOT_PERMITTED')
+        return decision
 
 
 class SupervisorRegistry(ToolRegistry):
@@ -138,6 +157,11 @@ class SupervisorRegistry(ToolRegistry):
         existing = next((r for r in task.delegations if r.get("delegation_id") == key), None)
         if existing and existing.get("status") == "SUCCEEDED":
             return Observation(tool_name=name, success=True, structured_result=existing["result"], trust="UNTRUSTED_EXTERNAL_DATA")
+        if existing and existing.get('status') in {'FAILED', 'CANCELLED'} and isinstance(existing.get('result'), dict):
+            # Replay the same ledger-generation failure without spending more
+            # model calls. A new user query gets a new generation/scope key.
+            return Observation(tool_name=name, success=False, structured_result=existing['result'],
+                error=existing.get('failure_reason'), trust='UNTRUSTED_EXTERNAL_DATA')
         if existing is None and len(task.delegations) >= 4:
             raise RegistryError("DELEGATION_LIMIT_REACHED")
         step["delegation_required"] = True
@@ -238,7 +262,13 @@ class SupervisorRegistry(ToolRegistry):
         except Exception as exc:
             if type(exc).__name__ == "TaskStateConflict":
                 raise
-            warnings.append(str(exc) if isinstance(exc, RegistryError) else "SPECIALIST_PROVIDER_OR_TOOL_FAILED")
+            code = (str(exc) if isinstance(exc, RegistryError) else
+                    'SPECIALIST_CONNECTION_ERROR' if isinstance(exc, httpx.ConnectError) else
+                    'SPECIALIST_TIMEOUT' if isinstance(exc, (TimeoutError, httpx.TimeoutException)) else
+                    'SPECIALIST_INVALID_MODEL_OUTPUT' if isinstance(exc, ValueError) else
+                    'SPECIALIST_PROVIDER_OR_TOOL_FAILED')
+            record['trace'].append({'kind':'SPECIALIST_FAILED','exception_type':type(exc).__name__,'code':code})
+            warnings.append(code)
             status = "CANCELLED" if task.status == Status.CANCELLED else "FAILED"
         # Publish each verified read observation once. Summaries never overwrite bank facts.
         indices = []
