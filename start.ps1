@@ -9,11 +9,15 @@ param(
   [switch]$NoBuild,
   [string]$Services = '',
   [switch]$WithKnowledge,
+  [switch]$BuildOnly,
   [switch]$Recreate
 )
 
 $ErrorActionPreference = 'Stop'
 $root = $PSScriptRoot
+if ($BuildOnly -and ($Command -notin @('start', 'restart') -or $NoBuild)) {
+  throw '-BuildOnly requires start/restart without -NoBuild.'
+}
 $selectedServices = @()
 if ($Services) {
   $selectedServices = @($Services.Split(',') | ForEach-Object { $_.Trim() } | Select-Object -Unique)
@@ -121,7 +125,7 @@ if ($Command -eq 'check') {
 if ($Command -in @('start', 'restart')) {
   Write-Host "Starting $ProjectName at http://127.0.0.1:$Port"
   Write-Host 'The database, Banking Core, Agent and Web run in Docker. Their state is preserved on stop.'
-  if ($selectedServices.Count) {
+  if ($selectedServices.Count -and -not $BuildOnly) {
     foreach ($dependency in @('postgres', 'banking-core', 'reverse-proxy')) {
       $state = & docker inspect "$ProjectName-$dependency-1" --format '{{.State.Health.Status}}'
       if ($LASTEXITCODE -ne 0 -or $state -ne 'healthy') { throw "Incremental deployment requires healthy existing $dependency." }
@@ -153,6 +157,10 @@ if ($Command -in @('start', 'restart')) {
         Invoke-Compose -Arguments @('build', $service)
       }
     }
+  }
+  if ($BuildOnly) {
+    Write-Host 'Selected images built. No service was started or recreated.'
+    return
   }
   $upArguments = @('up', '-d', '--no-build', '--wait', '--wait-timeout', '240')
   if (-not $NoBuild -or $Recreate -or $Command -eq 'restart') { $upArguments += '--force-recreate' }

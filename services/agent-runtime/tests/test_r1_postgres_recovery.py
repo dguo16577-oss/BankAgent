@@ -72,6 +72,18 @@ class PostgresRecoveryTests(unittest.IsolatedAsyncioTestCase):
             self.store.save(task, "worker-a")
         self.store.release(task.task_id, "worker-b")
 
+    async def test_expired_owner_cannot_extend_its_lease_by_saving(self):
+        binding, customer = await AgentRuntimeV2(self.bank, SequencePlanner())._identity(self.cookie)
+        task = Task(session_binding=binding, customer_id=customer, goal="lease expiry")
+        self.store.save(task, "worker-old")
+        with self.store._connection() as connection:
+            connection.execute("UPDATE agent_state.tasks SET lease_until=now()-interval '1 second' WHERE task_id=%s",
+                               (task.task_id,))
+        task.goal = "stale owner renewal"
+        with self.assertRaises(TaskStateConflict):
+            self.store.save(task, "worker-old")
+        self.assertEqual(self.store.load(task.task_id, customer, binding).goal, "lease expiry")
+
     async def test_crash_before_read_tool_call_resumes_same_task(self):
         class CrashSignal(BaseException):
             pass

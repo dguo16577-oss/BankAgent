@@ -30,6 +30,7 @@ from .models import Observation, PlannerDecision, Status, Task
 from .planner import Planner
 from .recipient_names import mask_phone_text
 from .tools import RegistryError, ToolRegistry
+from .state_store import TaskStateConflict
 
 LOGGER = logging.getLogger(__name__)
 
@@ -806,6 +807,8 @@ class AgentRuntimeV2:
                 raise BankingApiError(409, "TASK_STATE_CONFLICT") from exc
             try:
                 return await self._confirm_impl(task_id, body, cookie)
+            except TaskStateConflict as exc:
+                raise BankingApiError(409, "TASK_STATE_CONFLICT") from exc
             finally:
                 self.state_store.release(task_id, self.worker_id)
         return await self._confirm_impl(task_id, body, cookie)

@@ -43,6 +43,10 @@ try {
   Assert-That ([bool]($global:AsterLauncherTestCalls | Where-Object { $_ -match 'up .*--no-deps knowledge-service agent-runtime$' })) 'Knowledge incremental update changed other services.'
   Assert-That ([bool]($global:AsterLauncherTestCalls | Where-Object { $_ -match 'exec aster-local-knowledge-service-1 python ingest_cli.py$' })) 'Reviewed corpus was not ingested.'
   $global:AsterLauncherTestCalls.Clear()
+  & $launcherPath start -BuildOnly -Services 'agent-runtime,web' -EnvFile $envPath -KeyFile $keyPath
+  Assert-That ([bool]($global:AsterLauncherTestCalls | Where-Object { $_ -match 'build .*agent-runtime$' })) 'Build-only omitted selected Agent image.'
+  Assert-That (-not ($global:AsterLauncherTestCalls | Where-Object { $_ -match '^inspect | up |nginx -s reload|ingest_cli' })) 'Build-only changed or required running services.'
+  $global:AsterLauncherTestCalls.Clear()
   $global:AsterLauncherTestHeadroom = 128
   $blocked = $false
   try { & $launcherPath restart -NoBuild -EnvFile $envPath -KeyFile $keyPath } catch { $blocked = $_.Exception.Message -match 'RESOURCE_BLOCKED' }

@@ -4,6 +4,7 @@ No image build, new network, model request or deletion of databases/volumes.
 The existing container provides its secret connection settings without printing them.
 """
 import base64
+import argparse
 import io
 import json
 import os
@@ -12,6 +13,18 @@ import subprocess
 import tarfile
 
 ROOT = Path(__file__).resolve().parents[1]
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument("--project", choices=["aster-acceptance-20261012", "aster-final-sprint-20261020"], default="aster-acceptance-20261012")
+parser.add_argument("--output", default="artifacts/final-sprint")
+args = parser.parse_args()
+container = args.project + "-agent-runtime-1"
+actual = subprocess.check_output(["docker", "inspect", container, "--format",
+    '{{index .Config.Labels "com.docker.compose.project"}}'], text=True).strip()
+if actual != args.project:
+    raise SystemExit("PostgreSQL test project mismatch")
+output = (ROOT / args.output).resolve()
+if not output.is_relative_to((ROOT / "artifacts").resolve()):
+    raise SystemExit("Test output must stay inside project artifacts")
 if os.name == "nt":
     headroom = subprocess.check_output(["powershell", "-NoProfile", "-Command",
         "$m=Get-CimInstance Win32_PerfFormattedData_PerfOS_Memory; [math]::Floor(($m.CommitLimit-$m.CommittedBytes)/1MB)"], text=True)
@@ -80,9 +93,8 @@ with tempfile.TemporaryDirectory(prefix='aster-sprint-tests-') as directory:
     success=result.wasSuccessful() and not result.skipped
 sys.exit(0 if success else 1)
 '''.replace("PAYLOAD", repr(payload))
-output = ROOT / "artifacts/final-sprint"
 output.mkdir(parents=True, exist_ok=True)
-result = subprocess.run(["docker", "exec", "-i", "aster-acceptance-20261012-agent-runtime-1", "python", "-"],
+result = subprocess.run(["docker", "exec", "-i", container, "python", "-"],
                         input=program, text=True, capture_output=True, encoding="utf-8", timeout=180)
 (output / "postgres-recovery.log").write_text(result.stderr, encoding="utf-8")
 (output / "postgres-recovery-evidence.jsonl").write_text(result.stdout, encoding="utf-8")

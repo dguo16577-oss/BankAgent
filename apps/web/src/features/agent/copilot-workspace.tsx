@@ -187,7 +187,7 @@ const reviewLabelsZh: Record<string, string> = {
   Action: "操作类型",
 };
 
-function PendingAction({
+export function PendingAction({
   state,
   onResolved,
 }: {
@@ -207,24 +207,48 @@ function PendingAction({
     )
       return;
     let cancelled = false;
-    void fetch(`/api/agent/tasks/${taskId}`, {
-      credentials: "same-origin",
-      cache: "no-store",
-    })
-      .then(async (response) => {
+    let inFlight = false;
+    let attempts = 0;
+    let settled = false;
+    const refresh = async () => {
+      if (cancelled || settled || inFlight || attempts >= 60) return;
+      inFlight = true;
+      attempts++;
+      try {
+        const response = await fetch(`/api/agent/tasks/${taskId}`, {
+          credentials: "same-origin",
+          cache: "no-store",
+          signal: AbortSignal.timeout(5000),
+        });
         if (!response.ok) throw new Error("Task review unavailable");
-        return parseAgentMessage(await response.json());
-      })
-      .then((response) => {
-        if (!cancelled) setTask(response.task);
-      })
-      .catch(() => {
-        if (!cancelled) setError("Could not load bank review");
-      });
+        const result = parseAgentMessage(await response.json());
+        if (cancelled || result.task?.taskId !== taskId) return;
+        setTask(result.task);
+        if (
+          !["WAITING_CONFIRMATION", "WAITING_AUTH", "RUNNING"].includes(
+            result.task.status,
+          )
+        ) {
+          settled = true;
+          setError(undefined);
+          onResolved(result);
+        }
+      } catch {
+        if (!cancelled && attempts === 1)
+          setError("Could not load bank review");
+      } finally {
+        inFlight = false;
+      }
+    };
+    void refresh();
+    // Another tab may finish verification first. Only read the owned task;
+    // never repeat its verification, confirmation or bank execution here.
+    const timer = window.setInterval(() => void refresh(), 2000);
     return () => {
       cancelled = true;
+      window.clearInterval(timer);
     };
-  }, [taskId, status]);
+  }, [taskId, status, onResolved]);
 
   async function act(action: "CONFIRM" | "CANCEL", authorizationId?: string) {
     if (!task?.confirmation || busy) return;
@@ -463,7 +487,7 @@ function SpendingCard({
   );
 }
 
-function TaskProgressCard({
+export function TaskProgressCard({
   state,
   bankResult,
 }: {
@@ -471,11 +495,53 @@ function TaskProgressCard({
   bankResult: AgentMessage | undefined;
 }) {
   const { locale } = useLocale();
+  const [reconciled, setReconciled] = useState<AgentMessage>();
+  const taskId = bankResult?.task?.taskId ?? state?.taskId;
+  const completedCount =
+    bankResult?.task?.completedActionCount ?? state?.completedActionCount;
+  useEffect(() => {
+    if (
+      bankResult?.task?.receipt ||
+      typeof taskId !== "string" ||
+      !/^[a-f0-9]{32}$/.test(taskId) ||
+      typeof completedCount !== "number" ||
+      completedCount < 1
+    )
+      return;
+    let cancelled = false;
+    void fetch(`/api/agent/tasks/${taskId}`, {
+      credentials: "same-origin",
+      cache: "no-store",
+      signal: AbortSignal.timeout(5000),
+    })
+      .then(async (response) => {
+        if (!response.ok) return;
+        const result = parseAgentMessage(await response.json());
+        if (!cancelled && result.task?.taskId === taskId) setReconciled(result);
+      })
+      .catch(() => {
+        /* Do not invent a receipt when the owned read fails. */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [taskId, completedCount, bankResult?.task?.receipt]);
+  const receiptTask = bankResult?.task?.receipt
+    ? bankResult.task
+    : reconciled?.task?.taskId === taskId
+      ? reconciled?.task
+      : undefined;
   const status = bankResult?.task?.status ?? state?.status;
   const completed =
     bankResult?.task?.completedActionCount ?? state?.completedActionCount;
   const failed =
     bankResult?.task?.failedActionCount ?? state?.failedActionCount;
+  const receiptId =
+    receiptTask?.receiptKind &&
+    typeof receiptTask.receipt?.id === "string" &&
+    /^[A-Za-z0-9_-]{1,100}$/.test(receiptTask.receipt.id)
+      ? receiptTask.receipt.id
+      : undefined;
   if (
     !bankResult &&
     !["FAILED", "CANCELLED"].includes(String(status)) &&
@@ -515,6 +581,12 @@ function TaskProgressCard({
     >
       <strong>{locale === "zh-CN" ? "任务进度" : "Task progress"}</strong>
       <p className="mt-1">{statusLabel}</p>
+      {receiptId && (
+        <dl className="mt-2 break-all">
+          <dt>{locale === "zh-CN" ? "银行回执" : "Bank receipt"}</dt>
+          <dd>{receiptId}</dd>
+        </dl>
+      )}
       {Number.isInteger(completed) && Number(completed) > 0 && (
         <p>
           {locale === "zh-CN" ? "已完成银行操作" : "Completed bank actions"}:{" "}

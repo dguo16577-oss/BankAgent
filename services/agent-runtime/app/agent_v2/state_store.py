@@ -77,7 +77,7 @@ class PostgresTaskStore:
                     "UPDATE agent_state.tasks SET checkpoint=%s,state_version=state_version+1,updated_at=now(), "
                     "lease_until=CASE WHEN %s::text IS NULL THEN lease_until ELSE now()+interval '5 minutes' END "
                     "WHERE task_id=%s AND customer_id=%s AND session_binding=%s AND state_version=%s "
-                    "AND (%s::text IS NULL OR lease_owner=%s) RETURNING state_version",
+                    "AND (%s::text IS NULL OR (lease_owner=%s AND lease_until>now())) RETURNING state_version",
                     (Jsonb(checkpoint), owner, task.task_id, task.customer_id, task.session_binding,
                      task.state_version, owner, owner)).fetchone()
         if row is None:
