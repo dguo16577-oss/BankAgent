@@ -101,6 +101,18 @@ class ConfirmRequest(StrictModel):
     action_authorization_id: str | None = None
 
 
+class CancelActionRequest(StrictModel):
+    intent_id: str = Field(pattern=r'^[A-Za-z0-9_-]{1,128}$')
+
+
+class FinancialPlanStep(StrictModel):
+    step_id: str
+    goal: str
+    execution_state: Literal['NOT_PREPARED', 'FINANCIAL_ACTION_PREPARED',
+        'FINANCIAL_ACTION_EXECUTED', 'FINANCIAL_ACTION_CANCELLED', 'EXECUTION_UNKNOWN']
+    intent_id: str | None = None
+
+
 class AgentResponse(StrictModel):
     task_id: str
     status: TaskStatus
@@ -113,4 +125,5 @@ class AgentResponse(StrictModel):
     receipt: dict[str, Any] | None = None
     completed_actions: list[dict[str, Any]] = Field(default_factory=list)
     failed_actions: list[dict[str, Any]] = Field(default_factory=list)
+    financial_plan: list[FinancialPlanStep] = Field(default_factory=list)
     error_code: str | None = None

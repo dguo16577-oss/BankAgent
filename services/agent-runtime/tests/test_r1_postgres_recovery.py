@@ -26,6 +26,20 @@ class PostgresRecoveryTests(unittest.IsolatedAsyncioTestCase):
         self.bank = CancellableBank()
         self.cookie = "SESSION=alice"
 
+    async def test_reauthenticated_history_filters_customer_without_rebinding(self):
+        from app.agent_v2.history import TaskHistoryService
+        from app.agent_v2.runtime import session_binding
+        from test_rc_history import HistoryBank
+        task = Task(customer_id='alice', session_binding=session_binding('SESSION=old'), goal='history')
+        self.store.save(task)
+        runtime = AgentRuntimeV2(HistoryBank(), object(), state_store=self.store)
+        service = TaskHistoryService(runtime)
+        self.assertIsNone(self.store.history_load(task.task_id, 'bob'))
+        self.assertFalse(any(item.task_id == task.task_id for item in self.store.history_list('bob')))
+        self.assertEqual((await service.get(task.task_id, 'SESSION=alice'))['task_id'], task.task_id)
+        self.assertIsNone(self.store.load(task.task_id, 'alice', session_binding('SESSION=alice')))
+        self.assertNotIn(task.task_id, runtime.tasks)
+
     async def test_prepared_intent_and_agui_thread_survive_process_replacement(self):
         first = AgentRuntimeV2(self.bank, SequencePlanner(), state_store=self.store)
         request_id = uuid4().hex

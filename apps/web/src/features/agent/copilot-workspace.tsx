@@ -16,6 +16,7 @@ import {
   type AgentTask,
 } from "./agent-contract";
 import { RichPresentation } from "./rich-presentation";
+import { TaskHistory } from "./task-history";
 import { getService } from "./service-catalog";
 import {
   AgentProgress,
@@ -250,7 +251,10 @@ export function PendingAction({
     };
   }, [taskId, status, onResolved]);
 
-  async function act(action: "CONFIRM" | "CANCEL", authorizationId?: string) {
+  async function act(
+    action: "CONFIRM" | "CANCEL" | "CANCEL_ACTION",
+    authorizationId?: string,
+  ) {
     if (!task?.confirmation || busy) return;
     setBusy(true);
     setError(undefined);
@@ -272,7 +276,9 @@ export function PendingAction({
                   ? { actionAuthorizationId: authorizationId }
                   : {}),
               }
-            : {}),
+            : action === "CANCEL_ACTION"
+              ? { intentId: task.confirmation.id }
+              : {}),
         }),
       });
       if (!response.ok) throw new Error("Bank action failed");
@@ -280,8 +286,9 @@ export function PendingAction({
       setTask(result.task);
       if (
         result.task &&
-        result.task.status !== "WAITING_CONFIRMATION" &&
-        result.task.status !== "WAITING_AUTH"
+        (action === "CANCEL_ACTION" ||
+          (result.task.status !== "WAITING_CONFIRMATION" &&
+            result.task.status !== "WAITING_AUTH"))
       )
         onResolved(result);
       if (result.task?.errorCode) setError(result.task.errorCode);
@@ -330,6 +337,23 @@ export function PendingAction({
             ? "请核对意图条款；只有通过下方银行验证后才会执行。"
             : "Review the prepared terms. The bank acts only after your verification below."}
       </p>
+      {(task.financialPlan?.length ?? 0) > 1 && (
+        <div className="mt-3 text-sm" aria-label="Staged financial plan">
+          <p>
+            {locale === "zh-CN"
+              ? "每笔依次单独复核和验证；准备不等于执行。其他目标仍保留。"
+              : "Review and verify each action separately. Preparation is not execution; remaining goals are retained."}
+          </p>
+          <ol className="mt-2 list-decimal pl-5">
+            {task.financialPlan?.map((row) => (
+              <li key={row.step_id}>
+                <span>{row.goal}</span>
+                <span> · {row.execution_state}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
       <dl className="mt-3 text-sm">
         <dt>{locale === "zh-CN" ? "操作" : "Action"}</dt>
         <dd className="font-medium">{task.confirmationKind}</dd>
@@ -345,6 +369,18 @@ export function PendingAction({
         <dd>{task.confirmation.expiresAt}</dd>
       </dl>
       <div className="mt-4 flex flex-wrap gap-3">
+        {!reconciliationRequired && (task.financialPlan?.length ?? 0) > 1 && (
+          <Button
+            type="button"
+            variant="outline"
+            disabled={busy}
+            onClick={() => void act("CANCEL_ACTION")}
+          >
+            {locale === "zh-CN"
+              ? "取消这一笔，继续其他目标"
+              : "Cancel this action and continue"}
+          </Button>
+        )}
         {reconciliationRequired ? null : policy ? (
           <ActionVerification
             key={task.confirmation.id}
@@ -378,7 +414,13 @@ export function PendingAction({
             disabled={busy}
             onClick={() => void act("CANCEL")}
           >
-            {locale === "zh-CN" ? "取消意图" : "Cancel intent"}
+            {(task.financialPlan?.length ?? 0) > 1
+              ? locale === "zh-CN"
+                ? "取消整个任务"
+                : "Cancel whole task"
+              : locale === "zh-CN"
+                ? "取消意图"
+                : "Cancel intent"}
           </Button>
         )}
       </div>
@@ -1009,6 +1051,7 @@ function AgentConversation({ threadId }: { threadId: string }) {
 
   return (
     <div className="space-y-5">
+      <TaskHistory />
       <PendingAction
         state={
           typeof state?.taskId === "string"

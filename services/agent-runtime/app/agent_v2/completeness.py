@@ -21,6 +21,33 @@ _PREPARE_RECEIPTS = {
 }
 
 
+def financial_progress(task: Task) -> list[dict[str, str | None]]:
+    """Readiness is separate from completion, derived only from trusted bindings."""
+    from .financial_terms import receipt_matches
+    rows = []
+    for step in task.ledger:
+        if step.get('kind') != 'FINANCIAL_ACTION':
+            continue
+        binding = step.get('financial_binding') or {}
+        canonical = next((r for r in task.financial_terms if r.get('intent_id') == binding.get('intent_id')), None)
+        phase = 'NOT_PREPARED'
+        if step.get('status') == 'CANCELLED':
+            phase = 'FINANCIAL_ACTION_CANCELLED'
+        elif canonical:
+            current = (task.active_intent or {}).get('id') == canonical.get('intent_id')
+            if task.execution_uncertain and current:
+                phase = 'EXECUTION_UNKNOWN'
+            elif canonical.get('status') == 'EXECUTED':
+                verified = any(o.success and o.tool_name.startswith('confirmed_') and
+                    receipt_matches(task, step, o.structured_result) for o in task.observations)
+                phase = 'FINANCIAL_ACTION_EXECUTED' if verified else 'EXECUTION_UNKNOWN'
+            elif canonical.get('status') == 'PREPARED' and current:
+                phase = 'FINANCIAL_ACTION_PREPARED'
+        rows.append({'step_id':step['step_id'],'goal':step['goal'],'execution_state':phase,
+            'intent_id':canonical.get('intent_id') if canonical else None})
+    return rows
+
+
 def preparation_blocker(task: Task, tool_name: str, step_id: str | None = None) -> str | None:
     """Check model-declared dependencies before a financial PREPARE reaches the bank."""
     if task.execution_uncertain:

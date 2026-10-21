@@ -1,6 +1,44 @@
 import { expect, it, vi } from "vitest";
 import { POST } from "./route";
 
+it("cancels only the selected current intent through a fixed route without forwarding authorization", async () => {
+  const previous = process.env.ASTER_AGENT_RUNTIME_URL;
+  process.env.ASTER_AGENT_RUNTIME_URL = "http://127.0.0.1:8001";
+  const fetcher = vi
+    .spyOn(globalThis, "fetch")
+    .mockResolvedValue(Response.json({ message: "next review" }));
+  try {
+    const response = await POST(
+      new Request("http://localhost:3000/api/agent/chat", {
+        method: "POST",
+        headers: {
+          Origin: "http://localhost:3000",
+          Host: "localhost:3000",
+          Cookie: "SESSION=demo",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "CANCEL_ACTION",
+          taskId: "a".repeat(32),
+          intentId: "intent_one",
+          actionAuthorizationId: "must_not_forward",
+        }),
+      }),
+    );
+    expect(response.status).toBe(200);
+    expect(String(fetcher.mock.calls[0][0])).toBe(
+      `http://127.0.0.1:8001/agent/tasks/${"a".repeat(32)}/cancel-action`,
+    );
+    expect(JSON.parse(String(fetcher.mock.calls[0][1]?.body))).toEqual({
+      intent_id: "intent_one",
+    });
+  } finally {
+    fetcher.mockRestore();
+    if (previous === undefined) delete process.env.ASTER_AGENT_RUNTIME_URL;
+    else process.env.ASTER_AGENT_RUNTIME_URL = previous;
+  }
+});
+
 function request(origin = "http://localhost:3000", locale?: unknown) {
   return new Request("http://localhost:3000/api/agent/chat", {
     method: "POST",

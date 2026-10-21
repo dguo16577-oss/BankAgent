@@ -11,6 +11,43 @@ from test_multi_agent import parent
 
 
 class ClosureSpecialistTests(unittest.IsolatedAsyncioTestCase):
+    async def test_delegate_step_id_uses_parent_goal_without_model_rewriting_it(self):
+        seen=[]
+        class Child:
+            async def decide(self,context):
+                seen.append(context['goal']['text'])
+                return PlannerDecision(type='ASK_USER',question={'text':'需要补充资料'})
+        registry=SupervisorRegistry(CancellableBank(),save_task=lambda _:None,specialist_factory=lambda _:Child())
+        result=await registry.call('delegate_financial_analysis',{'step_id':'g1'},parent(),'SESSION=alice')
+        self.assertEqual(seen,['查询余额'])
+        self.assertFalse(result.success)
+        schema=next(t for t in registry.visible() if t['name']=='delegate_financial_analysis')['input_schema']
+        self.assertNotIn('delegated_goal',schema['properties'])
+
+    async def test_invalid_child_json_has_one_bounded_repair_inside_original_budget(self):
+        class Child:
+            calls=0
+            async def decide(self,context):
+                self.calls+=1
+                if self.calls==1:raise json.JSONDecodeError('invalid JSON','',0)
+                if not context['observations']:
+                    return PlannerDecision(type='TOOL_CALL',tool_call={'tool_name':'list_accounts','arguments':{}})
+                return PlannerDecision(type='COMPLETE',final_message='已查询账户。')
+        child=Child();task=parent();registry=SupervisorRegistry(CancellableBank(),save_task=lambda _:None,specialist_factory=lambda _:child)
+        result=await registry.call('delegate_financial_analysis',{'step_id':'g1','delegated_goal':'查询余额'},task,'SESSION=alice')
+        self.assertTrue(result.success);self.assertEqual(child.calls,3);self.assertEqual(task.delegation_model_calls,3)
+        self.assertEqual(task.delegations[0]['decision_repairs'],1)
+
+    async def test_repeated_invalid_child_json_stops_without_tool_or_mutation(self):
+        class Child:
+            calls=0
+            async def decide(self,context):
+                self.calls+=1;raise json.JSONDecodeError('invalid JSON','',0)
+        child=Child();bank=CancellableBank();task=parent();registry=SupervisorRegistry(bank,save_task=lambda _:None,specialist_factory=lambda _:child)
+        result=await registry.call('delegate_financial_analysis',{'step_id':'g1','delegated_goal':'查询余额'},task,'SESSION=alice')
+        self.assertFalse(result.success);self.assertEqual(child.calls,2)
+        self.assertEqual(bank.debits,0);self.assertEqual(bank.intents,{})
+
     async def test_financial_ledger_schema_uses_receipts_not_prepare_tools(self):
         captured={}
         class Model:

@@ -17,7 +17,7 @@ from .deepseek import DeepSeekClassifier
 from .knowledge import citations_for, load_knowledge, relevant_facts
 from .models import ChatRequest, ChatResponse, GraphResponse
 from .planner import _INJECTION, answer, heuristic_intent, public_answer
-from .task_models import AgentChatRequest, AgentResponse, ConfirmRequest
+from .task_models import AgentChatRequest, AgentResponse, ConfirmRequest, CancelActionRequest
 from .transfer_planner import DeepSeekToolPlanner, Planner
 from .transfer_runtime import TransferRuntime, looks_like_transfer_command
 from .agent_v2.planner import DeepSeekPlanner, Planner as V2Planner
@@ -185,6 +185,20 @@ def create_app(
         return {"task": await request.app.state.agui.thread_state(
             thread_id, request.headers.get("cookie", ""))}
 
+    @app.get("/agent/history")
+    async def agent_history(request: Request) -> dict:
+        from .agent_v2.history import TaskHistoryService
+        if request.app.state.agent_version != 'v2':
+            raise HTTPException(status_code=404, detail='Agent v2 is required')
+        return {'tasks': await TaskHistoryService(request.app.state.agent_v2).list(request.headers.get('cookie', ''))}
+
+    @app.get("/agent/history/{task_id}")
+    async def agent_history_detail(task_id: str, request: Request) -> dict:
+        from .agent_v2.history import TaskHistoryService
+        if request.app.state.agent_version != 'v2':
+            raise HTTPException(status_code=404, detail='Agent v2 is required')
+        return await TaskHistoryService(request.app.state.agent_v2).get(task_id, request.headers.get('cookie', ''))
+
     @app.get("/agent/tasks/{task_id}", response_model=AgentResponse)
     async def agent_task(task_id: str, request: Request) -> AgentResponse:
         if request.app.state.agent_version == "v2":
@@ -202,6 +216,12 @@ def create_app(
         if request.app.state.agent_version == "v2":
             return await request.app.state.agent_v2.cancel(task_id, request.headers.get("cookie", ""))
         return await request.app.state.transfer.cancel(task_id, request.headers.get("cookie", ""))
+
+    @app.post('/agent/tasks/{task_id}/cancel-action', response_model=AgentResponse)
+    async def cancel_current_action(task_id: str, body: CancelActionRequest, request: Request) -> AgentResponse:
+        if request.app.state.agent_version != 'v2':
+            raise HTTPException(status_code=404, detail='Agent v2 is required')
+        return await request.app.state.agent_v2.cancel(task_id, request.headers.get('cookie',''), action_intent_id=body.intent_id)
 
     return app
 

@@ -23,7 +23,7 @@ from .context import ContextBuilder
 from .analytical_scope import effective_arguments, record_scope
 from .grounding import coverage_notice, validate_analytical_reply
 from .analysis_safety import readonly_user_turn
-from .completeness import mark_cancelled_financial_step, preparation_blocker, update_ledger
+from .completeness import mark_cancelled_financial_step, preparation_blocker, update_ledger, financial_progress
 from .financial_terms import select_financial_step, bind_prepared_intent, bind_execution_receipt, validate_execution_binding
 from .lifecycle import CancellationUncertain, LifecycleCoordinator
 from .models import Observation, PlannerDecision, Status, Task
@@ -113,11 +113,16 @@ class AgentRuntimeV2:
         steps = [PlanStep(step_id=f"s{index + 1}", tool=entry["tool"], status="SUCCEEDED", result=entry.get("result"),
                           at=datetime.now(timezone.utc)) for index, entry in enumerate(task.trace) if entry.get("kind") == "TOOL_RESULT"]
         confirmation = task.active_intent if task.status in {Status.WAITING_CONFIRMATION, Status.WAITING_AUTH} else None
+        financial_plan = financial_progress(task)
+        if confirmation and len(financial_plan) > 1:
+            current = next((i + 1 for i, row in enumerate(financial_plan) if row.get('intent_id') == confirmation.get('id')), None)
+            message += (f' 金融目标共{len(financial_plan)}项，按阶段分别复核和确认；当前为第{current}项。'
+                        '其余目标仍保留，尚未准备的操作不会自动执行。可取消当前一笔并继续其他独立目标，或取消整个任务。')
         return AgentResponse(task_id=task.task_id, status=status, mode="DEEPSEEK", message=message, steps=steps,
                              confirmation_required=confirmation is not None, confirmation=confirmation,
                              options=options or [], receipt=task.receipt,
                              completed_actions=task.completed_actions,
-                             failed_actions=task.failed_actions, error_code=code)
+                             failed_actions=task.failed_actions, financial_plan=financial_plan, error_code=code)
 
     def _save(self, task: Task) -> None:
         task.updated_at = datetime.now(timezone.utc)
@@ -764,7 +769,7 @@ class AgentRuntimeV2:
                                   "TASK_INTERRUPTED")
         return self._response(task, "当前任务状态。")
 
-    async def cancel(self, task_id: str, cookie: str) -> AgentResponse:
+    async def cancel(self, task_id: str, cookie: str, *, action_intent_id: str | None = None) -> AgentResponse:
         if self.state_store:
             await self._owned(task_id, cookie)
             try:
@@ -772,14 +777,20 @@ class AgentRuntimeV2:
             except Exception as exc:
                 raise BankingApiError(409, "TASK_STATE_CONFLICT") from exc
             try:
-                return await self._cancel_impl(task_id, cookie)
+                return await self._cancel_impl(task_id, cookie, action_intent_id)
+            except TaskStateConflict as exc:
+                raise BankingApiError(409, 'TASK_STATE_CONFLICT') from exc
             finally:
                 self.state_store.release(task_id, self.worker_id)
-        return await self._cancel_impl(task_id, cookie)
+        return await self._cancel_impl(task_id, cookie, action_intent_id)
 
-    async def _cancel_impl(self, task_id: str, cookie: str) -> AgentResponse:
+    async def _cancel_impl(self, task_id: str, cookie: str, action_intent_id: str | None = None) -> AgentResponse:
         async with self._lock:
             task = await self._owned(task_id, cookie)
+            if action_intent_id is not None and (task.execution_uncertain or
+                    (task.active_intent or {}).get('id') != action_intent_id or
+                    task.status not in {Status.WAITING_CONFIRMATION, Status.WAITING_AUTH}):
+                raise BankingApiError(409, 'ACTION_CANCELLATION_NOT_CURRENT')
             if task.status == Status.SUCCEEDED:
                 raise BankingApiError(409, "TRANSFER_ALREADY_COMPLETED")
             if task.execution_uncertain:
@@ -792,6 +803,16 @@ class AgentRuntimeV2:
                 self._save(task)
                 return self._response(task, "银行端状态尚未确认，任务已暂停。", "BANK_INTENT_STATE_UNKNOWN")
             mark_cancelled_financial_step(task, cancelled_prepare_tool)
+            if action_intent_id is not None:
+                task.pending_prepare = None
+                task.selected_financial_step_id = None
+                task.execution_authorization_id = None
+                task.execution_key = 'agent_v2_' + uuid4().hex
+                task.step_count = 0
+                task.status = Status.RUNNING
+                task.trace.append({'kind':'ACTION_CANCELLED_CONTINUE','intent_id':action_intent_id})
+                self._save(task)
+                return await self._run(task, cookie, len(task.observations), True)
             task.status = Status.CANCELLED
             self._save(task)
             message = ("待确认操作已取消；此前已确认的银行操作不会自动撤销。"

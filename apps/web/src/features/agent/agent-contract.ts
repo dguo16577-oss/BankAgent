@@ -1,3 +1,28 @@
+import { z } from "zod";
+
+const financialPlanSchema = z
+  .array(
+    z
+      .object({
+        step_id: z.string().regex(/^g[1-8]$/),
+        goal: z.string().min(1).max(300),
+        execution_state: z.enum([
+          "NOT_PREPARED",
+          "FINANCIAL_ACTION_PREPARED",
+          "FINANCIAL_ACTION_EXECUTED",
+          "FINANCIAL_ACTION_CANCELLED",
+          "EXECUTION_UNKNOWN",
+        ]),
+        intent_id: z
+          .string()
+          .regex(/^[A-Za-z0-9_-]{1,128}$/)
+          .nullable()
+          .optional(),
+      })
+      .strict(),
+  )
+  .max(8);
+
 export type AgentCitation = { title: string; url: string };
 export type TransferProposal = {
   kind: "TRANSFER";
@@ -78,6 +103,7 @@ export type AgentTask = {
   completedActionCount: number;
   failedActionCount: number;
   errorCode?: string;
+  financialPlan?: z.infer<typeof financialPlanSchema>;
 };
 export type AgentMessage = AgentReply & { task?: AgentTask };
 
@@ -378,6 +404,7 @@ export function parseAgentMessage(value: unknown): AgentMessage {
       taskId: value.task_id,
       status: value.status as AgentTask["status"],
       steps,
+      financialPlan: financialPlanSchema.parse(value.financial_plan ?? []),
       confirmation,
       confirmationKind,
       options,

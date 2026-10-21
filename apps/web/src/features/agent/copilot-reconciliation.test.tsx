@@ -45,6 +45,41 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
+it("shows every staged financial goal and cancels one separately from the whole task", async () => {
+  const staged = {
+    ...pending,
+    financial_plan: [
+      {
+        step_id: "g1",
+        goal: "给张三转100元",
+        execution_state: "FINANCIAL_ACTION_PREPARED",
+        intent_id: "intent_one",
+      },
+      {
+        step_id: "g2",
+        goal: "给李四转200元",
+        execution_state: "NOT_PREPARED",
+        intent_id: null,
+      },
+    ],
+  };
+  const fetcher = vi.fn().mockResolvedValue(Response.json(staged));
+  vi.stubGlobal("fetch", fetcher);
+  render(
+    <PendingAction
+      state={{ taskId, status: "WAITING_CONFIRMATION" }}
+      onResolved={vi.fn()}
+    />,
+  );
+  expect(await screen.findByText("给李四转200元")).toBeInTheDocument();
+  expect(
+    screen.getByRole("button", { name: "Cancel this action and continue" }),
+  ).toBeInTheDocument();
+  expect(
+    screen.getByRole("button", { name: "Cancel whole task" }),
+  ).toBeInTheDocument();
+});
+
 it("a losing confirmation tab converges by owned GET without retrying a mutation", async () => {
   vi.useFakeTimers();
   const fetcher = vi

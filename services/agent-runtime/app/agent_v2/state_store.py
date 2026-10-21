@@ -63,6 +63,20 @@ class PostgresTaskStore:
         task.state_version = row[1]
         return task
 
+    def history_list(self, customer_id: str) -> list[Task]:
+        with self._connection() as connection:
+            rows = connection.execute(
+                "SELECT checkpoint FROM agent_state.tasks WHERE customer_id=%s "
+                "ORDER BY updated_at DESC,task_id DESC LIMIT 10", (customer_id,)).fetchall()
+        return [Task.model_validate_json(json.dumps(row[0])) for row in rows]
+
+    def history_load(self, task_id: str, customer_id: str) -> Task | None:
+        with self._connection() as connection:
+            row = connection.execute(
+                "SELECT checkpoint FROM agent_state.tasks WHERE task_id=%s AND customer_id=%s",
+                (task_id, customer_id)).fetchone()
+        return Task.model_validate_json(json.dumps(row[0])) if row else None
+
     def save(self, task: Task, owner: str | None = None) -> None:
         checkpoint = _safe_checkpoint(task.model_dump(mode="json"))
         with self._connection() as connection:

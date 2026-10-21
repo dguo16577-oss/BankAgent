@@ -13,7 +13,13 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--case", choices=["MA01", "MA02", "MA03", "MA06", "AB16", "MCP"], required=True)
+parser.add_argument('--compare', action='store_true', help='Run the same goal with single and multi runtimes')
+parser.add_argument('--output-dir', default='artifacts/rc')
 args = parser.parse_args()
+output = (ROOT / args.output_dir).resolve()
+if not output.is_relative_to((ROOT / 'artifacts').resolve()):
+    raise SystemExit('Model evidence must stay within project artifacts')
+output.mkdir(parents=True, exist_ok=True)
 project = "aster-final-sprint-20261020"
 label = subprocess.check_output(["docker", "inspect", project + "-agent-runtime-1", "--format",
     '{{index .Config.Labels "com.docker.compose.project"}}'], text=True).strip()
@@ -91,7 +97,7 @@ async def main():
             with psycopg.connect('') as c:
                 row=c.execute("select transaction_id from transactions where customer_id='usr_aster_alex' and direction='DEBIT' order by occurred_at desc limit 1").fetchone()
                 c.execute('update transactions set note=%s,occurred_at=now()-interval \'1 day\',booked_at=now()-interval \'1 day\' where transaction_id=%s',(ATTACK,row[0]))
-        for mode in (['single','multi'] if CASE=='MA06' else ['single'] if CASE=='AB16' else ['multi']):
+        for mode in (['single','multi'] if CASE=='MA06' or COMPARE else ['single'] if CASE=='AB16' else ['multi']):
             before=state();trace=[];usage=[];meters=[];os.environ['MULTI_AGENT_ENABLED']='1' if mode=='multi' else '0'
             def classifier(role):
                 c=Measured(role,trace);m=Meter(role,usage);meters.append(m);c.transport=m;return c
@@ -126,17 +132,17 @@ async def main():
     print(json.dumps({'execution_level':'REAL_DEEPSEEK_DEPLOYED_AGENT_NATIVE_BANK_KNOWLEDGE_REAL_PG','cases':cases,'no_financial_execution':True},ensure_ascii=False))
 asyncio.run(main())
 '''
-PROGRAM = "CASE=" + repr(args.case) + "\n" + PROGRAM
+PROGRAM = "CASE=" + repr(args.case) + "\nCOMPARE=" + repr(args.compare) + "\n" + PROGRAM
 run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S")
-out = ROOT / "artifacts/rc"
+out = output
 result = subprocess.run(["docker", "exec", "-i", project + "-agent-runtime-1", "python", "-"],
     input=PROGRAM,text=True,capture_output=True,encoding="utf-8",timeout=470)
 (out / f"model-{args.case}-{run_id}.jsonl").write_text(result.stdout,encoding="utf-8")
 (out / f"model-{args.case}-{run_id}-errors.log").write_text(result.stderr,encoding="utf-8")
 metadata={"source_commit":subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
-    "recorded_at":datetime.now(timezone.utc).isoformat(),"command":"python scripts/rc-model-tests.py --case "+args.case,
+    "recorded_at":datetime.now(timezone.utc).isoformat(),"command":"python scripts/rc-model-tests.py --case "+args.case+(' --compare' if args.compare else '')+' --output-dir '+args.output_dir,
     "harness_sha256":hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
-    "artifact":f"artifacts/rc/model-{args.case}-{run_id}.jsonl",
+    "artifact":(out / f'model-{args.case}-{run_id}.jsonl').relative_to(ROOT).as_posix(),
     "artifact_sha256":hashlib.sha256(result.stdout.encode('utf-8')).hexdigest(),
     "exit_code":result.returncode,"agent_image":subprocess.check_output(['docker','inspect',project+'-agent-runtime-1','--format','{{.Image}}'],text=True).strip()}
 (out / f"model-{args.case}-{run_id}-run.json").write_text(json.dumps(metadata,indent=2)+'\n',encoding='utf-8')

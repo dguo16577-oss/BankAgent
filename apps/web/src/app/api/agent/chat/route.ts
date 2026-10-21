@@ -35,7 +35,12 @@ export async function POST(request: Request) {
   }
   const action =
     body && typeof body === "object" && "action" in body ? body.action : "CHAT";
-  if (action !== "CHAT" && action !== "CONFIRM" && action !== "CANCEL")
+  if (
+    action !== "CHAT" &&
+    action !== "CONFIRM" &&
+    action !== "CANCEL" &&
+    action !== "CANCEL_ACTION"
+  )
     return error("Unsupported Agent action.", 400);
   const taskId =
     body && typeof body === "object" && "taskId" in body
@@ -76,6 +81,11 @@ export async function POST(request: Request) {
     body && typeof body === "object" && "intentHash" in body
       ? body.intentHash
       : undefined;
+  if (
+    action === "CANCEL_ACTION" &&
+    (typeof intentId !== "string" || !/^[A-Za-z0-9_-]{1,128}$/.test(intentId))
+  )
+    return error("Invalid current intent cancellation.", 400);
   const authorizationId =
     body && typeof body === "object" && "actionAuthorizationId" in body
       ? body.actionAuthorizationId
@@ -114,7 +124,7 @@ export async function POST(request: Request) {
     endpoint = new URL(
       action === "CHAT"
         ? "/agent/chat"
-        : `/agent/tasks/${taskId}/${action === "CONFIRM" ? "confirm" : "cancel"}`,
+        : `/agent/tasks/${taskId}/${action === "CONFIRM" ? "confirm" : action === "CANCEL_ACTION" ? "cancel-action" : "cancel"}`,
       parsed,
     );
   } catch {
@@ -145,7 +155,9 @@ export async function POST(request: Request) {
                   ? { action_authorization_id: authorizationId }
                   : {}),
               }
-            : {},
+            : action === "CANCEL_ACTION"
+              ? { intent_id: intentId }
+              : {},
       ),
       cache: "no-store",
       redirect: "manual",

@@ -12,7 +12,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Any, Callable
 
 import httpx
-from pydantic import Field
+from pydantic import Field, ValidationError
 
 from ..deepseek import DeepSeekClassifier
 from .analytical_scope import SUPPORTED, effective_arguments, record_scope
@@ -37,7 +37,7 @@ ROLES = {"delegate_financial_analysis": ("financial_analyst", ANALYST_TOOLS),
 
 class DelegateArgs(StrictModel):
     step_id: str = Field(pattern=r"^g[1-8]$")
-    delegated_goal: str = Field(min_length=1, max_length=300)
+    delegated_goal: str | None = Field(default=None, min_length=1, max_length=300)
 
 
 class SpecialistResult(StrictModel):
@@ -105,10 +105,12 @@ class SupervisorRegistry(ToolRegistry):
     def visible(self) -> list[dict]:
         tools = super().visible()
         for name, (role, _) in ROLES.items():
-            tools.append({"name": name, "description": f"Delegate one existing READ/ANALYZE ledger step to an independent {role} LLM loop; no mutation capability. Use that step's exact goal and ID.",
+            schema = DelegateArgs.model_json_schema()
+            schema['properties'].pop('delegated_goal')
+            tools.append({"name": name, "description": f"Delegate one existing READ/ANALYZE ledger step_id to an independent {role} LLM loop; the runtime copies its exact goal. No mutation capability.",
                           "category": "ANALYZE", "side_effect_class": "READ", "risk_class": "LOW",
                           "required_capabilities": ["delegation:read"],
-                          "input_schema": DelegateArgs.model_json_schema(),
+                          "input_schema": schema,
                           "output_schema": SpecialistResult.model_json_schema()})
         return tools
 
@@ -121,7 +123,8 @@ class SupervisorRegistry(ToolRegistry):
             raise RegistryError("DELEGATION_SCHEMA_INVALID") from exc
         step = next((s for s in task.ledger if s.get("step_id") == args.step_id), None)
         if (step is None or step.get("kind") not in {"READ", "ANALYZE"}
-                or step.get("goal") != args.delegated_goal or task.status == Status.CANCELLED):
+                or args.delegated_goal is not None and step.get("goal") != args.delegated_goal
+                or task.status == Status.CANCELLED):
             raise RegistryError("DELEGATION_STEP_NOT_AUTHORIZED")
         permitted = self._permitted(name)
         if not set(step.get("evidence_tools", [])) & set(permitted):
@@ -129,7 +132,9 @@ class SupervisorRegistry(ToolRegistry):
         by_id = {s.get("step_id"): s for s in task.ledger}
         if any(by_id.get(dep, {}).get("status") != "SUCCEEDED" for dep in step.get("dependencies", [])):
             raise RegistryError("DELEGATION_PREREQUISITE_MISSING")
-        return args
+        # Legacy callers may still send the exact goal, but never choose a new
+        # child objective. The trusted, already validated ledger is the source.
+        return args.model_copy(update={'delegated_goal':step['goal']})
 
     def _permitted(self, name: str) -> dict:
         # Intersect explicit role scope with real registry metadata. A future
@@ -210,8 +215,19 @@ class SupervisorRegistry(ToolRegistry):
                 task.delegation_model_calls += 1
                 task.delegation_tokens_reserved += reserved
                 checkpoint()
-                decision = PlannerDecision.model_validate(await asyncio.wait_for(
-                    planner.decide(ContextBuilder().build(child, tools)), timeout=remaining))
+                context = ContextBuilder().build(child, tools)
+                if record.get('decision_repairs'):
+                    context['decision_validation_error'] = 'INVALID_JSON_OR_DECISION_SCHEMA; return one valid structured decision.'
+                try:
+                    decision = PlannerDecision.model_validate(await asyncio.wait_for(
+                        planner.decide(context), timeout=remaining))
+                except (ValidationError, json.JSONDecodeError):
+                    if record.get('decision_repairs', 0) >= 1:
+                        raise
+                    record['decision_repairs'] = 1
+                    record['trace'].append({'kind':'SPECIALIST_DECISION_REPAIR','code':'INVALID_STRUCTURED_DECISION'})
+                    checkpoint()
+                    continue
                 record["trace"].append({"kind": "SPECIALIST_DECISION", "type": decision.type,
                                         "model_call": record["model_calls"]})
                 if decision.type == "ASK_USER":
