@@ -47,3 +47,7 @@ Windows 安装并启动 Docker Desktop。复制 `start.env.example` 为被 Git �
 仓库包含源码、锁文件、OpenAPI/冻结清单、历史迁移、测试与评测定义。真实密钥、数据库、模型权重、依赖缓存、运行日志、截图和 artifacts 不随源码上传。报告中的本地证据路径不表示仓库包含原始记录，可用对应脚本在隔离环境重建证据。
 
 过时根说明和重复交接包已整理，旧版本可从 Git 历史查阅。仍使用的 v1 兼容代码、冻结发布合约、Flyway 历史、安全失败记录和数据库备份保留。
+
+## Final Sprint 验收
+
+当前部署、逐步骤授权、只读多Agent、真实模型/银行/浏览器证据和剩余限制见 [Final Sprint 最终验收](docs/final-sprint/final-acceptance.md)。完整平台保持PARTIAL；不要把局部演示成功当作生产就绪。

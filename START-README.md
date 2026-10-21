@@ -76,3 +76,11 @@
 ## 验证与证据
 
 离线启动器测试：`& .\scripts\test-start-launcher.ps1`，不实际重启容器。历史启动/恢复、部署阻塞与版本证据保留于 [UX4.5](docs/milestones/ux4-5-final-acceptance.md)、[UX4.6](docs/milestones/ux4-6-deployment-e2e-acceptance.md) 和 [综合验收](docs/milestones/aster-integrated-final-acceptance.md)。S1/R1 仍为 PARTIAL，启动成功不等于安全或恢复验收通过。
+
+## 2026-10-21 Final Sprint 部署记录
+
+最新Web/Agent已完成增量构建与实际部署，主项目六项健康。Agent应用提交 `c7e194a`，43个Python文件逐一核对；完整镜像/源树指纹见 [最终验收](docs/final-sprint/final-acceptance.md)。当前 `MULTI_AGENT_ENABLED=0`，保留原实验开关语义。
+
+代理增量reload后可能短暂返回旧upstream的502。启动器仅对公开首页GET做最多6次、每次15秒超时/间隔1秒的有界就绪重试，不自动重试金融提交。启动器离线测试与真实主项目恢复已通过。
+
+原资源拒绝、构建下载失败与模型连接失败记录保留；后来同一既有网络路径模型复测成功。一次性金融测试项目 `aster-final-sprint-20261020` 已停止、卷保留；不要将它与正式演示库混用。完整平台及S1/R1仍未全量PASS。

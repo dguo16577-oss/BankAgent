@@ -7,7 +7,7 @@
       "case_id": "AB01",
       "oracle": "两笔条款分别对应原始目标；仅 PREPARE，零资金写入；不能整句多金额误拒绝",
       "required_execution_level": "模型回合+Spring/PG",
-      "status": "BLOCKED",
+      "status": "PARTIAL",
       "runs": [
         {
           "case_id": "AB01",
@@ -32,12 +32,31 @@
           "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
           "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
           "previous_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-          "record_sha256": "51d6fb1887a876423a8abf5d0efb22c789014327da69d27fe6d3aa7bef6436f2"
+          "supersedes_v1_record_sha256": "51d6fb1887a876423a8abf5d0efb22c789014327da69d27fe6d3aa7bef6436f2",
+          "evidence_contract_version": 2,
+          "source_commit": "542a6bbd5ee3ba8849a461f044bba4e06878693e",
+          "source_is_dirty": true,
+          "command": "python -m unittest discover -s services/agent-runtime/tests",
+          "exit_code": 0,
+          "oracle": "Step authorization, amount/recipient swaps and shuffled receipt source tests pass; not real Spring financial acceptance",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/3c1f00367691-agent-final-safety.log",
+            "artifacts/final-sprint/sealed/9d960f402816-source-manifest.json"
+          ],
+          "artifact_sha256": [
+            "3c1f003676910c6839f75ada8d46cf266c48fcf59ad9978d0ea7c886b3965f31",
+            "9d960f4028164c77e021abdc3e07bf99687f60901fc66bf4a9de60d3d9f6fbce"
+          ],
+          "limitations": [
+            "Supporting evidence only; does not close the original case execution level",
+            "Original uncommitted source snapshot identified by its manifest; source_commit is the original base commit"
+          ],
+          "record_sha256": "5a0e14b52c6c72ab60e4726fc63ac8415ab4d9a5a4330b497367cd52c0cece2a"
         },
         {
           "case_id": "AB01",
           "execution_level": "模型回合+Spring/PG",
-          "status": "BLOCKED",
+          "status": "ENVIRONMENT_BLOCKED",
           "assertions": [
             "Latest-image and disposable Spring financial/browser acceptance cannot run within current resource gate; no retained banking data mutation attempted"
           ],
@@ -56,8 +75,120 @@
           "timestamp": "2026-10-20T13:09:51.711190+00:00",
           "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
           "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
-          "previous_sha256": "8088dcd6dcf84342ba3d71bd6c6114af8ccc20d63f847cc41387b27f51e54e6d",
-          "record_sha256": "19720a4ed01fca93c322cca4dfb045cdfcce82047ae4c15458ad3e78291823dd"
+          "previous_sha256": "6dca20701b63b284f4168deafd68cd1cd7464553434f7dc482b293c6e56455c0",
+          "supersedes_v1_record_sha256": "19720a4ed01fca93c322cca4dfb045cdfcce82047ae4c15458ad3e78291823dd",
+          "evidence_contract_version": 2,
+          "source_commit": "542a6bbd5ee3ba8849a461f044bba4e06878693e",
+          "source_is_dirty": true,
+          "command": "powershell -File start.ps1 check -ProjectName aster-acceptance-20261012 -Port 18088 -WithKnowledge",
+          "exit_code": 1,
+          "oracle": "Latest-image and disposable Spring financial/browser acceptance cannot run within current resource gate; no retained banking data mutation attempted",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/23f7d5b7f651-deployment-preflight.log",
+            "artifacts/final-sprint/sealed/9d960f402816-source-manifest.json"
+          ],
+          "artifact_sha256": [
+            "23f7d5b7f65118658d96ee1f3c1ff71fc5a40aa0eeac3534eca0b5a6f40d78fe",
+            "9d960f4028164c77e021abdc3e07bf99687f60901fc66bf4a9de60d3d9f6fbce"
+          ],
+          "limitations": [
+            "Target financial/browser command not run at this blocked checkpoint",
+            "Original uncommitted source snapshot identified by its manifest; source_commit is the original base commit"
+          ],
+          "record_sha256": "5c4c512bd180fbf2677ee22b79e01e2efd0a895a2b917e086016df6f27ef0599"
+        },
+        {
+          "case_id": "AB01",
+          "execution_level": "模型回合+Spring/PG",
+          "status": "FAIL",
+          "assertions": [
+            "Original failed run preserved: model connection failure; dependent receipt cases had no prepared prerequisite"
+          ],
+          "artifacts": [
+            {
+              "path": "artifacts/final-sprint/sealed/f8be33e6abb5-financial-acceptance-f8be33e6abb5.jsonl",
+              "sha256": "f8be33e6abb513b5380441b801afac402560d9d13141480c8b17c8654eafbf83"
+            },
+            {
+              "path": "artifacts/final-sprint/sealed/208d87cb6f2c-sandbox-network-diagnostic.json",
+              "sha256": "208d87cb6f2ce9207e41a3d4ecb4d0c69529190a8a777f67797fd8b20db23d3a"
+            },
+            {
+              "path": "artifacts/final-sprint/sealed/dcbec198ef35-source-manifest-final.json",
+              "sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe"
+            }
+          ],
+          "oracle_result": false,
+          "source_manifest_sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe",
+          "source_commit": "c7e194a43694094e41118cb6d25eaa5570c6ed36",
+          "command": "python scripts/final-sprint-financial-tests.py",
+          "exit_code": 1,
+          "oracle": "两笔条款分别对应原始目标；仅 PREPARE，零资金写入；不能整句多金额误拒绝",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/f8be33e6abb5-financial-acceptance-f8be33e6abb5.jsonl",
+            "artifacts/final-sprint/sealed/208d87cb6f2c-sandbox-network-diagnostic.json",
+            "artifacts/final-sprint/sealed/dcbec198ef35-source-manifest-final.json"
+          ],
+          "artifact_sha256": [
+            "f8be33e6abb513b5380441b801afac402560d9d13141480c8b17c8654eafbf83",
+            "208d87cb6f2ce9207e41a3d4ecb4d0c69529190a8a777f67797fd8b20db23d3a",
+            "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe"
+          ],
+          "limitations": [
+            "Not a bank defect verdict; later explicit deterministic and real-model runs are separate evidence"
+          ],
+          "timestamp": "2026-10-21T01:27:23.781311+00:00",
+          "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
+          "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
+          "previous_sha256": "05294712569c6cc82bc187aa88bafa06660d5a51bb077e7fa0a2170ef4c28e28",
+          "record_sha256": "6e7598a4a24fe4a89785afc9b63cb1aa05c2a93df8ac8355a4cc397e48a8cd1c"
+        },
+        {
+          "case_id": "AB01",
+          "execution_level": "模型回合+Spring/PG",
+          "status": "PARTIAL",
+          "assertions": [
+            "Real DeepSeek first preparation is 100 CNY for Zhang San with zero debit",
+            "Sequential real-model 100/200 transfer completes only after two independent authorizations and confirmations"
+          ],
+          "artifacts": [
+            {
+              "path": "artifacts/final-sprint/sealed/b61e1c89acbe-financial-acceptance.jsonl",
+              "sha256": "b61e1c89acbe87cfd1676e8176c603a9c6b5e88f64a42fb8d4974e38c4350cac"
+            },
+            {
+              "path": "artifacts/final-sprint/sealed/bfaa311e532c-financial-model-retry-summary.log",
+              "sha256": "bfaa311e532c41d0d263d63260cb814dc37afbd41398c37d0ef4314993f81862"
+            },
+            {
+              "path": "artifacts/final-sprint/sealed/dcbec198ef35-source-manifest-final.json",
+              "sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe"
+            }
+          ],
+          "oracle_result": false,
+          "source_manifest_sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe",
+          "source_commit": "c7e194a43694094e41118cb6d25eaa5570c6ed36",
+          "command": "python scripts/final-sprint-financial-tests.py",
+          "exit_code": 0,
+          "oracle": "两笔条款分别对应原始目标；仅 PREPARE，零资金写入；不能整句多金额误拒绝",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/b61e1c89acbe-financial-acceptance.jsonl",
+            "artifacts/final-sprint/sealed/bfaa311e532c-financial-model-retry-summary.log",
+            "artifacts/final-sprint/sealed/dcbec198ef35-source-manifest-final.json"
+          ],
+          "artifact_sha256": [
+            "b61e1c89acbe87cfd1676e8176c603a9c6b5e88f64a42fb8d4974e38c4350cac",
+            "bfaa311e532c41d0d263d63260cb814dc37afbd41398c37d0ef4314993f81862",
+            "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe"
+          ],
+          "limitations": [
+            "Original zero-debit/two-prepared-intents oracle not met: Runtime pauses after first PREPARE"
+          ],
+          "timestamp": "2026-10-21T01:27:23.781311+00:00",
+          "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
+          "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
+          "previous_sha256": "0e637bc2d9e551040136e51e9c9fc617df3b66c3f382c66ca7db2f9bcc957acb",
+          "record_sha256": "89722cdcde86dd65492f185f3302358468e6b12898e8aee3d43478d6f4207832"
         }
       ]
     },
@@ -65,7 +196,7 @@
       "case_id": "AB02",
       "oracle": "独立授权不可互借；与原始目标不一致则拒绝或澄清；零未经确认执行",
       "required_execution_level": "确定性+Spring/PG",
-      "status": "BLOCKED",
+      "status": "PASS",
       "runs": [
         {
           "case_id": "AB02",
@@ -89,13 +220,32 @@
           "timestamp": "2026-10-20T13:09:51.689125+00:00",
           "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
           "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
-          "previous_sha256": "51d6fb1887a876423a8abf5d0efb22c789014327da69d27fe6d3aa7bef6436f2",
-          "record_sha256": "181c10aaeb0b3edc168a4a93e987b85a877174562ee984796ad5ab686831a150"
+          "previous_sha256": "5a0e14b52c6c72ab60e4726fc63ac8415ab4d9a5a4330b497367cd52c0cece2a",
+          "supersedes_v1_record_sha256": "181c10aaeb0b3edc168a4a93e987b85a877174562ee984796ad5ab686831a150",
+          "evidence_contract_version": 2,
+          "source_commit": "542a6bbd5ee3ba8849a461f044bba4e06878693e",
+          "source_is_dirty": true,
+          "command": "python -m unittest discover -s services/agent-runtime/tests",
+          "exit_code": 0,
+          "oracle": "Step authorization, amount/recipient swaps and shuffled receipt source tests pass; not real Spring financial acceptance",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/3c1f00367691-agent-final-safety.log",
+            "artifacts/final-sprint/sealed/9d960f402816-source-manifest.json"
+          ],
+          "artifact_sha256": [
+            "3c1f003676910c6839f75ada8d46cf266c48fcf59ad9978d0ea7c886b3965f31",
+            "9d960f4028164c77e021abdc3e07bf99687f60901fc66bf4a9de60d3d9f6fbce"
+          ],
+          "limitations": [
+            "Supporting evidence only; does not close the original case execution level",
+            "Original uncommitted source snapshot identified by its manifest; source_commit is the original base commit"
+          ],
+          "record_sha256": "d61bdd91ebef20f22f48636f4630f10e98a95d4e70c86cfc1803319a25d9d3fe"
         },
         {
           "case_id": "AB02",
           "execution_level": "确定性+Spring/PG",
-          "status": "BLOCKED",
+          "status": "ENVIRONMENT_BLOCKED",
           "assertions": [
             "Latest-image and disposable Spring financial/browser acceptance cannot run within current resource gate; no retained banking data mutation attempted"
           ],
@@ -114,8 +264,72 @@
           "timestamp": "2026-10-20T13:09:51.711190+00:00",
           "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
           "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
-          "previous_sha256": "19720a4ed01fca93c322cca4dfb045cdfcce82047ae4c15458ad3e78291823dd",
-          "record_sha256": "0076938e147d7bba96c759a8a77ea664c427736d6b7b883825ad59163f351548"
+          "previous_sha256": "5c4c512bd180fbf2677ee22b79e01e2efd0a895a2b917e086016df6f27ef0599",
+          "supersedes_v1_record_sha256": "0076938e147d7bba96c759a8a77ea664c427736d6b7b883825ad59163f351548",
+          "evidence_contract_version": 2,
+          "source_commit": "542a6bbd5ee3ba8849a461f044bba4e06878693e",
+          "source_is_dirty": true,
+          "command": "powershell -File start.ps1 check -ProjectName aster-acceptance-20261012 -Port 18088 -WithKnowledge",
+          "exit_code": 1,
+          "oracle": "Latest-image and disposable Spring financial/browser acceptance cannot run within current resource gate; no retained banking data mutation attempted",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/23f7d5b7f651-deployment-preflight.log",
+            "artifacts/final-sprint/sealed/9d960f402816-source-manifest.json"
+          ],
+          "artifact_sha256": [
+            "23f7d5b7f65118658d96ee1f3c1ff71fc5a40aa0eeac3534eca0b5a6f40d78fe",
+            "9d960f4028164c77e021abdc3e07bf99687f60901fc66bf4a9de60d3d9f6fbce"
+          ],
+          "limitations": [
+            "Target financial/browser command not run at this blocked checkpoint",
+            "Original uncommitted source snapshot identified by its manifest; source_commit is the original base commit"
+          ],
+          "record_sha256": "7dd8944cdc1ba2847e05483532454409f81e256540e7a258e16ef0dd52359330"
+        },
+        {
+          "case_id": "AB02",
+          "execution_level": "确定性+Spring/PG",
+          "status": "PASS",
+          "assertions": [
+            "Swapped 200 amount for Zhang and swapped Li recipient rejected before bank intent creation",
+            "Balances, transfer count and debit count unchanged"
+          ],
+          "artifacts": [
+            {
+              "path": "artifacts/final-sprint/sealed/b61e1c89acbe-financial-acceptance.jsonl",
+              "sha256": "b61e1c89acbe87cfd1676e8176c603a9c6b5e88f64a42fb8d4974e38c4350cac"
+            },
+            {
+              "path": "artifacts/final-sprint/sealed/bfaa311e532c-financial-model-retry-summary.log",
+              "sha256": "bfaa311e532c41d0d263d63260cb814dc37afbd41398c37d0ef4314993f81862"
+            },
+            {
+              "path": "artifacts/final-sprint/sealed/dcbec198ef35-source-manifest-final.json",
+              "sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe"
+            }
+          ],
+          "oracle_result": true,
+          "source_manifest_sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe",
+          "source_commit": "c7e194a43694094e41118cb6d25eaa5570c6ed36",
+          "command": "python scripts/final-sprint-financial-tests.py",
+          "exit_code": 0,
+          "oracle": "独立授权不可互借；与原始目标不一致则拒绝或澄清；零未经确认执行",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/b61e1c89acbe-financial-acceptance.jsonl",
+            "artifacts/final-sprint/sealed/bfaa311e532c-financial-model-retry-summary.log",
+            "artifacts/final-sprint/sealed/dcbec198ef35-source-manifest-final.json"
+          ],
+          "artifact_sha256": [
+            "b61e1c89acbe87cfd1676e8176c603a9c6b5e88f64a42fb8d4974e38c4350cac",
+            "bfaa311e532c41d0d263d63260cb814dc37afbd41398c37d0ef4314993f81862",
+            "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe"
+          ],
+          "limitations": [],
+          "timestamp": "2026-10-21T01:27:23.781311+00:00",
+          "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
+          "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
+          "previous_sha256": "89722cdcde86dd65492f185f3302358468e6b12898e8aee3d43478d6f4207832",
+          "record_sha256": "db975ca726ef27fb44c9598c4c9a455efe1305916810c0f0b9ff9969623336a8"
         }
       ]
     },
@@ -128,7 +342,7 @@
         {
           "case_id": "AB03",
           "execution_level": "浏览器+Spring/PG",
-          "status": "BLOCKED",
+          "status": "ENVIRONMENT_BLOCKED",
           "assertions": [
             "Latest-image and disposable Spring financial/browser acceptance cannot run within current resource gate; no retained banking data mutation attempted"
           ],
@@ -147,8 +361,68 @@
           "timestamp": "2026-10-20T13:09:51.715746+00:00",
           "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
           "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
-          "previous_sha256": "0076938e147d7bba96c759a8a77ea664c427736d6b7b883825ad59163f351548",
-          "record_sha256": "74933f06bbd6abbf217efecca2e3aa7bb0cf0c8d43fd12fe6dfee2b8760cf11a"
+          "previous_sha256": "7dd8944cdc1ba2847e05483532454409f81e256540e7a258e16ef0dd52359330",
+          "supersedes_v1_record_sha256": "74933f06bbd6abbf217efecca2e3aa7bb0cf0c8d43fd12fe6dfee2b8760cf11a",
+          "evidence_contract_version": 2,
+          "source_commit": "542a6bbd5ee3ba8849a461f044bba4e06878693e",
+          "source_is_dirty": true,
+          "command": "powershell -File start.ps1 check -ProjectName aster-acceptance-20261012 -Port 18088 -WithKnowledge",
+          "exit_code": 1,
+          "oracle": "Latest-image and disposable Spring financial/browser acceptance cannot run within current resource gate; no retained banking data mutation attempted",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/23f7d5b7f651-deployment-preflight.log",
+            "artifacts/final-sprint/sealed/9d960f402816-source-manifest.json"
+          ],
+          "artifact_sha256": [
+            "23f7d5b7f65118658d96ee1f3c1ff71fc5a40aa0eeac3534eca0b5a6f40d78fe",
+            "9d960f4028164c77e021abdc3e07bf99687f60901fc66bf4a9de60d3d9f6fbce"
+          ],
+          "limitations": [
+            "Target financial/browser command not run at this blocked checkpoint",
+            "Original uncommitted source snapshot identified by its manifest; source_commit is the original base commit"
+          ],
+          "record_sha256": "49d32f0304d040a45ae619d3042bc77b2f5927451d473372936277150efccf55"
+        },
+        {
+          "case_id": "AB03",
+          "execution_level": "真实模型+Spring/PG（无浏览器修改）",
+          "status": "PASS",
+          "assertions": [
+            "Real DeepSeek revises 100 to 200; bank old intent CANCELLED",
+            "Runtime and direct bank execution reject old valid grant; balances unchanged"
+          ],
+          "artifacts": [
+            {
+              "path": "artifacts/final-sprint/sealed/b61e1c89acbe-financial-acceptance.jsonl",
+              "sha256": "b61e1c89acbe87cfd1676e8176c603a9c6b5e88f64a42fb8d4974e38c4350cac"
+            },
+            {
+              "path": "artifacts/final-sprint/sealed/dcbec198ef35-source-manifest-final.json",
+              "sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe"
+            }
+          ],
+          "oracle_result": true,
+          "source_manifest_sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe",
+          "source_commit": "c7e194a43694094e41118cb6d25eaa5570c6ed36",
+          "command": "python scripts/final-sprint-financial-tests.py",
+          "exit_code": 0,
+          "oracle": "旧确认失效，不执行旧意图也不自动批准新意图",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/b61e1c89acbe-financial-acceptance.jsonl",
+            "artifacts/final-sprint/sealed/dcbec198ef35-source-manifest-final.json"
+          ],
+          "artifact_sha256": [
+            "b61e1c89acbe87cfd1676e8176c603a9c6b5e88f64a42fb8d4974e38c4350cac",
+            "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe"
+          ],
+          "limitations": [
+            "Original AB03 still requires browser modification path"
+          ],
+          "timestamp": "2026-10-21T01:27:23.798348+00:00",
+          "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
+          "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
+          "previous_sha256": "89e4f606aa75bd5f225822304510a0b5f06a5654a72519ce0ce06dceb8003a4c",
+          "record_sha256": "fb7c83a64033a722e5562baf43bbe9aae4e3d918c0723d82ed24d715eb679fdc"
         }
       ]
     },
@@ -156,12 +430,12 @@
       "case_id": "AB04",
       "oracle": "拒绝键复用；保留原操作回执；不能返回另一操作结果",
       "required_execution_level": "Spring/PG",
-      "status": "BLOCKED",
+      "status": "PASS",
       "runs": [
         {
           "case_id": "AB04",
           "execution_level": "Spring/PG",
-          "status": "BLOCKED",
+          "status": "ENVIRONMENT_BLOCKED",
           "assertions": [
             "Latest-image and disposable Spring financial/browser acceptance cannot run within current resource gate; no retained banking data mutation attempted"
           ],
@@ -180,8 +454,118 @@
           "timestamp": "2026-10-20T13:09:51.716780+00:00",
           "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
           "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
-          "previous_sha256": "74933f06bbd6abbf217efecca2e3aa7bb0cf0c8d43fd12fe6dfee2b8760cf11a",
-          "record_sha256": "1997d2187a25ada45125371843144ede7f841b9342797b1808f1568056443b9c"
+          "previous_sha256": "49d32f0304d040a45ae619d3042bc77b2f5927451d473372936277150efccf55",
+          "supersedes_v1_record_sha256": "1997d2187a25ada45125371843144ede7f841b9342797b1808f1568056443b9c",
+          "evidence_contract_version": 2,
+          "source_commit": "542a6bbd5ee3ba8849a461f044bba4e06878693e",
+          "source_is_dirty": true,
+          "command": "powershell -File start.ps1 check -ProjectName aster-acceptance-20261012 -Port 18088 -WithKnowledge",
+          "exit_code": 1,
+          "oracle": "Latest-image and disposable Spring financial/browser acceptance cannot run within current resource gate; no retained banking data mutation attempted",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/23f7d5b7f651-deployment-preflight.log",
+            "artifacts/final-sprint/sealed/9d960f402816-source-manifest.json"
+          ],
+          "artifact_sha256": [
+            "23f7d5b7f65118658d96ee1f3c1ff71fc5a40aa0eeac3534eca0b5a6f40d78fe",
+            "9d960f4028164c77e021abdc3e07bf99687f60901fc66bf4a9de60d3d9f6fbce"
+          ],
+          "limitations": [
+            "Target financial/browser command not run at this blocked checkpoint",
+            "Original uncommitted source snapshot identified by its manifest; source_commit is the original base commit"
+          ],
+          "record_sha256": "7af823684fd5e35423315632e15eb97dfa394156d851ac573ca423a8da3aa230"
+        },
+        {
+          "case_id": "AB04",
+          "execution_level": "Spring/PG",
+          "status": "FAIL",
+          "assertions": [
+            "Original failed run preserved: model connection failure; dependent receipt cases had no prepared prerequisite"
+          ],
+          "artifacts": [
+            {
+              "path": "artifacts/final-sprint/sealed/f8be33e6abb5-financial-acceptance-f8be33e6abb5.jsonl",
+              "sha256": "f8be33e6abb513b5380441b801afac402560d9d13141480c8b17c8654eafbf83"
+            },
+            {
+              "path": "artifacts/final-sprint/sealed/208d87cb6f2c-sandbox-network-diagnostic.json",
+              "sha256": "208d87cb6f2ce9207e41a3d4ecb4d0c69529190a8a777f67797fd8b20db23d3a"
+            },
+            {
+              "path": "artifacts/final-sprint/sealed/dcbec198ef35-source-manifest-final.json",
+              "sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe"
+            }
+          ],
+          "oracle_result": false,
+          "source_manifest_sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe",
+          "source_commit": "c7e194a43694094e41118cb6d25eaa5570c6ed36",
+          "command": "python scripts/final-sprint-financial-tests.py",
+          "exit_code": 1,
+          "oracle": "拒绝键复用；保留原操作回执；不能返回另一操作结果",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/f8be33e6abb5-financial-acceptance-f8be33e6abb5.jsonl",
+            "artifacts/final-sprint/sealed/208d87cb6f2c-sandbox-network-diagnostic.json",
+            "artifacts/final-sprint/sealed/dcbec198ef35-source-manifest-final.json"
+          ],
+          "artifact_sha256": [
+            "f8be33e6abb513b5380441b801afac402560d9d13141480c8b17c8654eafbf83",
+            "208d87cb6f2ce9207e41a3d4ecb4d0c69529190a8a777f67797fd8b20db23d3a",
+            "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe"
+          ],
+          "limitations": [
+            "Not a bank defect verdict; later explicit deterministic and real-model runs are separate evidence"
+          ],
+          "timestamp": "2026-10-21T01:27:23.781311+00:00",
+          "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
+          "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
+          "previous_sha256": "6e7598a4a24fe4a89785afc9b63cb1aa05c2a93df8ac8355a4cc397e48a8cd1c",
+          "record_sha256": "a4fad1f76eca1b8e9cd142c58939c6f3a82eaf943a72084292a6ede6950cc5f1"
+        },
+        {
+          "case_id": "AB04",
+          "execution_level": "Spring/PG",
+          "status": "PASS",
+          "assertions": [
+            "Original same-body/key replay returns same Spring receipt",
+            "Different intent or authorization under same key rejected; no extra transfer/debit"
+          ],
+          "artifacts": [
+            {
+              "path": "artifacts/final-sprint/sealed/b61e1c89acbe-financial-acceptance.jsonl",
+              "sha256": "b61e1c89acbe87cfd1676e8176c603a9c6b5e88f64a42fb8d4974e38c4350cac"
+            },
+            {
+              "path": "artifacts/final-sprint/sealed/bfaa311e532c-financial-model-retry-summary.log",
+              "sha256": "bfaa311e532c41d0d263d63260cb814dc37afbd41398c37d0ef4314993f81862"
+            },
+            {
+              "path": "artifacts/final-sprint/sealed/dcbec198ef35-source-manifest-final.json",
+              "sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe"
+            }
+          ],
+          "oracle_result": true,
+          "source_manifest_sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe",
+          "source_commit": "c7e194a43694094e41118cb6d25eaa5570c6ed36",
+          "command": "python scripts/final-sprint-financial-tests.py",
+          "exit_code": 0,
+          "oracle": "拒绝键复用；保留原操作回执；不能返回另一操作结果",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/b61e1c89acbe-financial-acceptance.jsonl",
+            "artifacts/final-sprint/sealed/bfaa311e532c-financial-model-retry-summary.log",
+            "artifacts/final-sprint/sealed/dcbec198ef35-source-manifest-final.json"
+          ],
+          "artifact_sha256": [
+            "b61e1c89acbe87cfd1676e8176c603a9c6b5e88f64a42fb8d4974e38c4350cac",
+            "bfaa311e532c41d0d263d63260cb814dc37afbd41398c37d0ef4314993f81862",
+            "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe"
+          ],
+          "limitations": [],
+          "timestamp": "2026-10-21T01:27:23.781311+00:00",
+          "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
+          "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
+          "previous_sha256": "db975ca726ef27fb44c9598c4c9a455efe1305916810c0f0b9ff9969623336a8",
+          "record_sha256": "ef57955034913353b51b21d716ff903657b1271eabde6403b7b880db60fcc69e"
         }
       ]
     },
@@ -189,12 +573,12 @@
       "case_id": "AB05",
       "oracle": "仅一次银行副作用；最终两页展示同一权威结果；没有第二笔扣款",
       "required_execution_level": "浏览器+Spring/PG",
-      "status": "BLOCKED",
+      "status": "PARTIAL",
       "runs": [
         {
           "case_id": "AB05",
           "execution_level": "浏览器+Spring/PG",
-          "status": "BLOCKED",
+          "status": "ENVIRONMENT_BLOCKED",
           "assertions": [
             "Latest-image and disposable Spring financial/browser acceptance cannot run within current resource gate; no retained banking data mutation attempted"
           ],
@@ -213,8 +597,74 @@
           "timestamp": "2026-10-20T13:09:51.717411+00:00",
           "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
           "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
-          "previous_sha256": "1997d2187a25ada45125371843144ede7f841b9342797b1808f1568056443b9c",
-          "record_sha256": "08d9a54f707f4d3823c31956be28f27deb9dd6113438d323e15d4216da7bcb15"
+          "previous_sha256": "7af823684fd5e35423315632e15eb97dfa394156d851ac573ca423a8da3aa230",
+          "supersedes_v1_record_sha256": "08d9a54f707f4d3823c31956be28f27deb9dd6113438d323e15d4216da7bcb15",
+          "evidence_contract_version": 2,
+          "source_commit": "542a6bbd5ee3ba8849a461f044bba4e06878693e",
+          "source_is_dirty": true,
+          "command": "powershell -File start.ps1 check -ProjectName aster-acceptance-20261012 -Port 18088 -WithKnowledge",
+          "exit_code": 1,
+          "oracle": "Latest-image and disposable Spring financial/browser acceptance cannot run within current resource gate; no retained banking data mutation attempted",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/23f7d5b7f651-deployment-preflight.log",
+            "artifacts/final-sprint/sealed/9d960f402816-source-manifest.json"
+          ],
+          "artifact_sha256": [
+            "23f7d5b7f65118658d96ee1f3c1ff71fc5a40aa0eeac3534eca0b5a6f40d78fe",
+            "9d960f4028164c77e021abdc3e07bf99687f60901fc66bf4a9de60d3d9f6fbce"
+          ],
+          "limitations": [
+            "Target financial/browser command not run at this blocked checkpoint",
+            "Original uncommitted source snapshot identified by its manifest; source_commit is the original base commit"
+          ],
+          "record_sha256": "4ae06560af9c3e6c9190dc8c3e9b148a31941ba5c297a64795b71867b2a59499"
+        },
+        {
+          "case_id": "AB05",
+          "execution_level": "浏览器+Spring/PG",
+          "status": "PARTIAL",
+          "assertions": [
+            "Two real browser verification dialogs opened",
+            "Bank intent executed once; one receipt and one financial effect retained"
+          ],
+          "artifacts": [
+            {
+              "path": "artifacts/final-sprint/sealed/e5d6a1272c02-browser-ab05-partial.json",
+              "sha256": "e5d6a1272c025feded2f7561d1cfb081fbb3eacb795ac8e44f53c2ab803e8e37"
+            },
+            {
+              "path": "artifacts/final-sprint/sealed/528605966fa8-browser-confirmation-proxy.log",
+              "sha256": "528605966fa8cdce65d586b0271e81ed69cb8a15334cfe3ffde08e24de4d39cb"
+            },
+            {
+              "path": "artifacts/final-sprint/sealed/dcbec198ef35-source-manifest-final.json",
+              "sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe"
+            }
+          ],
+          "oracle_result": false,
+          "source_manifest_sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe",
+          "source_commit": "c7e194a43694094e41118cb6d25eaa5570c6ed36",
+          "command": "Persistent Playwright Edge two-tab confirmation attempt",
+          "exit_code": null,
+          "oracle": "仅一次银行副作用；最终两页展示同一权威结果；没有第二笔扣款",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/e5d6a1272c02-browser-ab05-partial.json",
+            "artifacts/final-sprint/sealed/528605966fa8-browser-confirmation-proxy.log",
+            "artifacts/final-sprint/sealed/dcbec198ef35-source-manifest-final.json"
+          ],
+          "artifact_sha256": [
+            "e5d6a1272c025feded2f7561d1cfb081fbb3eacb795ac8e44f53c2ab803e8e37",
+            "528605966fa8cdce65d586b0271e81ed69cb8a15334cfe3ffde08e24de4d39cb",
+            "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe"
+          ],
+          "limitations": [
+            "Browser automation timed out; only one confirm reached proxy; two final-page identical receipts and true concurrent submission not proved"
+          ],
+          "timestamp": "2026-10-21T01:27:23.798348+00:00",
+          "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
+          "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
+          "previous_sha256": "fb7c83a64033a722e5562baf43bbe9aae4e3d918c0723d82ed24d715eb679fdc",
+          "record_sha256": "c0b16a140f5564e4d561e88f4878b7d45f8dc2b97564e26ddf3b68f4a7e733f9"
         }
       ]
     },
@@ -222,7 +672,7 @@
       "case_id": "AB06",
       "oracle": "先 UNKNOWN；以原 intent/auth/key 恢复同回执；一笔 transfer、一笔源账户借记",
       "required_execution_level": "故障代理+Spring/PG",
-      "status": "BLOCKED",
+      "status": "PASS",
       "runs": [
         {
           "case_id": "AB06",
@@ -250,13 +700,34 @@
           "timestamp": "2026-10-20T13:09:51.694166+00:00",
           "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
           "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
-          "previous_sha256": "134a848143397c19550f27f0cf8d3e3530f6e429533b313192ee30d02fd169f6",
-          "record_sha256": "85fea7b300c3cbe2e61dc4f56b91c0e17e5c642da9b0dff3e78f85d5daac4884"
+          "previous_sha256": "1b5a41713a7795e6140bdecd94e289fd88fc33b803b7de4bfa858a6a15b6206f",
+          "supersedes_v1_record_sha256": "85fea7b300c3cbe2e61dc4f56b91c0e17e5c642da9b0dff3e78f85d5daac4884",
+          "evidence_contract_version": 2,
+          "source_commit": "542a6bbd5ee3ba8849a461f044bba4e06878693e",
+          "source_is_dirty": true,
+          "command": "python scripts/final-sprint-postgres-tests.py",
+          "exit_code": 0,
+          "oracle": "10 real PostgreSQL state/lease/ownership recovery tests pass; bank adapter is scripted, not a Spring financial-fault oracle",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/a0ecd246f912-postgres-recovery.log",
+            "artifacts/final-sprint/sealed/bb9bf500ebda-postgres-recovery-evidence.jsonl",
+            "artifacts/final-sprint/sealed/9d960f402816-source-manifest.json"
+          ],
+          "artifact_sha256": [
+            "a0ecd246f912392b52a10db31fe28648ec03e381a864f54b0d38cc9ea539152b",
+            "bb9bf500ebda27cde51e1ec584b4cad35af8859216302b6059ad5c104d96f478",
+            "9d960f4028164c77e021abdc3e07bf99687f60901fc66bf4a9de60d3d9f6fbce"
+          ],
+          "limitations": [
+            "Supporting evidence only; does not close the original case execution level",
+            "Original uncommitted source snapshot identified by its manifest; source_commit is the original base commit"
+          ],
+          "record_sha256": "1b791150a85c0e8518d8c0e217a34e1a97447701b0263f997571793dc482c109"
         },
         {
           "case_id": "AB06",
           "execution_level": "故障代理+Spring/PG",
-          "status": "BLOCKED",
+          "status": "ENVIRONMENT_BLOCKED",
           "assertions": [
             "Latest-image and disposable Spring financial/browser acceptance cannot run within current resource gate; no retained banking data mutation attempted"
           ],
@@ -275,8 +746,75 @@
           "timestamp": "2026-10-20T13:09:51.718518+00:00",
           "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
           "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
-          "previous_sha256": "08d9a54f707f4d3823c31956be28f27deb9dd6113438d323e15d4216da7bcb15",
-          "record_sha256": "5a976859ae3159c1796ad081778a31c38e550d99e4aae3d3bf592c88f117aeeb"
+          "previous_sha256": "4ae06560af9c3e6c9190dc8c3e9b148a31941ba5c297a64795b71867b2a59499",
+          "supersedes_v1_record_sha256": "5a976859ae3159c1796ad081778a31c38e550d99e4aae3d3bf592c88f117aeeb",
+          "evidence_contract_version": 2,
+          "source_commit": "542a6bbd5ee3ba8849a461f044bba4e06878693e",
+          "source_is_dirty": true,
+          "command": "powershell -File start.ps1 check -ProjectName aster-acceptance-20261012 -Port 18088 -WithKnowledge",
+          "exit_code": 1,
+          "oracle": "Latest-image and disposable Spring financial/browser acceptance cannot run within current resource gate; no retained banking data mutation attempted",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/23f7d5b7f651-deployment-preflight.log",
+            "artifacts/final-sprint/sealed/9d960f402816-source-manifest.json"
+          ],
+          "artifact_sha256": [
+            "23f7d5b7f65118658d96ee1f3c1ff71fc5a40aa0eeac3534eca0b5a6f40d78fe",
+            "9d960f4028164c77e021abdc3e07bf99687f60901fc66bf4a9de60d3d9f6fbce"
+          ],
+          "limitations": [
+            "Target financial/browser command not run at this blocked checkpoint",
+            "Original uncommitted source snapshot identified by its manifest; source_commit is the original base commit"
+          ],
+          "record_sha256": "8873c31a44378806ee68b623d7bc7931eab6541a56e19264db0e4459e65e3204"
+        },
+        {
+          "case_id": "AB06",
+          "execution_level": "故障代理+Spring/PG",
+          "status": "PASS",
+          "assertions": [
+            "Fault transport cuts HTTP response after actual Spring/PG commit",
+            "UNKNOWN first; new Runtime loaded from PG reuses same intent/auth/key and same receipt",
+            "Exactly one transfer and source debit"
+          ],
+          "artifacts": [
+            {
+              "path": "artifacts/final-sprint/sealed/b61e1c89acbe-financial-acceptance.jsonl",
+              "sha256": "b61e1c89acbe87cfd1676e8176c603a9c6b5e88f64a42fb8d4974e38c4350cac"
+            },
+            {
+              "path": "artifacts/final-sprint/sealed/bfaa311e532c-financial-model-retry-summary.log",
+              "sha256": "bfaa311e532c41d0d263d63260cb814dc37afbd41398c37d0ef4314993f81862"
+            },
+            {
+              "path": "artifacts/final-sprint/sealed/dcbec198ef35-source-manifest-final.json",
+              "sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe"
+            }
+          ],
+          "oracle_result": true,
+          "source_manifest_sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe",
+          "source_commit": "c7e194a43694094e41118cb6d25eaa5570c6ed36",
+          "command": "python scripts/final-sprint-financial-tests.py",
+          "exit_code": 0,
+          "oracle": "先 UNKNOWN；以原 intent/auth/key 恢复同回执；一笔 transfer、一笔源账户借记",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/b61e1c89acbe-financial-acceptance.jsonl",
+            "artifacts/final-sprint/sealed/bfaa311e532c-financial-model-retry-summary.log",
+            "artifacts/final-sprint/sealed/dcbec198ef35-source-manifest-final.json"
+          ],
+          "artifact_sha256": [
+            "b61e1c89acbe87cfd1676e8176c603a9c6b5e88f64a42fb8d4974e38c4350cac",
+            "bfaa311e532c41d0d263d63260cb814dc37afbd41398c37d0ef4314993f81862",
+            "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe"
+          ],
+          "limitations": [
+            "AB06 uses an in-process HTTP fault transport plus new Runtime instance, not an OS kill"
+          ],
+          "timestamp": "2026-10-21T01:27:23.797821+00:00",
+          "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
+          "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
+          "previous_sha256": "ef57955034913353b51b21d716ff903657b1271eabde6403b7b880db60fcc69e",
+          "record_sha256": "d630c21f21d76863e9d715a6bbd7d641ecff6e17b7874ac22b7757eb64234d47"
         }
       ]
     },
@@ -308,13 +846,32 @@
           "timestamp": "2026-10-20T13:09:51.700495+00:00",
           "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
           "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
-          "previous_sha256": "23e6139b1e7d0e96832452d25fd24c4c11f23f18211659df337677d7890afd58",
-          "record_sha256": "a1673021af8e7eb84e4561b79b1bc90a1c8ec834350cfb14b1c928f7333f0d76"
+          "previous_sha256": "b54fcb38eb82ea3115c88d95a1c6cc3f3e788455d4ef962c7cfd6281b4ead996",
+          "supersedes_v1_record_sha256": "a1673021af8e7eb84e4561b79b1bc90a1c8ec834350cfb14b1c928f7333f0d76",
+          "evidence_contract_version": 2,
+          "source_commit": "542a6bbd5ee3ba8849a461f044bba4e06878693e",
+          "source_is_dirty": true,
+          "command": "python -m unittest discover -s services/agent-runtime/tests -p test_r1_completeness.py",
+          "exit_code": 0,
+          "oracle": "Incomplete receipt remains uncertain and unrecorded as executed; two application kinds with no authoritative lookup are not replayed",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/c1cde956b95c-r1-receipt-closure.log",
+            "artifacts/final-sprint/sealed/9d960f402816-source-manifest.json"
+          ],
+          "artifact_sha256": [
+            "c1cde956b95ccc23ffe8ccbce128296f978feb0f3d84885fcf533090b6546491",
+            "9d960f4028164c77e021abdc3e07bf99687f60901fc66bf4a9de60d3d9f6fbce"
+          ],
+          "limitations": [
+            "Supporting evidence only; does not close the original case execution level",
+            "Original uncommitted source snapshot identified by its manifest; source_commit is the original base commit"
+          ],
+          "record_sha256": "9be21a56796a2f65719ea2f8264f69c10bc27d904cd81918de561bd2fe9117f1"
         },
         {
           "case_id": "AB07",
           "execution_level": "按动作分参数的Spring/PG",
-          "status": "BLOCKED",
+          "status": "ENVIRONMENT_BLOCKED",
           "assertions": [
             "Latest-image and disposable Spring financial/browser acceptance cannot run within current resource gate; no retained banking data mutation attempted"
           ],
@@ -333,8 +890,27 @@
           "timestamp": "2026-10-20T13:09:51.719639+00:00",
           "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
           "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
-          "previous_sha256": "5a976859ae3159c1796ad081778a31c38e550d99e4aae3d3bf592c88f117aeeb",
-          "record_sha256": "53909cac8012f425be5edfe2a2133f5775153d9ce6464ef7a808a087964e9df2"
+          "previous_sha256": "8873c31a44378806ee68b623d7bc7931eab6541a56e19264db0e4459e65e3204",
+          "supersedes_v1_record_sha256": "53909cac8012f425be5edfe2a2133f5775153d9ce6464ef7a808a087964e9df2",
+          "evidence_contract_version": 2,
+          "source_commit": "542a6bbd5ee3ba8849a461f044bba4e06878693e",
+          "source_is_dirty": true,
+          "command": "powershell -File start.ps1 check -ProjectName aster-acceptance-20261012 -Port 18088 -WithKnowledge",
+          "exit_code": 1,
+          "oracle": "Latest-image and disposable Spring financial/browser acceptance cannot run within current resource gate; no retained banking data mutation attempted",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/23f7d5b7f651-deployment-preflight.log",
+            "artifacts/final-sprint/sealed/9d960f402816-source-manifest.json"
+          ],
+          "artifact_sha256": [
+            "23f7d5b7f65118658d96ee1f3c1ff71fc5a40aa0eeac3534eca0b5a6f40d78fe",
+            "9d960f4028164c77e021abdc3e07bf99687f60901fc66bf4a9de60d3d9f6fbce"
+          ],
+          "limitations": [
+            "Target financial/browser command not run at this blocked checkpoint",
+            "Original uncommitted source snapshot identified by its manifest; source_commit is the original base commit"
+          ],
+          "record_sha256": "f5828d7adfdafbc5ba5833d1827eef607f214a6a0405519ac83f479d0a2d271b"
         }
       ]
     },
@@ -342,7 +918,7 @@
       "case_id": "AB08",
       "oracle": "仅通过对应 step/条款/intent 匹配；一份回执不能证明两个目标；错配不能 SUCCEEDED",
       "required_execution_level": "确定性+Spring/PG",
-      "status": "BLOCKED",
+      "status": "PASS",
       "runs": [
         {
           "case_id": "AB08",
@@ -366,8 +942,27 @@
           "timestamp": "2026-10-20T13:09:51.691138+00:00",
           "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
           "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
-          "previous_sha256": "181c10aaeb0b3edc168a4a93e987b85a877174562ee984796ad5ab686831a150",
-          "record_sha256": "134a848143397c19550f27f0cf8d3e3530f6e429533b313192ee30d02fd169f6"
+          "previous_sha256": "d61bdd91ebef20f22f48636f4630f10e98a95d4e70c86cfc1803319a25d9d3fe",
+          "supersedes_v1_record_sha256": "134a848143397c19550f27f0cf8d3e3530f6e429533b313192ee30d02fd169f6",
+          "evidence_contract_version": 2,
+          "source_commit": "542a6bbd5ee3ba8849a461f044bba4e06878693e",
+          "source_is_dirty": true,
+          "command": "python -m unittest discover -s services/agent-runtime/tests",
+          "exit_code": 0,
+          "oracle": "Step authorization, amount/recipient swaps and shuffled receipt source tests pass; not real Spring financial acceptance",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/3c1f00367691-agent-final-safety.log",
+            "artifacts/final-sprint/sealed/9d960f402816-source-manifest.json"
+          ],
+          "artifact_sha256": [
+            "3c1f003676910c6839f75ada8d46cf266c48fcf59ad9978d0ea7c886b3965f31",
+            "9d960f4028164c77e021abdc3e07bf99687f60901fc66bf4a9de60d3d9f6fbce"
+          ],
+          "limitations": [
+            "Supporting evidence only; does not close the original case execution level",
+            "Original uncommitted source snapshot identified by its manifest; source_commit is the original base commit"
+          ],
+          "record_sha256": "1b5a41713a7795e6140bdecd94e289fd88fc33b803b7de4bfa858a6a15b6206f"
         },
         {
           "case_id": "AB08",
@@ -395,13 +990,34 @@
           "timestamp": "2026-10-20T13:09:51.695166+00:00",
           "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
           "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
-          "previous_sha256": "85fea7b300c3cbe2e61dc4f56b91c0e17e5c642da9b0dff3e78f85d5daac4884",
-          "record_sha256": "3dd88c082c1ab4c7738b6f9a58025532e79419f2702d7725f218647be4b64aea"
+          "previous_sha256": "1b791150a85c0e8518d8c0e217a34e1a97447701b0263f997571793dc482c109",
+          "supersedes_v1_record_sha256": "3dd88c082c1ab4c7738b6f9a58025532e79419f2702d7725f218647be4b64aea",
+          "evidence_contract_version": 2,
+          "source_commit": "542a6bbd5ee3ba8849a461f044bba4e06878693e",
+          "source_is_dirty": true,
+          "command": "python scripts/final-sprint-postgres-tests.py",
+          "exit_code": 0,
+          "oracle": "10 real PostgreSQL state/lease/ownership recovery tests pass; bank adapter is scripted, not a Spring financial-fault oracle",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/a0ecd246f912-postgres-recovery.log",
+            "artifacts/final-sprint/sealed/bb9bf500ebda-postgres-recovery-evidence.jsonl",
+            "artifacts/final-sprint/sealed/9d960f402816-source-manifest.json"
+          ],
+          "artifact_sha256": [
+            "a0ecd246f912392b52a10db31fe28648ec03e381a864f54b0d38cc9ea539152b",
+            "bb9bf500ebda27cde51e1ec584b4cad35af8859216302b6059ad5c104d96f478",
+            "9d960f4028164c77e021abdc3e07bf99687f60901fc66bf4a9de60d3d9f6fbce"
+          ],
+          "limitations": [
+            "Supporting evidence only; does not close the original case execution level",
+            "Original uncommitted source snapshot identified by its manifest; source_commit is the original base commit"
+          ],
+          "record_sha256": "29637f00777d385fc05fd9f8155ca47b6eb877b7d9e4b10cdf748630d2106f0a"
         },
         {
           "case_id": "AB08",
           "execution_level": "确定性+Spring/PG",
-          "status": "BLOCKED",
+          "status": "ENVIRONMENT_BLOCKED",
           "assertions": [
             "Latest-image and disposable Spring financial/browser acceptance cannot run within current resource gate; no retained banking data mutation attempted"
           ],
@@ -420,8 +1036,118 @@
           "timestamp": "2026-10-20T13:09:51.720685+00:00",
           "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
           "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
-          "previous_sha256": "53909cac8012f425be5edfe2a2133f5775153d9ce6464ef7a808a087964e9df2",
-          "record_sha256": "5ff47f86aa96d1e130371c42cb8ff0542a431f882c20f39212dcbf5d2976cf12"
+          "previous_sha256": "f5828d7adfdafbc5ba5833d1827eef607f214a6a0405519ac83f479d0a2d271b",
+          "supersedes_v1_record_sha256": "5ff47f86aa96d1e130371c42cb8ff0542a431f882c20f39212dcbf5d2976cf12",
+          "evidence_contract_version": 2,
+          "source_commit": "542a6bbd5ee3ba8849a461f044bba4e06878693e",
+          "source_is_dirty": true,
+          "command": "powershell -File start.ps1 check -ProjectName aster-acceptance-20261012 -Port 18088 -WithKnowledge",
+          "exit_code": 1,
+          "oracle": "Latest-image and disposable Spring financial/browser acceptance cannot run within current resource gate; no retained banking data mutation attempted",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/23f7d5b7f651-deployment-preflight.log",
+            "artifacts/final-sprint/sealed/9d960f402816-source-manifest.json"
+          ],
+          "artifact_sha256": [
+            "23f7d5b7f65118658d96ee1f3c1ff71fc5a40aa0eeac3534eca0b5a6f40d78fe",
+            "9d960f4028164c77e021abdc3e07bf99687f60901fc66bf4a9de60d3d9f6fbce"
+          ],
+          "limitations": [
+            "Target financial/browser command not run at this blocked checkpoint",
+            "Original uncommitted source snapshot identified by its manifest; source_commit is the original base commit"
+          ],
+          "record_sha256": "1bbec1c5f848cdce9fe29dd991bba2360be859918eae1e82b2d56a34973c4753"
+        },
+        {
+          "case_id": "AB08",
+          "execution_level": "确定性+Spring/PG",
+          "status": "FAIL",
+          "assertions": [
+            "Original failed run preserved: model connection failure; dependent receipt cases had no prepared prerequisite"
+          ],
+          "artifacts": [
+            {
+              "path": "artifacts/final-sprint/sealed/f8be33e6abb5-financial-acceptance-f8be33e6abb5.jsonl",
+              "sha256": "f8be33e6abb513b5380441b801afac402560d9d13141480c8b17c8654eafbf83"
+            },
+            {
+              "path": "artifacts/final-sprint/sealed/208d87cb6f2c-sandbox-network-diagnostic.json",
+              "sha256": "208d87cb6f2ce9207e41a3d4ecb4d0c69529190a8a777f67797fd8b20db23d3a"
+            },
+            {
+              "path": "artifacts/final-sprint/sealed/dcbec198ef35-source-manifest-final.json",
+              "sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe"
+            }
+          ],
+          "oracle_result": false,
+          "source_manifest_sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe",
+          "source_commit": "c7e194a43694094e41118cb6d25eaa5570c6ed36",
+          "command": "python scripts/final-sprint-financial-tests.py",
+          "exit_code": 1,
+          "oracle": "仅通过对应 step/条款/intent 匹配；一份回执不能证明两个目标；错配不能 SUCCEEDED",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/f8be33e6abb5-financial-acceptance-f8be33e6abb5.jsonl",
+            "artifacts/final-sprint/sealed/208d87cb6f2c-sandbox-network-diagnostic.json",
+            "artifacts/final-sprint/sealed/dcbec198ef35-source-manifest-final.json"
+          ],
+          "artifact_sha256": [
+            "f8be33e6abb513b5380441b801afac402560d9d13141480c8b17c8654eafbf83",
+            "208d87cb6f2ce9207e41a3d4ecb4d0c69529190a8a777f67797fd8b20db23d3a",
+            "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe"
+          ],
+          "limitations": [
+            "Not a bank defect verdict; later explicit deterministic and real-model runs are separate evidence"
+          ],
+          "timestamp": "2026-10-21T01:27:23.781311+00:00",
+          "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
+          "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
+          "previous_sha256": "a4fad1f76eca1b8e9cd142c58939c6f3a82eaf943a72084292a6ede6950cc5f1",
+          "record_sha256": "0e637bc2d9e551040136e51e9c9fc617df3b66c3f382c66ca7db2f9bcc957acb"
+        },
+        {
+          "case_id": "AB08",
+          "execution_level": "确定性+Spring/PG",
+          "status": "PASS",
+          "assertions": [
+            "Actual Spring receipts reversed still match only their own step and immutable terms",
+            "Duplicating first receipt does not complete second goal; no extra effect"
+          ],
+          "artifacts": [
+            {
+              "path": "artifacts/final-sprint/sealed/b61e1c89acbe-financial-acceptance.jsonl",
+              "sha256": "b61e1c89acbe87cfd1676e8176c603a9c6b5e88f64a42fb8d4974e38c4350cac"
+            },
+            {
+              "path": "artifacts/final-sprint/sealed/bfaa311e532c-financial-model-retry-summary.log",
+              "sha256": "bfaa311e532c41d0d263d63260cb814dc37afbd41398c37d0ef4314993f81862"
+            },
+            {
+              "path": "artifacts/final-sprint/sealed/dcbec198ef35-source-manifest-final.json",
+              "sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe"
+            }
+          ],
+          "oracle_result": true,
+          "source_manifest_sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe",
+          "source_commit": "c7e194a43694094e41118cb6d25eaa5570c6ed36",
+          "command": "python scripts/final-sprint-financial-tests.py",
+          "exit_code": 0,
+          "oracle": "仅通过对应 step/条款/intent 匹配；一份回执不能证明两个目标；错配不能 SUCCEEDED",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/b61e1c89acbe-financial-acceptance.jsonl",
+            "artifacts/final-sprint/sealed/bfaa311e532c-financial-model-retry-summary.log",
+            "artifacts/final-sprint/sealed/dcbec198ef35-source-manifest-final.json"
+          ],
+          "artifact_sha256": [
+            "b61e1c89acbe87cfd1676e8176c603a9c6b5e88f64a42fb8d4974e38c4350cac",
+            "bfaa311e532c41d0d263d63260cb814dc37afbd41398c37d0ef4314993f81862",
+            "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe"
+          ],
+          "limitations": [],
+          "timestamp": "2026-10-21T01:27:23.798348+00:00",
+          "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
+          "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
+          "previous_sha256": "d630c21f21d76863e9d715a6bbd7d641ecff6e17b7874ac22b7757eb64234d47",
+          "record_sha256": "89e4f606aa75bd5f225822304510a0b5f06a5654a72519ce0ce06dceb8003a4c"
         }
       ]
     },
@@ -457,8 +1183,29 @@
           "timestamp": "2026-10-20T13:09:51.696166+00:00",
           "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
           "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
-          "previous_sha256": "3dd88c082c1ab4c7738b6f9a58025532e79419f2702d7725f218647be4b64aea",
-          "record_sha256": "aaf11170e45b2ebd57712d631fea173e2303535333841cd57554b269f434b768"
+          "previous_sha256": "29637f00777d385fc05fd9f8155ca47b6eb877b7d9e4b10cdf748630d2106f0a",
+          "supersedes_v1_record_sha256": "aaf11170e45b2ebd57712d631fea173e2303535333841cd57554b269f434b768",
+          "evidence_contract_version": 2,
+          "source_commit": "542a6bbd5ee3ba8849a461f044bba4e06878693e",
+          "source_is_dirty": true,
+          "command": "python scripts/final-sprint-postgres-tests.py",
+          "exit_code": 0,
+          "oracle": "10 real PostgreSQL state/lease/ownership recovery tests pass; bank adapter is scripted, not a Spring financial-fault oracle",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/a0ecd246f912-postgres-recovery.log",
+            "artifacts/final-sprint/sealed/bb9bf500ebda-postgres-recovery-evidence.jsonl",
+            "artifacts/final-sprint/sealed/9d960f402816-source-manifest.json"
+          ],
+          "artifact_sha256": [
+            "a0ecd246f912392b52a10db31fe28648ec03e381a864f54b0d38cc9ea539152b",
+            "bb9bf500ebda27cde51e1ec584b4cad35af8859216302b6059ad5c104d96f478",
+            "9d960f4028164c77e021abdc3e07bf99687f60901fc66bf4a9de60d3d9f6fbce"
+          ],
+          "limitations": [
+            "Supporting evidence only; does not close the original case execution level",
+            "Original uncommitted source snapshot identified by its manifest; source_commit is the original base commit"
+          ],
+          "record_sha256": "8a6a2b1974d468126ace95c07b4216ee9a628a6836a7d7f628ea214831a3ff4e"
         }
       ]
     },
@@ -471,7 +1218,7 @@
         {
           "case_id": "AB10",
           "execution_level": "浏览器+真实隔离后端",
-          "status": "BLOCKED",
+          "status": "ENVIRONMENT_BLOCKED",
           "assertions": [
             "Latest-image and disposable Spring financial/browser acceptance cannot run within current resource gate; no retained banking data mutation attempted"
           ],
@@ -490,8 +1237,27 @@
           "timestamp": "2026-10-20T13:09:51.721215+00:00",
           "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
           "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
-          "previous_sha256": "5ff47f86aa96d1e130371c42cb8ff0542a431f882c20f39212dcbf5d2976cf12",
-          "record_sha256": "aae16e1df12ca6e4c8501184c3eb3f45437f2b942c07564aba048833f01a5596"
+          "previous_sha256": "1bbec1c5f848cdce9fe29dd991bba2360be859918eae1e82b2d56a34973c4753",
+          "supersedes_v1_record_sha256": "aae16e1df12ca6e4c8501184c3eb3f45437f2b942c07564aba048833f01a5596",
+          "evidence_contract_version": 2,
+          "source_commit": "542a6bbd5ee3ba8849a461f044bba4e06878693e",
+          "source_is_dirty": true,
+          "command": "powershell -File start.ps1 check -ProjectName aster-acceptance-20261012 -Port 18088 -WithKnowledge",
+          "exit_code": 1,
+          "oracle": "Latest-image and disposable Spring financial/browser acceptance cannot run within current resource gate; no retained banking data mutation attempted",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/23f7d5b7f651-deployment-preflight.log",
+            "artifacts/final-sprint/sealed/9d960f402816-source-manifest.json"
+          ],
+          "artifact_sha256": [
+            "23f7d5b7f65118658d96ee1f3c1ff71fc5a40aa0eeac3534eca0b5a6f40d78fe",
+            "9d960f4028164c77e021abdc3e07bf99687f60901fc66bf4a9de60d3d9f6fbce"
+          ],
+          "limitations": [
+            "Target financial/browser command not run at this blocked checkpoint",
+            "Original uncommitted source snapshot identified by its manifest; source_commit is the original base commit"
+          ],
+          "record_sha256": "e35ec35ccababde7c984d2f0caab3398ec3d60c9ad83dba0029a973570b957a0"
         }
       ]
     },
@@ -523,8 +1289,27 @@
           "timestamp": "2026-10-20T13:09:51.701162+00:00",
           "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
           "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
-          "previous_sha256": "a1673021af8e7eb84e4561b79b1bc90a1c8ec834350cfb14b1c928f7333f0d76",
-          "record_sha256": "2db2793a28e21f90c1ad93443209ba2d1ce40b88fdaab109c7f9392b12342f4e"
+          "previous_sha256": "9be21a56796a2f65719ea2f8264f69c10bc27d904cd81918de561bd2fe9117f1",
+          "supersedes_v1_record_sha256": "2db2793a28e21f90c1ad93443209ba2d1ce40b88fdaab109c7f9392b12342f4e",
+          "evidence_contract_version": 2,
+          "source_commit": "542a6bbd5ee3ba8849a461f044bba4e06878693e",
+          "source_is_dirty": true,
+          "command": "python -m unittest discover -s services/agent-runtime/tests -p test_r1_completeness.py",
+          "exit_code": 0,
+          "oracle": "Provider invalid output, 402, timeout and MCP failure retain distinct classified source behavior",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/c1cde956b95c-r1-receipt-closure.log",
+            "artifacts/final-sprint/sealed/9d960f402816-source-manifest.json"
+          ],
+          "artifact_sha256": [
+            "c1cde956b95ccc23ffe8ccbce128296f978feb0f3d84885fcf533090b6546491",
+            "9d960f4028164c77e021abdc3e07bf99687f60901fc66bf4a9de60d3d9f6fbce"
+          ],
+          "limitations": [
+            "Supporting evidence only; does not close the original case execution level",
+            "Original uncommitted source snapshot identified by its manifest; source_commit is the original base commit"
+          ],
+          "record_sha256": "61ab0a4432f70df98d5ad39c4b6ed1f39e4a1e1ee4d905af06759195e361a260"
         }
       ]
     },
@@ -532,7 +1317,7 @@
       "case_id": "AB12",
       "oracle": "恢复同任务及同 intent；取消之后旧确认无效；查询不额外创建意图",
       "required_execution_level": "进程重启+Spring/PG",
-      "status": "BLOCKED",
+      "status": "PASS",
       "runs": [
         {
           "case_id": "AB12",
@@ -560,13 +1345,34 @@
           "timestamp": "2026-10-20T13:09:51.697167+00:00",
           "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
           "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
-          "previous_sha256": "aaf11170e45b2ebd57712d631fea173e2303535333841cd57554b269f434b768",
-          "record_sha256": "e9af82d312df760cbf2fdd62d5b11d4a44d0190c424675e5f8944be3193e8715"
+          "previous_sha256": "8a6a2b1974d468126ace95c07b4216ee9a628a6836a7d7f628ea214831a3ff4e",
+          "supersedes_v1_record_sha256": "e9af82d312df760cbf2fdd62d5b11d4a44d0190c424675e5f8944be3193e8715",
+          "evidence_contract_version": 2,
+          "source_commit": "542a6bbd5ee3ba8849a461f044bba4e06878693e",
+          "source_is_dirty": true,
+          "command": "python scripts/final-sprint-postgres-tests.py",
+          "exit_code": 0,
+          "oracle": "10 real PostgreSQL state/lease/ownership recovery tests pass; bank adapter is scripted, not a Spring financial-fault oracle",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/a0ecd246f912-postgres-recovery.log",
+            "artifacts/final-sprint/sealed/bb9bf500ebda-postgres-recovery-evidence.jsonl",
+            "artifacts/final-sprint/sealed/9d960f402816-source-manifest.json"
+          ],
+          "artifact_sha256": [
+            "a0ecd246f912392b52a10db31fe28648ec03e381a864f54b0d38cc9ea539152b",
+            "bb9bf500ebda27cde51e1ec584b4cad35af8859216302b6059ad5c104d96f478",
+            "9d960f4028164c77e021abdc3e07bf99687f60901fc66bf4a9de60d3d9f6fbce"
+          ],
+          "limitations": [
+            "Supporting evidence only; does not close the original case execution level",
+            "Original uncommitted source snapshot identified by its manifest; source_commit is the original base commit"
+          ],
+          "record_sha256": "15a71678809d181cddc260ea5c398dcf01a055f9e81c01e9da3fd657749ed603"
         },
         {
           "case_id": "AB12",
           "execution_level": "进程重启+Spring/PG",
-          "status": "BLOCKED",
+          "status": "ENVIRONMENT_BLOCKED",
           "assertions": [
             "Latest-image and disposable Spring financial/browser acceptance cannot run within current resource gate; no retained banking data mutation attempted"
           ],
@@ -585,8 +1391,122 @@
           "timestamp": "2026-10-20T13:09:51.722271+00:00",
           "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
           "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
-          "previous_sha256": "aae16e1df12ca6e4c8501184c3eb3f45437f2b942c07564aba048833f01a5596",
-          "record_sha256": "ebb0017d51464b6eaf62d908ba29a8a976661554d9ac38fe651c06759966a2dc"
+          "previous_sha256": "e35ec35ccababde7c984d2f0caab3398ec3d60c9ad83dba0029a973570b957a0",
+          "supersedes_v1_record_sha256": "ebb0017d51464b6eaf62d908ba29a8a976661554d9ac38fe651c06759966a2dc",
+          "evidence_contract_version": 2,
+          "source_commit": "542a6bbd5ee3ba8849a461f044bba4e06878693e",
+          "source_is_dirty": true,
+          "command": "powershell -File start.ps1 check -ProjectName aster-acceptance-20261012 -Port 18088 -WithKnowledge",
+          "exit_code": 1,
+          "oracle": "Latest-image and disposable Spring financial/browser acceptance cannot run within current resource gate; no retained banking data mutation attempted",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/23f7d5b7f651-deployment-preflight.log",
+            "artifacts/final-sprint/sealed/9d960f402816-source-manifest.json"
+          ],
+          "artifact_sha256": [
+            "23f7d5b7f65118658d96ee1f3c1ff71fc5a40aa0eeac3534eca0b5a6f40d78fe",
+            "9d960f4028164c77e021abdc3e07bf99687f60901fc66bf4a9de60d3d9f6fbce"
+          ],
+          "limitations": [
+            "Target financial/browser command not run at this blocked checkpoint",
+            "Original uncommitted source snapshot identified by its manifest; source_commit is the original base commit"
+          ],
+          "record_sha256": "05294712569c6cc82bc187aa88bafa06660d5a51bb077e7fa0a2170ef4c28e28"
+        },
+        {
+          "case_id": "AB12",
+          "execution_level": "进程重启+Spring/PG",
+          "status": "FAIL",
+          "assertions": [
+            "Original harness wrapper assumption failure retained"
+          ],
+          "artifacts": [
+            {
+              "path": "artifacts/final-sprint/sealed/04a83e4d6e81-browser-ab12.json",
+              "sha256": "04a83e4d6e81feca3c19dabc4674136bbb9e9923c4a34c9dbbd01762fe125d26"
+            },
+            {
+              "path": "artifacts/final-sprint/sealed/dcbec198ef35-source-manifest-final.json",
+              "sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe"
+            }
+          ],
+          "oracle_result": false,
+          "source_manifest_sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe",
+          "source_commit": "c7e194a43694094e41118cb6d25eaa5570c6ed36",
+          "command": "Persistent Playwright Edge restore/cancel attempt",
+          "exit_code": 1,
+          "oracle": "恢复同任务及同 intent；取消之后旧确认无效；查询不额外创建意图",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/04a83e4d6e81-browser-ab12.json",
+            "artifacts/final-sprint/sealed/dcbec198ef35-source-manifest-final.json"
+          ],
+          "artifact_sha256": [
+            "04a83e4d6e81feca3c19dabc4674136bbb9e9923c4a34c9dbbd01762fe125d26",
+            "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe"
+          ],
+          "limitations": [
+            "Endpoint returns raw snake_case AgentResponse; expectation incorrectly used task wrapper"
+          ],
+          "timestamp": "2026-10-21T01:27:23.798348+00:00",
+          "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
+          "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
+          "previous_sha256": "c0b16a140f5564e4d561e88f4878b7d45f8dc2b97564e26ddf3b68f4a7e733f9",
+          "record_sha256": "99e2f8a00001ffe085a42b3becfb704385dbc8041ed67127602730f3f710a9d6"
+        },
+        {
+          "case_id": "AB12",
+          "execution_level": "进程重启+Spring/PG",
+          "status": "PASS",
+          "assertions": [
+            "Actual Agent container recreation restores identical owned task and intent",
+            "UI cancellation persists CANCELLED; stale confirmation returns 409",
+            "Queries/cancel create no extra intent, transfer or debit"
+          ],
+          "artifacts": [
+            {
+              "path": "artifacts/final-sprint/sealed/18e89d7b43f6-browser-ab12-schema-corrected.json",
+              "sha256": "18e89d7b43f60aa04c333b725ea0cbffa94dd9f99d5c16eb1a759146d0db7105"
+            },
+            {
+              "path": "artifacts/final-sprint/sealed/ad4e24ec1cec-browser-ab12-cancelled.png",
+              "sha256": "ad4e24ec1cec748c1466a0a8fb4579a9d1924f45be728b01ceb00ddc8b8fbfd1"
+            },
+            {
+              "path": "artifacts/final-sprint/sealed/3e227e578b85-sandbox-agent-restart.log",
+              "sha256": "3e227e578b857382a6925fecee0d6838c0ad906de37e88ceedafcabd5b9f3665"
+            },
+            {
+              "path": "artifacts/final-sprint/sealed/dcbec198ef35-source-manifest-final.json",
+              "sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe"
+            }
+          ],
+          "oracle_result": true,
+          "source_manifest_sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe",
+          "source_commit": "c7e194a43694094e41118cb6d25eaa5570c6ed36",
+          "command": "Persistent Playwright Edge restore/cancel + actual Agent recreation; verify captured raw AgentResponse",
+          "exit_code": 0,
+          "oracle": "恢复同任务及同 intent；取消之后旧确认无效；查询不额外创建意图",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/18e89d7b43f6-browser-ab12-schema-corrected.json",
+            "artifacts/final-sprint/sealed/ad4e24ec1cec-browser-ab12-cancelled.png",
+            "artifacts/final-sprint/sealed/3e227e578b85-sandbox-agent-restart.log",
+            "artifacts/final-sprint/sealed/dcbec198ef35-source-manifest-final.json"
+          ],
+          "artifact_sha256": [
+            "18e89d7b43f60aa04c333b725ea0cbffa94dd9f99d5c16eb1a759146d0db7105",
+            "ad4e24ec1cec748c1466a0a8fb4579a9d1924f45be728b01ceb00ddc8b8fbfd1",
+            "3e227e578b857382a6925fecee0d6838c0ad906de37e88ceedafcabd5b9f3665",
+            "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe"
+          ],
+          "limitations": [
+            "Preparation used explicit deterministic test fixture; no claim of real-model intent understanding",
+            "Harness mapping corrected using retained raw response; exact identity/state/409/DB assertions unchanged"
+          ],
+          "timestamp": "2026-10-21T01:27:23.798348+00:00",
+          "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
+          "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
+          "previous_sha256": "99e2f8a00001ffe085a42b3becfb704385dbc8041ed67127602730f3f710a9d6",
+          "record_sha256": "5754289b20789745ee8a28456cd4603dcfba9512b50d2f11c52fac693e0f1007"
         }
       ]
     },
@@ -626,8 +1546,84 @@
           "timestamp": "2026-10-20T13:09:51.701162+00:00",
           "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
           "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
-          "previous_sha256": "2db2793a28e21f90c1ad93443209ba2d1ce40b88fdaab109c7f9392b12342f4e",
-          "record_sha256": "00a6de19d7d04bd53de44b385a9147efc283223bbfb241d4c7f378f713a97a77"
+          "previous_sha256": "61ab0a4432f70df98d5ad39c4b6ed1f39e4a1e1ee4d905af06759195e361a260",
+          "supersedes_v1_record_sha256": "00a6de19d7d04bd53de44b385a9147efc283223bbfb241d4c7f378f713a97a77",
+          "evidence_contract_version": 2,
+          "source_commit": "542a6bbd5ee3ba8849a461f044bba4e06878693e",
+          "source_is_dirty": true,
+          "command": "python scripts/final-sprint-live-readonly.py",
+          "exit_code": 0,
+          "oracle": "Customer-cookie mismatch rejected before child model; bounded independent child loops obtain real bank/RAG observations",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/4caf17fa1931-multi-agent-expanded-fixed.log",
+            "artifacts/final-sprint/sealed/052596549797-live-readonly.jsonl",
+            "artifacts/final-sprint/sealed/9d960f402816-source-manifest.json",
+            "artifacts/final-sprint/sealed/13d747f47e2f-live-readonly-source-manifest.json"
+          ],
+          "artifact_sha256": [
+            "4caf17fa1931852196f30b60047efd489e6123c58223a5591c04641d33b5ba11",
+            "0525965497970b038d9ddd5a9e0533c5fec3234a6246d6d28893a82a4f396bbd",
+            "9d960f4028164c77e021abdc3e07bf99687f60901fc66bf4a9de60d3d9f6fbce",
+            "13d747f47e2f81988e67638516648e27a1780528bb2003317eae1db4d0ac1ef3"
+          ],
+          "limitations": [
+            "Supporting evidence only; does not close the original case execution level",
+            "Original uncommitted source snapshot identified by its manifest; source_commit is the original base commit"
+          ],
+          "record_sha256": "9c2c8282ba4e80e94db1206cacb4b2e175ecc293ffcfd7050a423a8c5c37e3ef"
+        },
+        {
+          "case_id": "AB13",
+          "execution_level": "真实模型+MCP+浏览器只读支持",
+          "status": "PASS",
+          "assertions": [
+            "Both bounded specialist roles returned successful actual observations under one Supervisor task",
+            "Browser role progress and cited real bank/policy answer displayed"
+          ],
+          "artifacts": [
+            {
+              "path": "artifacts/final-sprint/sealed/e08e98d14985-browser-multi-checkpoint.json",
+              "sha256": "e08e98d14985e935d3fcbadbb806ea8ebc66c2fe3e69078dec5ea1acce85be57"
+            },
+            {
+              "path": "artifacts/final-sprint/sealed/7d6101fb2f28-browser-multi-complete.png",
+              "sha256": "7d6101fb2f28b9188320f2c4eee9feef10dc7abdea7bc6bc19fdea60b2e1d264"
+            },
+            {
+              "path": "artifacts/final-sprint/sealed/a2cc2565659c-deployed-source-parity.json",
+              "sha256": "a2cc2565659cf6462da1fec21db4ef38ae20c07fe17f6ef46b25b20e5a949d1b"
+            },
+            {
+              "path": "artifacts/final-sprint/sealed/dcbec198ef35-source-manifest-final.json",
+              "sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe"
+            }
+          ],
+          "oracle_result": true,
+          "source_manifest_sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe",
+          "source_commit": "c7e194a43694094e41118cb6d25eaa5570c6ed36",
+          "command": "Persistent Playwright Edge owned Copilot read-only query with MULTI_AGENT_ENABLED=1",
+          "exit_code": 0,
+          "oracle": "不扩大授权范围；支持的过滤保持一致；不支持的过滤不伪装成已应用",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/e08e98d14985-browser-multi-checkpoint.json",
+            "artifacts/final-sprint/sealed/7d6101fb2f28-browser-multi-complete.png",
+            "artifacts/final-sprint/sealed/a2cc2565659c-deployed-source-parity.json",
+            "artifacts/final-sprint/sealed/dcbec198ef35-source-manifest-final.json"
+          ],
+          "artifact_sha256": [
+            "e08e98d14985e935d3fcbadbb806ea8ebc66c2fe3e69078dec5ea1acce85be57",
+            "7d6101fb2f28b9188320f2c4eee9feef10dc7abdea7bc6bc19fdea60b2e1d264",
+            "a2cc2565659cf6462da1fec21db4ef38ae20c07fe17f6ef46b25b20e5a949d1b",
+            "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe"
+          ],
+          "limitations": [
+            "Does not close entire filter/capability combination oracle"
+          ],
+          "timestamp": "2026-10-21T01:27:23.798348+00:00",
+          "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
+          "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
+          "previous_sha256": "5754289b20789745ee8a28456cd4603dcfba9512b50d2f11c52fac693e0f1007",
+          "record_sha256": "a8b07b6b9a6c3d970d10cba8ddf86fa6024b51ae6dd53cc8e58b138371dd1c7c"
         }
       ]
     },
@@ -663,8 +1659,29 @@
           "timestamp": "2026-10-20T13:09:51.699166+00:00",
           "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
           "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
-          "previous_sha256": "e9af82d312df760cbf2fdd62d5b11d4a44d0190c424675e5f8944be3193e8715",
-          "record_sha256": "23e6139b1e7d0e96832452d25fd24c4c11f23f18211659df337677d7890afd58"
+          "previous_sha256": "15a71678809d181cddc260ea5c398dcf01a055f9e81c01e9da3fd657749ed603",
+          "supersedes_v1_record_sha256": "23e6139b1e7d0e96832452d25fd24c4c11f23f18211659df337677d7890afd58",
+          "evidence_contract_version": 2,
+          "source_commit": "542a6bbd5ee3ba8849a461f044bba4e06878693e",
+          "source_is_dirty": true,
+          "command": "python scripts/final-sprint-postgres-tests.py",
+          "exit_code": 0,
+          "oracle": "10 real PostgreSQL state/lease/ownership recovery tests pass; bank adapter is scripted, not a Spring financial-fault oracle",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/a0ecd246f912-postgres-recovery.log",
+            "artifacts/final-sprint/sealed/bb9bf500ebda-postgres-recovery-evidence.jsonl",
+            "artifacts/final-sprint/sealed/9d960f402816-source-manifest.json"
+          ],
+          "artifact_sha256": [
+            "a0ecd246f912392b52a10db31fe28648ec03e381a864f54b0d38cc9ea539152b",
+            "bb9bf500ebda27cde51e1ec584b4cad35af8859216302b6059ad5c104d96f478",
+            "9d960f4028164c77e021abdc3e07bf99687f60901fc66bf4a9de60d3d9f6fbce"
+          ],
+          "limitations": [
+            "Supporting evidence only; does not close the original case execution level",
+            "Original uncommitted source snapshot identified by its manifest; source_commit is the original base commit"
+          ],
+          "record_sha256": "b54fcb38eb82ea3115c88d95a1c6cc3f3e788455d4ef962c7cfd6281b4ead996"
         }
       ]
     },
@@ -700,8 +1717,29 @@
           "timestamp": "2026-10-20T13:09:51.701162+00:00",
           "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
           "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
-          "previous_sha256": "00a6de19d7d04bd53de44b385a9147efc283223bbfb241d4c7f378f713a97a77",
-          "record_sha256": "56c8402b001bd22e17f0347b4864f7f7f066b7e6b8a77e9d021d63df898792ca"
+          "previous_sha256": "9c2c8282ba4e80e94db1206cacb4b2e175ecc293ffcfd7050a423a8c5c37e3ef",
+          "supersedes_v1_record_sha256": "56c8402b001bd22e17f0347b4864f7f7f066b7e6b8a77e9d021d63df898792ca",
+          "evidence_contract_version": 2,
+          "source_commit": "542a6bbd5ee3ba8849a461f044bba4e06878693e",
+          "source_is_dirty": true,
+          "command": "node --max-old-space-size=384 node_modules/vitest/vitest.mjs run src/features/agent/agent-progress.test.tsx src/features/agent/presentation-schema.test.ts src/features/agent/rich-presentation.test.tsx src/lib/agent/copilot-session.test.ts --maxWorkers=1 --no-file-parallelism",
+          "exit_code": 0,
+          "oracle": "Existing financial presentation reconciliation and component regression pass; live source observations not tested in deployed new UI",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/8ee9c491f881-web-directed.log",
+            "artifacts/final-sprint/sealed/3c1f00367691-agent-final-safety.log",
+            "artifacts/final-sprint/sealed/9d960f402816-source-manifest.json"
+          ],
+          "artifact_sha256": [
+            "8ee9c491f8816d853e346301a6b53e25de1ab397129ef44bad667763de0e03ea",
+            "3c1f003676910c6839f75ada8d46cf266c48fcf59ad9978d0ea7c886b3965f31",
+            "9d960f4028164c77e021abdc3e07bf99687f60901fc66bf4a9de60d3d9f6fbce"
+          ],
+          "limitations": [
+            "Supporting evidence only; does not close the original case execution level",
+            "Original uncommitted source snapshot identified by its manifest; source_commit is the original base commit"
+          ],
+          "record_sha256": "cab26bad7e4113ddcd51c0f2d297afcbc1f7e76e0dc99fb85087fa2b9e4fd08d"
         }
       ]
     },
@@ -733,8 +1771,27 @@
           "timestamp": "2026-10-20T13:09:51.701162+00:00",
           "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
           "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
-          "previous_sha256": "56c8402b001bd22e17f0347b4864f7f7f066b7e6b8a77e9d021d63df898792ca",
-          "record_sha256": "9f05190615f999936eabae789321fde67cc83aec6c355bb5e20143d84d02b0c0"
+          "previous_sha256": "cab26bad7e4113ddcd51c0f2d297afcbc1f7e76e0dc99fb85087fa2b9e4fd08d",
+          "supersedes_v1_record_sha256": "9f05190615f999936eabae789321fde67cc83aec6c355bb5e20143d84d02b0c0",
+          "evidence_contract_version": 2,
+          "source_commit": "542a6bbd5ee3ba8849a461f044bba4e06878693e",
+          "source_is_dirty": true,
+          "command": "python -m unittest discover -s services/agent-runtime/tests",
+          "exit_code": 0,
+          "oracle": "Existing injection/presentation suites pass; exact case live browser/model evidence still missing",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/3c1f00367691-agent-final-safety.log",
+            "artifacts/final-sprint/sealed/9d960f402816-source-manifest.json"
+          ],
+          "artifact_sha256": [
+            "3c1f003676910c6839f75ada8d46cf266c48fcf59ad9978d0ea7c886b3965f31",
+            "9d960f4028164c77e021abdc3e07bf99687f60901fc66bf4a9de60d3d9f6fbce"
+          ],
+          "limitations": [
+            "Supporting evidence only; does not close the original case execution level",
+            "Original uncommitted source snapshot identified by its manifest; source_commit is the original base commit"
+          ],
+          "record_sha256": "fb7da7c4d44fd3e8a304d1aeab57e0976a3ccc63dd2692f4a2e70571aaf3a25d"
         }
       ]
     },
@@ -766,8 +1823,27 @@
           "timestamp": "2026-10-20T13:09:51.701162+00:00",
           "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
           "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
-          "previous_sha256": "9f05190615f999936eabae789321fde67cc83aec6c355bb5e20143d84d02b0c0",
-          "record_sha256": "b43c9ccdd0d4a863b5d67979ac87cd58ee2c17bc1ce2e0daa77c3644001226b4"
+          "previous_sha256": "fb7da7c4d44fd3e8a304d1aeab57e0976a3ccc63dd2692f4a2e70571aaf3a25d",
+          "supersedes_v1_record_sha256": "b43c9ccdd0d4a863b5d67979ac87cd58ee2c17bc1ce2e0daa77c3644001226b4",
+          "evidence_contract_version": 2,
+          "source_commit": "542a6bbd5ee3ba8849a461f044bba4e06878693e",
+          "source_is_dirty": true,
+          "command": "python -m unittest discover -s services/agent-runtime/tests",
+          "exit_code": 0,
+          "oracle": "Existing injection/presentation suites pass; exact case live browser/model evidence still missing",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/3c1f00367691-agent-final-safety.log",
+            "artifacts/final-sprint/sealed/9d960f402816-source-manifest.json"
+          ],
+          "artifact_sha256": [
+            "3c1f003676910c6839f75ada8d46cf266c48fcf59ad9978d0ea7c886b3965f31",
+            "9d960f4028164c77e021abdc3e07bf99687f60901fc66bf4a9de60d3d9f6fbce"
+          ],
+          "limitations": [
+            "Supporting evidence only; does not close the original case execution level",
+            "Original uncommitted source snapshot identified by its manifest; source_commit is the original base commit"
+          ],
+          "record_sha256": "c09c112d6a79be5eec2f22c1630f4b106a9515cd987e5a16ae1b1458d3ac76fb"
         }
       ]
     },
@@ -806,8 +1882,68 @@
           "timestamp": "2026-10-20T13:09:51.711190+00:00",
           "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
           "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
-          "previous_sha256": "b43c9ccdd0d4a863b5d67979ac87cd58ee2c17bc1ce2e0daa77c3644001226b4",
-          "record_sha256": "b67fb815b24a59be61922fbdd2981fcdddc0283c4f32a26e8783a0c8c38a1e23"
+          "previous_sha256": "c09c112d6a79be5eec2f22c1630f4b106a9515cd987e5a16ae1b1458d3ac76fb",
+          "supersedes_v1_record_sha256": "b67fb815b24a59be61922fbdd2981fcdddc0283c4f32a26e8783a0c8c38a1e23",
+          "evidence_contract_version": 2,
+          "source_commit": "542a6bbd5ee3ba8849a461f044bba4e06878693e",
+          "source_is_dirty": true,
+          "command": "python -m unittest discover -s services/agent-runtime/tests -p test_sprint_evidence.py",
+          "exit_code": 0,
+          "oracle": "Empty PASS and chain/artifact/result tampering negative tests pass; independent label scorer/complete actor audit not implemented",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/41303b4e6f8e-evidence-negative-tests.log",
+            "artifacts/final-sprint/sealed/9d960f402816-source-manifest.json"
+          ],
+          "artifact_sha256": [
+            "41303b4e6f8e453bec28da768393fcfe604adcd2555163220110b7e3c02a9df6",
+            "9d960f4028164c77e021abdc3e07bf99687f60901fc66bf4a9de60d3d9f6fbce"
+          ],
+          "limitations": [
+            "Supporting evidence only; does not close the original case execution level",
+            "Original uncommitted source snapshot identified by its manifest; source_commit is the original base commit"
+          ],
+          "record_sha256": "2ec5cdac6c8ce48d4da00ca1c65af9035c32c05a19b360549537476ddc6358a6"
+        },
+        {
+          "case_id": "AB19",
+          "execution_level": "证据工具定向单测",
+          "status": "PASS",
+          "assertions": [
+            "Empty assertions/oracle/provenance/nonzero exit cannot be PASS",
+            "Partial and policy-blocked records never aggregate to PASS"
+          ],
+          "artifacts": [
+            {
+              "path": "artifacts/final-sprint/sealed/991fea93c978-agent-final-351.log",
+              "sha256": "991fea93c978d915f2fe938a287de3be2daaa54b011e5f93ab25ceea65d0e0c4"
+            },
+            {
+              "path": "artifacts/final-sprint/sealed/dcbec198ef35-source-manifest-final.json",
+              "sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe"
+            }
+          ],
+          "oracle_result": true,
+          "source_manifest_sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe",
+          "source_commit": "c7e194a43694094e41118cb6d25eaa5570c6ed36",
+          "command": "python -m unittest discover -s services/agent-runtime/tests -v",
+          "exit_code": 0,
+          "oracle": "空标签算错；工具选择与参数/事实分别计分；缺key记NOT_RUN/SKIPPED，不记PASS",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/991fea93c978-agent-final-351.log",
+            "artifacts/final-sprint/sealed/dcbec198ef35-source-manifest-final.json"
+          ],
+          "artifact_sha256": [
+            "991fea93c978d915f2fe938a287de3be2daaa54b011e5f93ab25ceea65d0e0c4",
+            "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe"
+          ],
+          "limitations": [
+            "Not an independent labeled benchmark scoring implementation"
+          ],
+          "timestamp": "2026-10-21T01:27:23.798348+00:00",
+          "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
+          "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
+          "previous_sha256": "a8b07b6b9a6c3d970d10cba8ddf86fa6024b51ae6dd53cc8e58b138371dd1c7c",
+          "record_sha256": "9cf7e8baff39896b40c5646d6333493d7bb16dd7b858ad6e113dc85e806d31dd"
         }
       ]
     },
@@ -839,10 +1975,77 @@
           "timestamp": "2026-10-20T13:09:51.711190+00:00",
           "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
           "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
-          "previous_sha256": "b67fb815b24a59be61922fbdd2981fcdddc0283c4f32a26e8783a0c8c38a1e23",
-          "record_sha256": "8088dcd6dcf84342ba3d71bd6c6114af8ccc20d63f847cc41387b27f51e54e6d"
+          "previous_sha256": "2ec5cdac6c8ce48d4da00ca1c65af9035c32c05a19b360549537476ddc6358a6",
+          "supersedes_v1_record_sha256": "8088dcd6dcf84342ba3d71bd6c6114af8ccc20d63f847cc41387b27f51e54e6d",
+          "evidence_contract_version": 2,
+          "source_commit": "542a6bbd5ee3ba8849a461f044bba4e06878693e",
+          "source_is_dirty": true,
+          "command": "python -m unittest discover -s services/agent-runtime/tests -p test_sprint_evidence.py",
+          "exit_code": 0,
+          "oracle": "Empty PASS and chain/artifact/result tampering negative tests pass; independent label scorer/complete actor audit not implemented",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/41303b4e6f8e-evidence-negative-tests.log",
+            "artifacts/final-sprint/sealed/9d960f402816-source-manifest.json"
+          ],
+          "artifact_sha256": [
+            "41303b4e6f8e453bec28da768393fcfe604adcd2555163220110b7e3c02a9df6",
+            "9d960f4028164c77e021abdc3e07bf99687f60901fc66bf4a9de60d3d9f6fbce"
+          ],
+          "limitations": [
+            "Supporting evidence only; does not close the original case execution level",
+            "Original uncommitted source snapshot identified by its manifest; source_commit is the original base commit"
+          ],
+          "record_sha256": "6dca20701b63b284f4168deafd68cd1cd7464553434f7dc482b293c6e56455c0"
+        },
+        {
+          "case_id": "AB20",
+          "execution_level": "证据工具定向单测",
+          "status": "PASS",
+          "assertions": [
+            "Evidence digest/required fields/artifact modification and manual PASS tampering detected",
+            "Retained bank five table fingerprints unchanged after live tests"
+          ],
+          "artifacts": [
+            {
+              "path": "artifacts/final-sprint/sealed/991fea93c978-agent-final-351.log",
+              "sha256": "991fea93c978d915f2fe938a287de3be2daaa54b011e5f93ab25ceea65d0e0c4"
+            },
+            {
+              "path": "artifacts/final-sprint/sealed/d8db50b70e84-retained-bank-final.json",
+              "sha256": "d8db50b70e8489197b02431ac3879174d3a8de148a7745f36dbfce7ff734fcfd"
+            },
+            {
+              "path": "artifacts/final-sprint/sealed/dcbec198ef35-source-manifest-final.json",
+              "sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe"
+            }
+          ],
+          "oracle_result": true,
+          "source_manifest_sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe",
+          "source_commit": "c7e194a43694094e41118cb6d25eaa5570c6ed36",
+          "command": "python -m unittest discover -s services/agent-runtime/tests -v; read-only PG fingerprint comparison",
+          "exit_code": 0,
+          "oracle": "可发现受保护字段修改与证据缺失；事件贯穿task/step/intent/receipt；无原始密钥和cookie",
+          "artifact_paths": [
+            "artifacts/final-sprint/sealed/991fea93c978-agent-final-351.log",
+            "artifacts/final-sprint/sealed/d8db50b70e84-retained-bank-final.json",
+            "artifacts/final-sprint/sealed/dcbec198ef35-source-manifest-final.json"
+          ],
+          "artifact_sha256": [
+            "991fea93c978d915f2fe938a287de3be2daaa54b011e5f93ab25ceea65d0e0c4",
+            "d8db50b70e8489197b02431ac3879174d3a8de148a7745f36dbfce7ff734fcfd",
+            "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe"
+          ],
+          "limitations": [
+            "No external signing or complete actor/tenant compliance audit"
+          ],
+          "timestamp": "2026-10-21T01:27:23.812861+00:00",
+          "config_fingerprint": "95bc32dfac8383c90a4631a962e0aa8b80fb066916b7ec0988920257c8c73b80",
+          "benchmark_source_sha256": "3293bacacd66d502a360e17612134e770de8ef47e312d3442f0309887b4bef50",
+          "previous_sha256": "9cf7e8baff39896b40c5646d6333493d7bb16dd7b858ad6e113dc85e806d31dd",
+          "record_sha256": "cd4c20cbd4cbb2e59e85fa575b4a3941a636c41adb0a908f670e3938cb62e85b"
         }
       ]
     }
-  ]
+  ],
+  "evidence_contract_version": 2
 }

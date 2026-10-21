@@ -1,46 +1,71 @@
-# 48-Hour Final Sprint — 当前交付与验收结论
+# 48-Hour Final Sprint — 最终交付与验收
 
-2026-10-20。工作目录 `D:\BankProject-AGUI-20261012`。基线 `542a6bbd5ee3ba8849a461f044bba4e06878693e`。没有覆盖原项目、改变冻结 Customer API、修改历史 Flyway 或引入第二套金融执行链。
+更新：2026-10-21。仅修改 `D:\BankProject-AGUI-20261012`，未覆盖 `D:\BankProject`。基线 `542a6bbd5ee3ba8849a461f044bba4e06878693e`；部署应用提交 `c7e194a43694094e41118cb6d25eaa5570c6ed36`。后续测试、证据、启动器及文档修改单独记录，不冒称修改了运行应用。没有改冻结 Customer API、Flyway 或金融执行架构。
 
-## 独立状态
+## 独立结论
 
-| Gate              | 状态    | 原因                                                                                                            |
-| ----------------- | ------- | --------------------------------------------------------------------------------------------------------------- |
-| CODE_COMPLETE     | PARTIAL | 逐步骤授权、精确回执绑定、受限串行多 Agent、前端角色事件和证据工具已实现；完整评分器/审计及复杂多转账修订未完成 |
-| TEST_VERIFIED     | PARTIAL | Agent/PG补验/定向Web通过；全量Web、类型检查/完整构建、真实Spring资金故障及浏览器尚未闭环                        |
-| LIVE_E2E_VERIFIED | PARTIAL | 新源码只读模型/native API与旧镜像MCP联测分别通过；新镜像浏览器联合验收未执行                                    |
-| DEMO_READY        | NO      | 新源码未部署，P0真实资金/旧确认/故障验收仍缺证据；多 Agent flag保持关闭                                         |
-| PRODUCTION_READY  | NO      | 不以比赛演示代替认证、安全、合规、性能与运营验收                                                                |
+| Gate              | 状态    | 原因                                                                                                                 |
+| ----------------- | ------- | -------------------------------------------------------------------------------------------------------------------- |
+| CODE_COMPLETE     | PARTIAL | 逐步骤授权、回执绑定、真实只读子 Agent 和前端角色状态已实现；缓存、独立评分器、完整审计及复杂多转账修订尚未完成      |
+| TEST_VERIFIED     | PARTIAL | Agent、专用 PostgreSQL 补验、Web、类型检查、构建及合约通过；原始 AB20 项中仅5项完整关闭                              |
+| LIVE_E2E_VERIFIED | PARTIAL | 最新镜像、真实模型连续转账/修订、MCP/RAG、浏览器角色展示及恢复取消已验证；完整双标签、各动作故障及全部攻击路径未闭环 |
+| DEMO_READY        | NO      | 完整平台不作通过承诺；可演示已验证的只读及独立确认子集，不能把它等同完整比赛验收                                     |
+| PRODUCTION_READY  | NO      | 缺少完整安全、恢复、审计、性能和运营证据                                                                             |
 
-S1/R1 仍为 PARTIAL，不随本次只读成功自动关闭。
+S1、R1 独立保持 PARTIAL。原始 AB01–AB20：**5 PASS、11 PARTIAL、3 BLOCKED、1 NOT_RUN**。这不是用户请求成功率，也不是100题基准通过率。
 
-## 已完成
+## 实际交付
 
-- Sprint0 冻结原始 AB01–AB20 规格，审计基线、运行镜像和资源。
-- Sprint1 修复整句多金额误拒绝及同类回执按顺序归属；用户来源片段→条款→银行意图→执行键→回执精确绑定。金额否决与独立确认保留。
-- Sprint2 保留既有 UX4.7 上下文分类、可信服务目录、只读覆盖语义；补齐绑定旧金额的修订校验。没有新增关键词路由。真实部署 MCP/RAG 三个pilot工具已联通并返回文档版本/段落。
-- Sprint3 在现有 Runtime/Ledger 下增加可选 Supervisor + 两个独立只读模型循环，串行、限额、租约/CAS检查点、身份继承、禁止金融与递归工具。AG-UI/现有 CopilotKit 展示真实角色状态并支持恢复。
-- Sprint4 补验此前跳过的10项真实 PG 状态测试，修复缺回执虚假执行标记及无权威查询的申请不确定重放，生成证据矩阵和本地摘要链。
-- Sprint5 执行现有启动体系部署预检，因资源门槛拒绝构建/部署；没有把旧镜像重启当作交付新版。
+- 将来源片段、Ledger step、金额/收款人/账户、银行不可变条款、intent、execution key、receipt 精确关联；模型提案不能自证授权。
+- 保留数值否决、权限、独立确认、二次验证和银行幂等；旧意图取消后不复活。缺回执或不可核验结果保持 UNKNOWN/PARTIAL。
+- 可选 Supervisor + Financial Analyst + Bank Knowledge：两个独立模型/工具/观察循环，串行、限额、持久预算；子 Agent 无 PREPARE/execute/递归权限。恢复标识包含 Ledger 观察代次和分析范围，避免重放陈旧结果。
+- 现有 AG-UI/CopilotKit 显示真实角色状态；不展示模型隐藏推理。主环境当前 `MULTI_AGENT_ENABLED=0`，实验开关未默认开放。原50个银行工具不变，开关开启额外暴露2个内部只读委派入口。
+- MCP/RAG 实际返回政策版本、来源段落和真实账户事实。不是只连通 Health。
+
+## 已部署与保护
+
+Web 镜像 `sha256:4bf56d07371b3e1f3979e171aeac911ac6acde55ebc54ce1a1ad87b5c7e7be45`。
+
+Agent 镜像 `sha256:abdd9bb0c1bf5fbaa4e15bc5c29d954f0a37b4c8a4486fc839a9b2dccf64a275`。
+
+43个 Agent 应用 Python 文件逐一匹配宿主源码。Web/Agent 的源树标签、原镜像及其他服务版本见 [脱敏汇总](verification-summary.json)。Spring/PostgreSQL/Knowledge/Proxy 保持兼容版本，无本轮业务迁移。
+
+正式演示环境 `aster-acceptance-20261012` 已恢复：Web、Agent、Spring、PostgreSQL、Knowledge、Proxy 六项健康。访问 <http://127.0.0.1:18088/app/agent-copilot> 或 Legacy `/app/agent`。受保护五表数量与 SHA256 在前后完全相同（账户8、交易69、转账4、转账意图15、卡意图3）。
+
+真实金融测试只在一次性 `aster-final-sprint-20261020` 中运行；该环境已停止，卷保留。没有删卷、修改分页/代理/DNS/安全策略或终止无关用户应用。主环境和一次性重负载栈串行运行。
 
 ## 验证结果
 
-Agent：349运行、339通过、10跳过；这10项另在专用真实 PostgreSQL 10/10通过、0跳过。PG适配的金融银行是脚本实现，不当作真实 Spring 资金验收。
+- Agent **351运行，341通过，10环境跳过**；这10项另在专用真实 PostgreSQL **10/10通过、0跳过**。后者银行适配器是脚本实现，单独标识。
+- Web **47文件、524项通过**，同源指纹、单worker、逐文件分批完成；不是一次连续全套运行。4文件14项定向测试另有记录。
+- Typecheck 在1024 MiB限制下通过；原512 MiB耗尽日志保留。Docker Next生产构建通过。全量 Web ESLint、启动器离线测试、合约描述lint及freeze/hash audit均通过；原Windows工具退出断言保留，复测exit0。根目录Prettier全量检查仍有10个本轮未改文件的历史格式警告；当前交付文件格式通过，未顺带重排历史报告/脚本，因此不将根目录整套lint写成全绿。
+- 不变的 Spring 源码保留历史211 unit/426 integration记录，本轮未把它写成新跑全套。真实银行资金测试另外核对SQL最终状态。
 
-Web：4个定向文件14项通过；相关文件 ESLint 通过。全量 TypeScript 在512 MiB heap限制下耗尽，未完成类型判定；没有盲目提升内存继续。OpenAPI描述校验显示有效，但 Redocly 进程结束触发 Windows `UV_HANDLE_CLOSING` 断言、退出非零；合约摘要 audit 通过，完整 contract:check 不能据此写为 PASS。
+### 真实 DeepSeek 与资金证据
 
-真实新源码只读 DeepSeek：单/多最终都 SUCCEEDED；多 Agent 46.29 s、16请求，单 Agent18.18 s、6请求，未体现延迟或token优势。第一次未委派、规划结构无效、第二次知识子任务/恢复失败均保留。最终只读探针先于最后金融回执防护修改；逐文件探针清单与当前源码清单分开保留，不能宣称最后金融修改已做真实模型资金验收。
+最后金融复测 **20次HTTP200，244547输入/4580输出token**，无隐藏推理输出。模型实际名称沿trace保留；token不是货币成本估算。
 
-旧镜像 MCP 联测：list_accounts、list_cards、search_bank_knowledge均成功，真实MCP HTTP200及政策引用返回，9.31 s。银行账户、交易、转账、转账意图、卡意图内容摘要完全不变。
+- “张三100、李四200”：真实模型选择工具，原任务完成两次独立授权/确认，数据库准确减少300、两方分别增加100/200、两笔借记。18.30秒。
+- “100改成200”：真实模型修订；旧银行意图CANCELLED，旧授权在Runtime及Spring均拒绝，未执行新意图，余额不变。13.07秒。
+- AB02篡改条款拒绝；AB04同键不同条款拒绝；AB08乱序/重复回执归属通过。
+- AB06：真实Spring提交后，由HTTP故障transport丢弃响应；先UNKNOWN，再从PG新建Runtime恢复原intent/auth/key和同一回执，仅一次扣款。此处是进程内HTTP故障注入与Runtime替换，**不是宿主机OS强杀**。
 
-详见 `authorization-fix.md`、`multi-agent-design.md`、`reliability-security.md`、`benchmark-results.md` 和脱敏 `verification-summary.json`。
+AB01仍PARTIAL：第一笔真实PREPARE零扣款；当前Runtime确认第一笔后才准备第二笔，不满足原“零总扣款时两笔均PREPARE”oracle。连续两笔执行PASS不替代这个差异。
 
-## 尚未完成 / 不可混报
+### 浏览器证据
 
-完整AB用例0/20关闭：10 BLOCKED、9 PARTIAL、1 NOT_RUN。缺最新源码镜像、真实可抛弃 Spring 资金故障环境、浏览器双标签/刷新、真实恶意模型载荷、多客户联合访问、独立标注评分器、完整审计actor链与缓存验收。本轮没有新浏览器截图，不拿旧截图充当证据。
+真实安装 Edge 155.0.4283.62、Playwright、单context，未关闭浏览器安全。最新页面显示两个独立只读角色完成及政策引用。AB12实际重建Agent容器后恢复同task/intent；页面取消后银行CANCELLED、旧确认409、数据库不变，PASS。
 
-最新资源预检明确未满足含知识服务4 GiB物理/提交余量。物理空闲约5–7 GiB不能代表提交余量充足；测得提交余量曾降至558 MiB。保持旧服务，未修改分页配置、删除卷或终止其他用户应用。Spring、Knowledge、数据库、代理本轮源码未变，未无理由启动全量高负载套件。
+AB05为PARTIAL：打开两个真实验证对话框并尝试提交，但浏览器驱动超时，代理只收到一次confirm。数据库只有一次效果；无法证明真实并发请求及两页最终相同回执。长暂停后的角色刷新还遇到银行会话过期，不能记为角色恢复通过。完整UX01–UX16本轮没有重新全跑。
 
-## 下一次允许推进的条件
+## 失败记录与阻塞
 
-先恢复提交内存余量或获得独立测试机授权，再通过既有 start 体系增量构建 Web/Agent、验证源文件指纹；在可抛弃 Spring/PostgreSQL 和单worker浏览器中按原AB规格完成P0资金及旧确认/故障验收。P0未通过前不开放新增金融路径。多 Agent 仍为flag实验，完成后再人工决定是否启用。本轮停止，不进入新框架、SFT或新金融模块。
+最初提交内存不足、依赖下载超时、代理短暂502、模型ConnectError、AB12测试响应包装假设错误和AB05浏览器超时均保留。模型连接后来在**同一原有获准路径**恢复，金融复测20次200；不能继续将它描述为余额不足或仍被审批拒绝。此前历史policy拒绝记录不删除，本轮未绕过。
+
+AB03缺浏览器修改链路，AB07缺各类动作独立故障矩阵，AB10缺提交后断线刷新完整联合证据。多客户组合泄漏、真实模型恶意载荷、全量统计/图表联合oracle、完整评分器/外部审计与缓存仍未完整验收。复杂多笔局部修改可能保守拒绝；中文口语金额未纳入数字片段覆盖。界面仍有普通Markdown文本及空工具消息气泡。
+
+## 复核与交接
+
+查看 [AB矩阵](benchmark-results.md)、[授权修复](authorization-fix.md)、[多Agent设计](multi-agent-design.md)、[可靠性/安全](reliability-security.md)、[启动和回滚](demo-guide.md)。执行 `python scripts/final-sprint-evidence.py verify` 校验41条证据关联、原始oracle、产物SHA256及本地摘要链。封存产物在本机ignored `artifacts/final-sprint/sealed/`，交接原始证据需同时交付，缺文件应报错。
+
+本次到此停止，不自动扩大金融权限、开放实验入口或进入SFT。后续优先关闭AB01预期差异和AB03/05/07/10，再处理低优先级缓存、评分和完整审计。

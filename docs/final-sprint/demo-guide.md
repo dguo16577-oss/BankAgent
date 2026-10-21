@@ -1,46 +1,54 @@
-# 受控演示与复测
+# 受控演示、启动与回滚
 
-本 Sprint **DEMO_READY = NO**。当前18088仍为旧镜像，不能用它演示或宣称新多 Agent/逐步骤授权已经部署。原项目 `D:\BankProject` 不动。
+更新2026-10-21。完整平台 **DEMO_READY = NO**；最新应用已经部署，并有可演示的已验证子集。原项目 `D:\BankProject` 未改。
 
-## 保留的启动体系
+## 当前运行
 
-使用根目录 `START-README.md`、`start.cmd`、`start.ps1`，不启动第二套进程管理器。先执行：
+主项目 `aster-acceptance-20261012` 六项健康，<http://127.0.0.1:18088/>、`/app/agent-copilot`、`/app/agent` 可访问。Web镜像4bf56d07、Agent镜像abdd9bb0，完整ID见 `verification-summary.json`；43个Agent源文件已比对。正式环境当前multi-agent默认关闭，RAG/MCP开启。一次性金融测试项目已停止，数据卷仍在。
+
+复用根目录 `START-README.md`、`start.cmd`、`start.ps1`：
 
 ```powershell
+& .\start.ps1 status -ProjectName aster-acceptance-20261012
 & .\start.ps1 check -ProjectName aster-acceptance-20261012 -Port 18088 -WithKnowledge
+& .\start.ps1 restart -ProjectName aster-acceptance-20261012 -Port 18088 -WithKnowledge -NoBuild
 ```
 
-当前返回 RESOURCE_BLOCKED：含知识服务需要物理和提交内存均满足4 GiB余量。本轮没有删卷、修改分页文件、停止其他用户进程或关闭安全保护。
-
-只有资源与验收条件满足后，使用原脚本增量更新：
+`-NoBuild`用于重启已经构建验证的镜像，不会部署后续源码。以后更新源码使用原增量模式：
 
 ```powershell
 & .\start.ps1 restart -ProjectName aster-acceptance-20261012 -Port 18088 -WithKnowledge -Services 'agent-runtime,web'
 ```
 
-不要加 `-NoBuild` 来冒充部署新代码。`MULTI_AGENT_ENABLED` 默认0，保持关闭；明确在隔离环境复验新源码后才临时设为1测试。Spring、PostgreSQL、Knowledge 和代理本轮无必须重建的源码改动，保留其现有兼容版本。记录新容器实际镜像ID与源码逐文件指纹，不能只检查 health。
+只在满足资源门槛后构建。含Knowledge需要物理可用和提交余量均至少4GiB。首轮资源拒绝、依赖超时和后来成功都保留；没有改分页或代理。启动器现对代理reload后短暂502做最多6次有界公开GET探针，不重试金融提交。离线启动测试及真实恢复均已验证。
 
-## 演示候选用例（不是已完成的浏览器验收）
+## 演示范围
 
-| ID     | 输入/操作                        | 判定                                 |
-| ------ | -------------------------------- | ------------------------------------ |
-| Demo01 | 查询账户余额及储蓄政策并引用来源 | 子 Agent 独立循环、事实与知识分开    |
-| Demo02 | 按类别统计本月消费               | 金额对账、工具事实生成图表           |
-| Demo03 | 查询上个月消费，再改饼图         | 新查询与纯展示区别、无多余金融意图   |
-| Demo04 | 我想转账                         | 可信页面、协助选择；不 PREPARE       |
-| Demo05 | 给张三转100元，再给李四转200元   | 精确两步条款，各自独立确认           |
-| Demo06 | 把刚才的100改成600               | 旧银行意图取消、旧确认不可复用       |
-| Demo07 | 卡片锁定后查询异常               | 确认后继续原目标、金融状态与分析分开 |
-| Demo08 | 已授权代扣/检测到订阅对比        | 预测不当作银行授权；无第三方取消声明 |
-| Demo09 | 提交后响应丢失、再恢复           | 银行最终状态与同一回执，无重复效果   |
-| Demo10 | 恶意备注/知识要求转钱或假网址    | 不产生资金授权/外部导航；DB对账      |
+| 输入/操作                      | 已有证据                                           | 尚缺                                            |
+| ------------------------------ | -------------------------------------------------- | ----------------------------------------------- |
+| 查询活期可用余额和灵活储蓄政策 | 最新页面、真实MCP、两个实际只读角色、版本/段落引用 | flag默认0；完整角色刷新恢复仍需补验             |
+| 张三100、李四200               | 真实模型+Spring/PG两次独立授权确认，准确扣款入账   | 零总扣款时同时两笔PREPARE不支持，原AB01部分完成 |
+| 把100改成200                   | 真实模型/API旧意图取消、旧grant拒绝、余额不变      | 同浏览器修改链路                                |
+| 提交后响应丢失再恢复           | 真实银行提交、HTTP故障注入、PG恢复同回执一次扣款   | 其他动作/宿主机强杀矩阵                         |
+| 待确认时重启Agent并取消        | 真实浏览器恢复同task/intent，银行取消后旧确认409   | 不能推广为提交后刷新或全部金融动作              |
+| 两标签同时确认                 | 一次实际扣款及回执保留                             | 仅一个请求到达，双页最终同结果未证明            |
 
-只有 Demo01 的真实新源码只读 API 对照已验证；上述浏览器组合本轮未执行。资金演示只能使用可抛弃的隔离客户和数据库，不能借用当前保留演示库做破坏性测试。
+消费、理财、卡片、订阅等既有能力保留，不将本次351/524源码回归当成六域最新浏览器全量验收。恶意备注/RAG真实模型攻击并未在本轮全部执行。
 
-## 源码低负载复测
+金融演示只用一次性客户和数据库，不在保留演示库运行破坏性资金测试。接受Agent协助、PREPARE、独立用户确认仍是不同操作。知识结果不能授权资金执行。
 
-`scripts/final-sprint-postgres-tests.py` 在现有隔离 PostgreSQL 中创建专用 Agent State 测试数据库，保留结果，不删除卷。`scripts/final-sprint-live-readonly.py` 使用原获准模型连接和容器 Secret 做只读 native 银行/RAG 对照，密钥不输出；不替代新镜像浏览器测试。两者都有768 MiB提交余量门槛，仅适用于低负载探针，不能替代启动/构建4 GiB门槛。
+## 可重复测试入口
+
+- `scripts/final-sprint-web-tests.py`：单worker逐文件、同指纹可续跑，47文件524项；不是一次连续suite。仅终止自己创建且超时的测试进程。
+- `scripts/final-sprint-postgres-tests.py`：专用Agent状态DB与10项恢复补验；脚本银行，不当真实扣款。
+- `scripts/final-sprint-financial-tests.py`：只接受 `aster-final-sprint-20261020`，检查正式Spring已停止，调用真实Spring/PG/DeepSeek并核对SQL。会在一次性库产生测试扣款。`--skip-model`明确标记模型阻塞，固定Planner不记模型PASS。调用前人工确认当前一次性环境，不在主环境运行。
+- `scripts/final-sprint-browser-fixture.py`：仅为浏览器fixture；scope检查后准备真实小额银行意图、不执行；不是产品关键词路由或LLM评测。
+- `scripts/final-sprint-evidence.py verify`：验证证据与封存产物，缺失失败。
+
+Secret从现有本机配置/容器读取，不打印Cookie、验证码、密钥或隐藏推理。真实模型失败时保留原始记录；不能切代理/DNS绕过审批。
 
 ## 回滚
 
-当前未部署，服务无需回滚。原镜像ID保存在 `verification-summary.json`。以后更新时先给旧镜像保留回滚标签、保存当前 Compose 配置；若新版本失败，恢复旧环境配置和旧镜像，再用既有启动脚本重建对应服务。禁止 `down -v`。旧检查点若缺乏新增授权绑定，不临时关闭校验以恢复确认；人工核实后取消并重新准备。
+旧镜像保留为 `aster-web:rollback-final-sprint-20261020` 与 `aster-agent-runtime:rollback-final-sprint-20261020`，原配置/镜像ID在本地 `deployment-baseline.json`。只有确认需要回滚时，将对应旧镜像重新标为Compose原标签，再用上述现有启动器 `restart -NoBuild -Services 'web,agent-runtime'`，保持同ProjectName/端口/Knowledge配置。当前版本健康，无需执行回滚。
+
+不得 `down -v` 或删除卷。旧checkpoint若缺授权绑定，不关闭校验恢复确认，应核实后取消并重新准备。S1/R1仍独立PARTIAL。

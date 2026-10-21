@@ -17,11 +17,14 @@ class EvidenceTests(unittest.TestCase):
     def run_record(self):
         return {"case_id": "AB01", "execution_level": "UNIT", "status": "PASS", "assertions": ["zero debit"],
                 "artifacts": [{"path": "proof.log", "sha256": evidence.sha(b"proof")}],
-                "oracle_result": True, "source_manifest_sha256": "source"}
+                "oracle_result": True, "source_manifest_sha256": "source",
+                "source_commit": "0" * 40, "command": "unit test", "exit_code": 0, "oracle": "fixture zero debit",
+                "artifact_paths": ["proof.log"], "artifact_sha256": [evidence.sha(b"proof")], "limitations": ["unit only"]}
 
     def test_empty_labels_and_missing_oracle_never_pass(self):
         for key, value in [("assertions", []), ("assertions", [""]), ("artifacts", []), ("oracle_result", False),
-                           ("source_manifest_sha256", ""), ("execution_level", "")]:
+                           ("source_manifest_sha256", ""), ("execution_level", ""), ("exit_code", 1),
+                           ("command", ""), ("source_commit", ""), ("artifact_paths", [])]:
             record = self.run_record(); record[key] = value
             with self.assertRaises(ValueError):
                 evidence.validate_run(record)
@@ -36,6 +39,17 @@ class EvidenceTests(unittest.TestCase):
             (root / "proof.log").write_bytes(b"changed")
             with self.assertRaises(ValueError):
                 evidence.verify(matrix, chain, root)
+
+    def test_partial_and_policy_block_are_not_pass(self):
+        matrix = self.sample(); chain = []
+        record = self.run_record()
+        record.update(execution_level="LIVE", status="PARTIAL", oracle_result=False)
+        evidence.append(matrix, chain, record)
+        self.assertEqual(matrix["cases"][0]["status"], "PARTIAL")
+        record.update(status="POLICY_BLOCKED", exit_code=None)
+        evidence.append(matrix, chain, record)
+        self.assertEqual(matrix["cases"][0]["status"], "BLOCKED")
+        self.assertEqual(chain[-1]["status"], "POLICY_BLOCKED")
 
     def test_tampering_and_manual_case_pass_are_detected(self):
         matrix = self.sample(); chain = []

@@ -169,8 +169,19 @@ if ($Command -in @('start', 'restart')) {
     & docker exec "$ProjectName-reverse-proxy-1" nginx -s reload
     if ($LASTEXITCODE -ne 0) { throw 'Proxy DNS refresh failed after incremental deployment.' }
   }
-  $response = Invoke-WebRequest -UseBasicParsing -Uri "http://127.0.0.1:$Port/" -TimeoutSec 15
-  if ($response.StatusCode -ne 200) { throw "Web returned HTTP $($response.StatusCode)." }
+  # nginx reload can leave a brief old-upstream response while the replacement
+  # containers are already healthy. Retry only this safe public GET, bounded.
+  for ($webProbeAttempt = 1; $webProbeAttempt -le 6; $webProbeAttempt++) {
+    try {
+      $webReadyResponse = Invoke-WebRequest -UseBasicParsing -Uri "http://127.0.0.1:$Port/" -TimeoutSec 15
+      if ($webReadyResponse.StatusCode -ne 200) { throw "Web returned HTTP $($webReadyResponse.StatusCode)." }
+      break
+    } catch {
+      if ($webProbeAttempt -eq 6) { throw }
+      Write-Host "Waiting for proxy upstream refresh ($webProbeAttempt/6)..."
+      Start-Sleep -Milliseconds 1000
+    }
+  }
   Write-Host "Ready: http://127.0.0.1:$Port/"
   Invoke-Compose -Arguments @('ps')
 }

@@ -1,9 +1,11 @@
 {
-  "source_manifest_sha256": "9d960f4028164c77e021abdc3e07bf99687f60901fc66bf4a9de60d3d9f6fbce",
+  "source_manifest_sha256": "dcbec198ef354eb1ec43141f46d3ff0cf50ef0cf6ce529322bf1b5afb67f4dbe",
   "agent_suite": {
-    "run": 349,
-    "passed": 339,
-    "skipped": 10
+    "run": 351,
+    "passed": 341,
+    "skipped": 10,
+    "log": "artifacts/final-sprint/agent-final-351.log",
+    "skip_resolution": "Same 10 PostgreSQL tests separately passed against dedicated real PG, 0 skipped; scripted bank adapter"
   },
   "postgres_recovery": {
     "run": 10,
@@ -1142,7 +1144,51 @@
       "sha256": "380216c1d4c0e52e523f55c86c53a7cc6002c7c4b880a1876fc92f19941ddc2c"
     }
   },
-  "deployment_images": [
+  "limits": [
+    "AB01 original two PREPARE with zero total debit oracle remains partial; serial confirmation gate pauses after first",
+    "AB03 original browser modification route still missing despite real-model/API revision PASS",
+    "AB05 complete double-tab race and same-receipt display not proved",
+    "AB07 per-action financial recovery matrix, AB10 refresh-after-execute, full malicious-model payload/multi-customer/scoring/audit/cache incomplete",
+    "No global Supervisor+child billing cap; child budgets bounded separately",
+    "Complex multi-transfer partial amendment may conservatively reject; Chinese word amounts not covered by digit guard",
+    "S1/R1 independently PARTIAL; not production readiness",
+    "Root prettier check has ten unchanged pre-existing format warnings; unrelated historical reports/script not reformatted"
+  ],
+  "updated_at": "2026-10-21T01:28:03.313822+00:00",
+  "source_commit": "c7e194a43694094e41118cb6d25eaa5570c6ed36",
+  "web_serial_batches": {
+    "files": 47,
+    "expected_files": 47,
+    "passed": 524,
+    "failed_files": [],
+    "source_fingerprint": "2288fb8c1fe56d9f80565a749b2926bc8f82bd48e08be43e666e87cfc56df019",
+    "workers": 1,
+    "one_continuous_suite": false
+  },
+  "checks": {
+    "contract_lint_exit": 0,
+    "contract_audit_exit": 0,
+    "typecheck": "PASS at 1024 MiB; prior 512 MiB OOM retained",
+    "docker_next_production_build": "PASS",
+    "targeted_eslint": "PASS",
+    "launcher_offline": "PASS",
+    "unchanged_spring_source": "Historical 211 unit/426 integration results retained, not rerun as a fresh full suite",
+    "repository_hygiene": {
+      "tracked_files": 1308,
+      "failures": 0
+    },
+    "secret_audit": {
+      "files": 1308,
+      "findings": 0
+    },
+    "contract_hash_tests": {
+      "passed": 3,
+      "failed": 0
+    },
+    "web_full_eslint": "PASS, zero warnings",
+    "repository_format_check": "FAIL: ten pre-existing unchanged files after formatting current summary; see format-check-final.log"
+  },
+  "deployment_previous_images": [
     {
       "Name": "/aster-acceptance-20261012-knowledge-service-1",
       "ImageId": "sha256:322dcfd89b351ecdebffb914e4ac1e458ab96aa0b521e96372a962007a5c20bb",
@@ -1191,11 +1237,187 @@
       "Flags": []
     }
   ],
-  "limits": [
-    "No latest-image deployment",
-    "No new browser acceptance",
-    "No disposable Spring financial-fault stack",
-    "Typecheck 512 MiB heap exhausted",
-    "Redocly schemas valid but Windows uv_handle close assertion exits nonzero"
-  ]
+  "deployment_current": [
+    {
+      "service": "web",
+      "image_id": "sha256:4bf56d07371b3e1f3979e171aeac911ac6acde55ebc54ce1a1ad87b5c7e7be45",
+      "health": "healthy",
+      "source_label": "e74e4304b7f3b63a03a46449fdb8751abcc57a3cf52d3ab80b1de338ee817695",
+      "flags": []
+    },
+    {
+      "service": "agent-runtime",
+      "image_id": "sha256:abdd9bb0c1bf5fbaa4e15bc5c29d954f0a37b4c8a4486fc839a9b2dccf64a275",
+      "health": "healthy",
+      "source_label": "a68e7cae8ad111c1e41d763b4d6b3899e73abb16ae88286dda25da9cf17c9b7e",
+      "flags": [
+        "ASTER_MCP_ENABLED=1",
+        "MULTI_AGENT_ENABLED=0",
+        "AGENT_RUNTIME_VERSION=v2"
+      ]
+    },
+    {
+      "service": "banking-core",
+      "image_id": "sha256:6353f69f5fc1d2b9b4b07c0f86892fc987d76196b57ef539f45051fa7e6e8362",
+      "health": "healthy",
+      "source_label": null,
+      "flags": []
+    },
+    {
+      "service": "postgres",
+      "image_id": "sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24",
+      "health": "healthy",
+      "source_label": null,
+      "flags": []
+    },
+    {
+      "service": "knowledge-service",
+      "image_id": "sha256:322dcfd89b351ecdebffb914e4ac1e458ab96aa0b521e96372a962007a5c20bb",
+      "health": "healthy",
+      "source_label": null,
+      "flags": []
+    },
+    {
+      "service": "reverse-proxy",
+      "image_id": "sha256:ffa3a085cf966f677ae767dddd8fc1ce46bacdba1b5040c3a107bfbb0b203b7e",
+      "health": "healthy",
+      "source_label": null,
+      "flags": []
+    }
+  ],
+  "deployment_source_parity": {
+    "source_commit": "c7e194a43694094e41118cb6d25eaa5570c6ed36",
+    "agent_files": 43,
+    "matches": true,
+    "missing_or_changed": []
+  },
+  "retained_bank_final": {
+    "bank_unchanged": true,
+    "before": {
+      "accounts": {
+        "count": 8,
+        "sha256": "26863bcf20304040657c9e5defb06ec15c6e3a1d12f0d51133953e5188bccaa9"
+      },
+      "transactions": {
+        "count": 69,
+        "sha256": "e86a7f0db0241e8f39b0e7a045a42c9331bd19f73cf654b1992a6a891e63a37a"
+      },
+      "transfers": {
+        "count": 4,
+        "sha256": "6d5ecfe36e0b3a0f322ff39b9a96468873ffbc35c4948c961b529367a5167a67"
+      },
+      "transfer_intents": {
+        "count": 15,
+        "sha256": "85853b5a650b8980da0ec37ba03dacbe103e1b482764319783e12a7679ce6752"
+      },
+      "card_action_intents": {
+        "count": 3,
+        "sha256": "380216c1d4c0e52e523f55c86c53a7cc6002c7c4b880a1876fc92f19941ddc2c"
+      }
+    },
+    "after": {
+      "accounts": {
+        "count": 8,
+        "sha256": "26863bcf20304040657c9e5defb06ec15c6e3a1d12f0d51133953e5188bccaa9"
+      },
+      "transactions": {
+        "count": 69,
+        "sha256": "e86a7f0db0241e8f39b0e7a045a42c9331bd19f73cf654b1992a6a891e63a37a"
+      },
+      "transfers": {
+        "count": 4,
+        "sha256": "6d5ecfe36e0b3a0f322ff39b9a96468873ffbc35c4948c961b529367a5167a67"
+      },
+      "transfer_intents": {
+        "count": 15,
+        "sha256": "85853b5a650b8980da0ec37ba03dacbe103e1b482764319783e12a7679ce6752"
+      },
+      "card_action_intents": {
+        "count": 3,
+        "sha256": "380216c1d4c0e52e523f55c86c53a7cc6002c7c4b880a1876fc92f19941ddc2c"
+      }
+    },
+    "test_scope": "Retained project; financial tests targeted only separate disposable project"
+  },
+  "disposable_financial_live": {
+    "project": "aster-final-sprint-20261020",
+    "bank": "Actual deployed compatible Spring/PostgreSQL",
+    "real_model_requests": 20,
+    "http_statuses": [
+      200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200,
+      200, 200, 200, 200, 200
+    ],
+    "prompt_tokens": 244547,
+    "completion_tokens": 4580,
+    "cases": [
+      {
+        "case_id": "AB01",
+        "status": "PARTIAL",
+        "elapsed_seconds": 9.9
+      },
+      {
+        "case_id": "AB02",
+        "status": "PASS",
+        "elapsed_seconds": 0.65
+      },
+      {
+        "case_id": "SEQUENTIAL-REAL-MODEL",
+        "status": "PASS",
+        "elapsed_seconds": 18.3
+      },
+      {
+        "case_id": "AB08",
+        "status": "PASS",
+        "elapsed_seconds": 0.02
+      },
+      {
+        "case_id": "AB04",
+        "status": "PASS",
+        "elapsed_seconds": 0.13
+      },
+      {
+        "case_id": "AB06",
+        "status": "PASS",
+        "elapsed_seconds": 1.19
+      },
+      {
+        "case_id": "REVISION-API",
+        "status": "PASS",
+        "elapsed_seconds": 13.07
+      }
+    ],
+    "no_retained_bank_mutation": true,
+    "sandbox_stopped_volume_retained": true,
+    "provider": "DeepSeek",
+    "actual_model_names": ["deepseek-flash"]
+  },
+  "browser": {
+    "engine": "Installed Edge 155.0.4283.62, Playwright, one context; no browser safety disabled",
+    "actual_new_image_readonly_multi": "PASS; both roles SUCCEEDED and current policy citations",
+    "ab12": "PASS; actual Agent container recreation, same task/intent, cancellation, stale confirm 409, unchanged DB",
+    "ab05": "PARTIAL; one confirmed financial effect; only one confirmation reached server; both final pages not verified",
+    "limitations": [
+      "No complete UX01-UX16 browser rerun",
+      "Browser SSE response collection did not retain raw chunks; server decisions/checkpoints and visible UI retained",
+      "Refresh after long pause hit expired bank session; role restoration not newly proved by that attempt",
+      "Plain Markdown and empty tool-call message bubbles remain visible UI limitations"
+    ]
+  },
+  "failure_history": [
+    "Commit headroom below guard; no settings modified",
+    "Initial Web dependency socket timeout; bounded same-registry build retry passed",
+    "Transient proxy 502 after reload; bounded public GET readiness retry fixed launcher",
+    "First financial DeepSeek ConnectError; deterministic fallback explicitly separate; later same approved path real-model run passed 20 HTTP requests",
+    "AB12 initial wrapper assumption failed; retained raw response mapped correctly without changing oracle",
+    "AB05 persistent browser driver timeout; no concurrency PASS inferred"
+  ],
+  "gates": {
+    "CODE_COMPLETE": "PARTIAL",
+    "TEST_VERIFIED": "PARTIAL",
+    "LIVE_E2E_VERIFIED": "PARTIAL",
+    "DEMO_READY": "NO (full platform); verified controlled subset only",
+    "PRODUCTION_READY": "NO",
+    "S1": "PARTIAL",
+    "R1": "PARTIAL"
+  }
 }
