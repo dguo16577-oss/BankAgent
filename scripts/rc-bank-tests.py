@@ -103,11 +103,35 @@ async def rc_main():
                 await other.get('/customer/session')
                 v=await other.post('/customer/auth/login',json={'email':'lin@aster.local','password':'demo-password'},headers={'X-XSRF-TOKEN':other.cookies.get('XSRF-TOKEN','')});v.raise_for_status()
                 other_cookie='; '.join(f'{k}={v}' for k,v in other.cookies.items())
+                alice_identity=await gateway.customer_get('/customer/session',cookie)
+                bob_identity=await gateway.customer_get('/customer/session',other_cookie)
+                results=await asyncio.gather(gateway.customer_get('/customer/accounts',cookie),gateway.customer_get('/customer/accounts',other_cookie))
+                owner_ids=[{a['id'] for a in r['accounts']} for r in results]
+                assert owner_ids[0] and owner_ids[1] and not owner_ids[0]&owner_ids[1]
+                from app.agent_v2.models import Task
+                from app.agent_v2.runtime import session_binding
+                from app.agent_v2.multi_agent import SupervisorRegistry
+                child_tasks=[Task(customer_id=identity['user']['id'],session_binding=session_binding(ck),goal='查询余额',
+                    ledger=[{'step_id':'g1','goal':'查询余额','kind':'READ','evidence_tools':['list_accounts'],'dependencies':[],'status':'PENDING'}])
+                    for identity,ck in [(alice_identity,cookie),(bob_identity,other_cookie)]]
+                class ReadChild:
+                    async def decide(self,ctx):
+                        if not ctx['observations']:return PlannerDecision(type='TOOL_CALL',tool_call={'tool_name':'list_accounts','arguments':{}})
+                        return PlannerDecision(type='COMPLETE',final_message='已核对账户数据。')
+                registry=SupervisorRegistry(gateway,save_task=lambda _:None,specialist_factory=lambda _:ReadChild())
+                delegated=await asyncio.gather(*[registry.call('delegate_financial_analysis',{'step_id':'g1','delegated_goal':'查询余额'},t,ck)
+                    for t,ck in zip(child_tasks,[cookie,other_cookie])])
+                assert all(o.success for o in delegated)
+                for index,t in enumerate(child_tasks):
+                    observed={a['id'] for o in t.observations for a in o.structured_result.get('accounts',[])}
+                    assert observed==owner_ids[index] and not observed&owner_ids[1-index]
                 try:await runtime.confirm(r.task_id,ConfirmRequest(intent_id=intent['id'],intent_hash=intent['intentHash'],action_authorization_id=auth),other_cookie)
                 except BankingApiError as exc:assert exc.status==404;rejects.append({'code':exc.code,'status':exc.status})
                 else:raise AssertionError('Cross-customer task accepted')
             assert no_money_change(before,snapshot());await runtime.cancel(r.task_id,cookie)
-            return {'assertions':['Foreign intent/hash and customer cannot borrow original authorization','No bank debit or transfer'],'rejections':rejects,'task_id':r.task_id}
+            return {'assertions':['Foreign intent/hash and customer cannot borrow original authorization','Concurrent trusted child scopes contain only own bank account IDs','No bank debit or transfer'],'rejections':rejects,'task_id':r.task_id,
+                'customer_scope_comparison':{'customers_different':alice_identity['user']['id']!=bob_identity['user']['id'],'account_sets_disjoint':True,'owned_account_counts':[len(s) for s in owner_ids]},
+                'ma07_planner_kind':'DETERMINISTIC_CHILD_TEST_FIXTURE_REAL_SPRING'}
         async def errors(before):
             observations=[]
             class ErrorPlanner:
