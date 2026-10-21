@@ -42,9 +42,9 @@ class TaskHistoryService:
                 entry["receipt_id"] = receipt_id
                 if action.get("kind") == "TRANSFER":
                     try:
-                        record = await self.runtime.gateway.customer_get(
+                        record = await self.runtime.gateway.customer_get_optional(
                             f"/customer/transfers/{receipt_id}", cookie)
-                        if record.get("id") == receipt_id:
+                        if record and record.get("id") == receipt_id:
                             entry.update(verification="VERIFIED_BANK_RECORD",
                                          bank_status=record.get("status"))
                     except BankingApiError:

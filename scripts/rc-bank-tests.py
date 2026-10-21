@@ -14,7 +14,7 @@ from datetime import datetime, timezone
 ROOT = Path(__file__).resolve().parents[1]
 PROJECT = "aster-final-sprint-20261020"
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument("--case", choices=["lease", "scopes", "errors", "regression", "all"], default="all")
+parser.add_argument("--case", choices=["lease", "scopes", "errors", "staging", "regression", "all"], default="all")
 options = parser.parse_args()
 for service in ("agent-runtime", "banking-core", "postgres"):
     label = subprocess.check_output(["docker", "inspect", f"{PROJECT}-{service}-1", "--format",
@@ -149,6 +149,35 @@ async def rc_main():
                 if mode=='INVALID':assert r.error_code=='MODEL_INVALID_OUTPUT'
             assert no_money_change(before,snapshot()) and snapshot()['intents']==before['intents']
             return {'assertions':['Controlled provider/timeout/invalid decisions not reported succeeded','No bank mutation; errors persisted in actual PostgreSQL'],'outcomes':observations,'limitation':'Provider faults deterministic; not real DeepSeek error responses'}
+        async def staging(before):
+            class Staged(TwoTransferPlanner):
+                async def decide(self,ctx):
+                    remaining=[s for s in ctx['state']['task_ledger'] if s['status'] not in {'SUCCEEDED','CANCELLED'}]
+                    index=0 if remaining[0]['step_id']=='g1' else 1
+                    observations=ctx['observations'];name='张三' if index==0 else '李四'
+                    if not any(o['tool_name']=='list_accounts' for o in observations):tool,args='list_accounts',{}
+                    elif not any(o['tool_name']=='resolve_recipient' and o['structured_result'].get('query_reference')==name for o in observations):tool,args='resolve_recipient',{'query':name}
+                    else:tool,args='prepare_transfer',{'source_account_id':'acc_current','recipient_id':'recipient_zhang' if index==0 else 'recipient_li','amount':'100.00' if index==0 else '200.00','currency':'CNY'}
+                    return PlannerDecision(type='TOOL_CALL',tool_call={'tool_name':tool,'arguments':args,**({'step_id':remaining[0]['step_id']} if tool=='prepare_transfer' else {})})
+            gateway=BankingGateway()
+            runtime=AgentRuntimeV2(gateway,Staged(GOAL),state_store=PostgresTaskStore())
+            first=await runtime.chat(GOAL,cookie);old=first.confirmation
+            assert len(first.financial_plan)==2 and old['amount']['amount']=='100.00'
+            second=await runtime.cancel(first.task_id,cookie,action_intent_id=old['id'])
+            assert second.confirmation['amount']['amount']=='200.00' and second.confirmation['id']!=old['id']
+            original=await gateway.customer_get('/customer/transfer-intents/'+old['id'],cookie)
+            assert original['status']=='CANCELLED'
+            try:await runtime.confirm(first.task_id,ConfirmRequest(intent_id=old['id'],intent_hash=old['intentHash']),cookie)
+            except BankingApiError as exc:assert exc.status==409
+            else:raise AssertionError('Cancelled first confirmation accepted')
+            assert no_money_change(before,snapshot())
+            result={'task_id':first.task_id,'first_plan':[x.model_dump(mode='json') for x in first.financial_plan],
+                    'second_plan':[x.model_dump(mode='json') for x in second.financial_plan],
+                    'old_bank_status':original['status'],'trace':trace(runtime,first.task_id),
+                    'oracle_variant':'USER_APPROVED_SAFE_STAGING; not simultaneous prepare; deterministic planner not real DeepSeek'}
+            await runtime.cancel(first.task_id,cookie)
+            return result
+        if CASE in {'staging','all'}:await case('AB01-STAGING',staging)
         if CASE in {'lease','all'}:await case('AB09',lease)
         if CASE in {'scopes','all'}:await case('AB03-AUTH-SCOPE',scopes)
         if CASE in {'errors','all'}:await case('AB11-PROVIDER',errors)

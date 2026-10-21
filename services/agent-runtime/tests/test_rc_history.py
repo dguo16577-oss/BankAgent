@@ -15,9 +15,13 @@ class HistoryBank:
         if path=='/customer/session':
             if cookie not in {'SESSION=alice','SESSION=bob'}:raise BankingAuthenticationError()
             return {'authenticated':True,'user':{'id':cookie.split('=')[1]}}
+        raise AssertionError('No mutation or arbitrary endpoint allowed')
+
+    async def customer_get_optional(self,path,cookie):
+        self.calls.append((path,cookie))
         if path=='/customer/transfers/transfer_one':
             return {'id':'transfer_one','status':'COMPLETED','amount':{'amount':'10.00','currency':'CNY'}}
-        raise AssertionError('No mutation or arbitrary endpoint allowed')
+        raise AssertionError('Receipt path outside the optional GET allowlist')
 
 
 class HistoryStore:
