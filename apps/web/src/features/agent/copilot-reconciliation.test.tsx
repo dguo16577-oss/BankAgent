@@ -1,6 +1,10 @@
 import { afterEach, expect, it, vi } from "vitest";
 import { act, render, screen } from "@testing-library/react";
-import { PendingAction, TaskProgressCard } from "./copilot-workspace";
+import {
+  PendingAction,
+  TaskProgressCard,
+  recoveredStateFromTask,
+} from "./copilot-workspace";
 import { parseAgentMessage } from "./agent-contract";
 
 vi.mock("@copilotkit/react-core/v2", () => ({
@@ -113,6 +117,34 @@ it("restores a receipt after refresh from the authenticated owned task only", as
     `/api/agent/tasks/${taskId}`,
     expect.objectContaining({ cache: "no-store" }),
   );
+});
+
+it("keeps the completed count through the actual recovery state mapping", async () => {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn().mockResolvedValue(new Response(JSON.stringify(completed))),
+  );
+  const recovered = recoveredStateFromTask({
+    taskId,
+    status: "SUCCEEDED",
+    completedActionCount: 1,
+    failedActionCount: 0,
+  });
+  render(<TaskProgressCard state={recovered} bankResult={undefined} />);
+  expect(await screen.findByText("transfer_one")).toBeInTheDocument();
+});
+
+it("rejects invalid recovered counters and unvalidated role metadata", () => {
+  const result = recoveredStateFromTask({
+    taskId,
+    status: "RUNNING",
+    completedActionCount: -1,
+    failedActionCount: Number.NaN,
+    delegations: [{ agentRole: "attacker", status: "SUCCEEDED" }],
+  });
+  expect(result.completedActionCount).toBe(0);
+  expect(result.failedActionCount).toBe(0);
+  expect(result.delegations).toEqual([]);
 });
 
 it("does not consume a different task result and stops polling on unmount", async () => {

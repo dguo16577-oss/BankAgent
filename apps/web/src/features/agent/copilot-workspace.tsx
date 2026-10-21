@@ -678,6 +678,26 @@ function KnowledgeSources({
   );
 }
 
+export function recoveredStateFromTask(task: Record<string, unknown>) {
+  const count = (value: unknown) =>
+    typeof value === "number" && Number.isInteger(value) && value >= 0
+      ? value
+      : 0;
+  return {
+    taskId: task.taskId,
+    status: task.status,
+    resultCards: Array.isArray(task.resultCards) ? task.resultCards : [],
+    presentation: Array.isArray(task.presentation) ? task.presentation : [],
+    completedActionCount: count(task.completedActionCount),
+    failedActionCount: count(task.failedActionCount),
+    delegations: Array.isArray(task.delegations)
+      ? task.delegations
+          .map(parseDelegation)
+          .filter((row): row is DelegationStep => row !== undefined)
+      : [],
+  };
+}
+
 function AgentConversation({ threadId }: { threadId: string }) {
   const { agent, isReady } = useAgent({
     agentId: "aster-conversation",
@@ -844,18 +864,11 @@ function AgentConversation({ threadId }: { threadId: string }) {
             });
             setRecoveredMessages(messages);
           }
-          setRecoveredState({
-            taskId: task.taskId,
-            status: task.status,
-            resultCards:
-              "resultCards" in task && Array.isArray(task.resultCards)
-                ? task.resultCards
-                : [],
-            presentation:
-              "presentation" in task && Array.isArray(task.presentation)
-                ? task.presentation
-                : [],
-          });
+          const recovered = recoveredStateFromTask(
+            task as Record<string, unknown>,
+          );
+          setRecoveredState(recovered);
+          setDelegations(recovered.delegations);
           sessionStorage.removeItem(recoveryKey);
         } else if (newerTranscript) {
           sessionStorage.removeItem(recoveryKey);

@@ -37,6 +37,34 @@ class PaymentRequiredPlanner:
 
 
 class R1CompletenessTests(unittest.IsolatedAsyncioTestCase):
+    async def test_each_nontransfer_executed_without_receipt_stops_without_mutation(self):
+        from app.agent_v2.models import Task, Status
+        from app.agent_v2.runtime import session_binding
+        from app.task_models import ConfirmRequest
+        class ExecutedBank(CancellableBank):
+            def __init__(self):
+                super().__init__(); self.read_paths = []
+            async def customer_get(self, path, cookie, **kwargs):
+                if path == "/customer/session":
+                    return await super().customer_get(path, cookie, **kwargs)
+                self.read_paths.append(path)
+                return {"id": "intent-a", "intentHash": "hash-a", "status": "EXECUTED"}
+        for kind in ["SCHEDULE", "SPLIT", "RECURRING_STOP", "RENEWAL_REMINDER", "CARD_ACTION",
+                     "INVESTMENT_PURCHASE", "INVESTMENT_REDEMPTION"]:
+            with self.subTest(kind=kind):
+                bank = ExecutedBank(); runtime = AgentRuntimeV2(bank, object())
+                task = Task(customer_id="alice", session_binding=session_binding("SESSION=alice"),
+                    goal="recover", status=Status.WAITING_AUTH, execution_uncertain=True,
+                    active_intent_kind=kind, active_intent={"id": "intent-a", "intentHash": "hash-a", "status": "PREPARED"})
+                runtime.tasks[task.task_id] = task
+                result = await runtime.confirm(task.task_id, ConfirmRequest(intent_id="intent-a", intent_hash="hash-a"), "SESSION=alice")
+                self.assertEqual(result.error_code, "BANKING_RESULT_UNKNOWN")
+                self.assertEqual(result.status.value, "PARTIAL")
+                self.assertEqual(bank.debits, 0)
+                self.assertEqual(len(bank.read_paths), 1)
+                self.assertEqual(task.completed_actions, [])
+                self.assertIsNone(task.receipt)
+
     async def test_incomplete_bank_receipt_remains_unknown_not_executed(self):
         from test_agent_v2 import SequencePlanner
         from app.task_models import ConfirmRequest
