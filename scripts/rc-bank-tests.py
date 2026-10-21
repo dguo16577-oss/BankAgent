@@ -14,7 +14,7 @@ from datetime import datetime, timezone
 ROOT = Path(__file__).resolve().parents[1]
 PROJECT = "aster-final-sprint-20261020"
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument("--case", choices=["lease", "scopes", "errors", "all"], default="all")
+parser.add_argument("--case", choices=["lease", "scopes", "errors", "regression", "all"], default="all")
 options = parser.parse_args()
 for service in ("agent-runtime", "banking-core", "postgres"):
     label = subprocess.check_output(["docker", "inspect", f"{PROJECT}-{service}-1", "--format",
@@ -155,7 +155,12 @@ async def rc_main():
     print(json.dumps({'cases':results,'project':'aster-final-sprint-20261020','planner_kind':'DETERMINISTIC_TEST_FIXTURE','model_requests':0},ensure_ascii=False))
 asyncio.run(rc_main())
 '''
-PROGRAM = "CASE=" + repr(options.case) + "\n" + PROGRAM
+if options.case == "regression":
+    # Run the original deterministic real-bank oracles on the new deployed
+    # runtime, while retaining old artifacts and explicitly skipping the model.
+    PROGRAM = embedded.replace("SKIP_MODEL=False", "SKIP_MODEL=True")
+else:
+    PROGRAM = "CASE=" + repr(options.case) + "\n" + PROGRAM
 run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S")
 result = subprocess.run(["docker", "exec", "-i", PROJECT + "-agent-runtime-1", "python", "-"],
                         input=PROGRAM, text=True, capture_output=True, encoding="utf-8", timeout=180)
@@ -169,8 +174,9 @@ metadata = {"source_commit": subprocess.check_output(["git", "rev-parse", "HEAD"
 failed = True
 if result.returncode == 0 and result.stdout.strip():
     evidence = json.loads(result.stdout.strip().splitlines()[-1])
-    failed = any(c["status"] != "PASS" for c in evidence["cases"])
-    print(json.dumps([{k:c[k] for k in ('case_id','status','elapsed_seconds')} for c in evidence['cases']]))
+    required = [c for c in evidence['cases'] if c['case_id'] not in {'AB01','REVISION-API','SEQUENTIAL-REAL-MODEL'}] if options.case == 'regression' else evidence['cases']
+    failed = not required or any(c["status"] != "PASS" for c in required)
+    print(json.dumps([{k:c.get(k) for k in ('case_id','status','elapsed_seconds')} for c in evidence['cases']]))
 metadata['exit_code'] = 1 if failed else 0
 (out / f"bank-{run_id}-run.json").write_text(json.dumps(metadata,indent=2)+'\n',encoding="utf-8")
 raise SystemExit(metadata['exit_code'])

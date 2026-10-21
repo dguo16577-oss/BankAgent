@@ -33,18 +33,19 @@
 
 ## 命令及参数
 
-| 参数/命令                  | 实际行为                                                     |
-| -------------------------- | ------------------------------------------------------------ |
-| `start`                    | 串行构建并启动，等待健康检查                                 |
-| `restart`                  | 重建并重新创建同一项目服务，保留数据库卷                     |
-| `check`                    | 检查资源、Docker、配置和密钥，不启动服务                     |
-| `status` / `logs` / `stop` | 查看容器、最近 80 行日志、停止指定项目；不依赖密钥文件       |
-| `-NoBuild`                 | 使用已有镜像；不会加载尚未构建的源码修改                     |
-| `-Recreate`                | 使用 start 时强制重建容器，可搭配 NoBuild                    |
-| `-ProjectName` / `-Port`   | 默认 aster-local / 8088；维护已有环境使用原项目名和端口      |
-| `-KeyFile` / `-EnvFile`    | 指定外部密钥文件及本机配置文件                               |
-| `-Services`                | 逗号分隔字符串，仅接受 web、agent-runtime、knowledge-service |
-| `-WithKnowledge`           | 加载知识服务 overlay，开启 MCP，导入已审核 Demo Policy       |
+| 参数/命令                  | 实际行为                                                                                         |
+| -------------------------- | ------------------------------------------------------------------------------------------------ |
+| `start`                    | 串行构建并启动，等待健康检查                                                                     |
+| `restart`                  | 重建并重新创建同一项目服务，保留数据库卷                                                         |
+| `check`                    | 检查资源、Docker、配置和密钥，不启动服务                                                         |
+| `status` / `logs` / `stop` | 查看容器、最近 80 行日志、停止指定项目；不依赖密钥文件                                           |
+| `-NoBuild`                 | 使用已有镜像；不会加载尚未构建的源码修改                                                         |
+| `-Recreate`                | 使用 start 时强制重建容器，可搭配 NoBuild                                                        |
+| `-ProjectName` / `-Port`   | 默认 aster-local / 8088；维护已有环境使用原项目名和端口                                          |
+| `-KeyFile` / `-EnvFile`    | 指定外部密钥文件及本机配置文件                                                                   |
+| `-Services`                | 逗号分隔字符串，仅接受 web、agent-runtime、knowledge-service                                     |
+| `-BuildOnly`               | 构建镜像后退出；用 Services 筛选组件；不启动、重建容器、导入知识或发送金融请求；不能搭配 NoBuild |
+| `-WithKnowledge`           | 加载知识服务 overlay，开启 MCP，导入已审核 Demo Policy                                           |
 
 不同 ProjectName 是不同数据环境。`stop` 保留卷；不要删除 PostgreSQL 卷。新源码部署去掉 `-NoBuild`。服务健康并不能证明源码最新，应核对运行镜像和源树指纹；镜像标签 `io.aster.source.sha256` 是源树哈希，不是 Git commit。
 
@@ -58,6 +59,16 @@
 ```
 
 增量模式使用 no-deps 并重载代理地址。knowledge-service 必须搭配 `-WithKnowledge`。可选 OTel 使用当前进程的 `ASTER_OTEL_ENABLED=1`；未保留环境变量的后续重启不会自动继承。
+
+本轮低负载构建可先通过原脚本停止本项目，再只构建必要组件；不会创建第二套启动机制：
+
+```powershell
+.\start.cmd start -BuildOnly -Services 'web' -ProjectName aster-acceptance-20261012 -Port 18088
+.\start.cmd start -BuildOnly -Services 'agent-runtime' -ProjectName aster-acceptance-20261012 -Port 18088
+.\start.cmd start -WithKnowledge -NoBuild -ProjectName aster-acceptance-20261012 -Port 18088
+```
+
+BuildOnly 使用既有构建资源检查；最后的完整 Knowledge 启动仍需4GiB物理及提交余量，不绕过保护。该模式离线启动器测试及本机Web/Agent真实构建通过。
 
 ## Knowledge / KG 配置
 
@@ -80,6 +91,8 @@
 ## 2026-10-21 Final Sprint 部署记录
 
 最新Web/Agent已完成增量构建与实际部署，主项目六项健康。Agent应用提交 `c7e194a`，43个Python文件逐一核对；完整镜像/源树指纹见 [最终验收](docs/final-sprint/final-acceptance.md)。当前 `MULTI_AGENT_ENABLED=0`，保留原实验开关语义。
+
+以上为历史Sprint记录。本轮Final RC已更新为Web应用 `0c1121b` / Agent应用 `5b9a9da`，主项目六项健康、43个Agent源文件一致，主库五表哈希不变。完整镜像ID、最新状态、模型ConnectError和可用回滚标签见 [RC总报告](docs/final-sprint/rc-final-report.md) 与 [演示及回滚](docs/final-sprint/rc-demo-guide.md)。RC、S1/R1仍PARTIAL，多Agent保持关闭，不能将历史成功写为本轮全部通过。
 
 代理增量reload后可能短暂返回旧upstream的502。启动器仅对公开首页GET做最多6次、每次15秒超时/间隔1秒的有界就绪重试，不自动重试金融提交。启动器离线测试与真实主项目恢复已通过。
 
