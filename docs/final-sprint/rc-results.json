@@ -3931,5 +3931,269 @@
       ]
     },
     "final_readonly_health_artifact": "artifacts/rc-closure/final-readonly-health.json"
+  },
+  "release_recovery_20261022": {
+    "baseline_commit": "58b67cb",
+    "application_commit": "0e3d6a5",
+    "main_environment_artifact": "artifacts/rc/environment-aster-acceptance-20261012-20261022T013425.json",
+    "services": [
+      {
+        "service": "web",
+        "image": "sha256:4e0e60587749a38af058ffe08113b0fd736e0b4d758827d8673f4d3306dc3684",
+        "image_created": "2026-10-22T01:13:24.913396323Z",
+        "source_tree": "cdc6666a7b1e7a509a93166b3b20fe73f28aab493f2aba80803e15267e06a426",
+        "health": "healthy",
+        "running": true,
+        "flags": []
+      },
+      {
+        "service": "agent-runtime",
+        "image": "sha256:96b904d031cee4feb5d16ffaa3b8f422d8e8f56a7831d9adf0e5301a1cfbfc86",
+        "image_created": "2026-10-22T01:33:35.147901851Z",
+        "source_tree": "dff6186f79706ba423af26b7b72a9c2ccfc4f297053e7568687992e63b8c15dd",
+        "health": "healthy",
+        "running": true,
+        "flags": [
+          "AGENT_RUNTIME_VERSION=v2",
+          "AGENT_STATE_ENABLED=1",
+          "ASTER_MCP_ENABLED=0",
+          "DEEPSEEK_REASONING_EFFORT=low",
+          "DEEPSEEK_THINKING_ENABLED=1",
+          "MULTI_AGENT_ENABLED=0"
+        ]
+      },
+      {
+        "service": "banking-core",
+        "image": "sha256:6353f69f5fc1d2b9b4b07c0f86892fc987d76196b57ef539f45051fa7e6e8362",
+        "image_created": "2026-10-13T11:05:28.689136396Z",
+        "source_tree": null,
+        "health": "healthy",
+        "running": true,
+        "flags": []
+      },
+      {
+        "service": "postgres",
+        "image": "sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24",
+        "image_created": "2026-09-17T21:31:32.987011508Z",
+        "source_tree": null,
+        "health": "healthy",
+        "running": true,
+        "flags": []
+      },
+      {
+        "service": "knowledge-service",
+        "image": "sha256:322dcfd89b351ecdebffb914e4ac1e458ab96aa0b521e96372a962007a5c20bb",
+        "image_created": "2026-10-20T01:32:01.993380294Z",
+        "source_tree": null,
+        "health": "unhealthy",
+        "running": false,
+        "flags": []
+      },
+      {
+        "service": "reverse-proxy",
+        "image": "sha256:ffa3a085cf966f677ae767dddd8fc1ce46bacdba1b5040c3a107bfbb0b203b7e",
+        "image_created": "2026-10-12T08:04:32.216919392Z",
+        "source_tree": null,
+        "health": "healthy",
+        "running": true,
+        "flags": []
+      }
+    ],
+    "agent_sources_equal": true,
+    "protected_five_tables_unchanged": true,
+    "model_authorization": "User explicitly no total call or monetary limit; existing bounded task limits unchanged; external 50/50 counter untouched",
+    "http_attempts": 41,
+    "http_200": 40,
+    "prompt_tokens": 598510,
+    "completion_tokens": 20680,
+    "monetary_cost": null,
+    "model_runs": [
+      {
+        "case_id": "MA03",
+        "mode": "single",
+        "raw_status": "FAIL",
+        "runtime_status": "FAILED",
+        "elapsed_seconds": 20.485,
+        "http_attempts": 5,
+        "http_successes": 5,
+        "calls_by_role": {
+          "supervisor": 5
+        },
+        "prompt_tokens": 76309,
+        "completion_tokens": 2786,
+        "parent_tool_calls": 3,
+        "child_tool_calls": 0,
+        "failed_attempts": [],
+        "artifact": "artifacts/release-recovery/model-round1/model-MA03-20261022T011535.jsonl",
+        "monetary_cost": null
+      },
+      {
+        "case_id": "MA03",
+        "mode": "multi",
+        "raw_status": "FAIL",
+        "runtime_status": "FAILED",
+        "elapsed_seconds": 53.358,
+        "http_attempts": 13,
+        "http_successes": 12,
+        "calls_by_role": {
+          "supervisor": 8,
+          "financial_analyst": 5
+        },
+        "prompt_tokens": 174607,
+        "completion_tokens": 5502,
+        "parent_tool_calls": 7,
+        "child_tool_calls": 2,
+        "failed_attempts": [
+          {
+            "agent_role": "financial_analyst",
+            "child_step_id": "g1",
+            "status": "FAILED",
+            "failure_reason": "SCHEMA_VALIDATION_FAILED",
+            "model_calls": 3
+          }
+        ],
+        "artifact": "artifacts/release-recovery/model-round1/model-MA03-20261022T011535.jsonl",
+        "monetary_cost": null
+      },
+      {
+        "case_id": "AB01",
+        "mode": "single",
+        "raw_status": "PASS",
+        "runtime_status": "WAITING_CONFIRMATION",
+        "elapsed_seconds": 11.568,
+        "http_attempts": 6,
+        "http_successes": 6,
+        "calls_by_role": {
+          "supervisor": 6
+        },
+        "prompt_tokens": 81942,
+        "completion_tokens": 1353,
+        "parent_tool_calls": 4,
+        "child_tool_calls": 0,
+        "failed_attempts": [],
+        "artifact": "artifacts/release-recovery/model-round2/model-AB01-20261022T011909.jsonl",
+        "monetary_cost": null
+      },
+      {
+        "case_id": "MA03",
+        "mode": "single",
+        "raw_status": "PASS",
+        "runtime_status": "WAITING_CONFIRMATION",
+        "elapsed_seconds": 15.094,
+        "http_attempts": 5,
+        "http_successes": 5,
+        "calls_by_role": {
+          "supervisor": 5
+        },
+        "prompt_tokens": 76585,
+        "completion_tokens": 2597,
+        "parent_tool_calls": 4,
+        "child_tool_calls": 0,
+        "failed_attempts": [],
+        "artifact": "artifacts/release-recovery/model-round2/model-MA03-20261022T011731.jsonl",
+        "monetary_cost": null,
+        "goal_level_assessment": "PASS",
+        "assessment_note": "Offline re-evaluation of unchanged captured evidence: all CURRENT ledger read goals completed; historical failed attempts retained. Not a new model run."
+      },
+      {
+        "case_id": "MA03",
+        "mode": "multi",
+        "raw_status": "FAIL",
+        "runtime_status": "WAITING_CONFIRMATION",
+        "elapsed_seconds": 47.395,
+        "http_attempts": 12,
+        "http_successes": 12,
+        "calls_by_role": {
+          "supervisor": 7,
+          "financial_analyst": 5
+        },
+        "prompt_tokens": 189067,
+        "completion_tokens": 8442,
+        "parent_tool_calls": 9,
+        "child_tool_calls": 3,
+        "failed_attempts": [
+          {
+            "agent_role": "financial_analyst",
+            "child_step_id": "g1",
+            "status": "FAILED",
+            "failure_reason": "SPECIALIST_TOOL_NOT_PERMITTED",
+            "model_calls": 2
+          }
+        ],
+        "artifact": "artifacts/release-recovery/model-round2/model-MA03-20261022T011731.jsonl",
+        "monetary_cost": null,
+        "goal_level_assessment": "PASS",
+        "assessment_note": "Offline re-evaluation of unchanged captured evidence: all CURRENT ledger read goals completed; historical failed attempts retained. Not a new model run."
+      }
+    ],
+    "tests": {
+      "agent_current": {
+        "total": 387,
+        "passed": 374,
+        "skipped": 13,
+        "artifact": "artifacts/release-recovery/agent-final-unknown-regression.log"
+      },
+      "postgres_state_current": {
+        "total": 13,
+        "passed": 13,
+        "skipped": 0,
+        "separate_isolated_database": true,
+        "artifact": "artifacts/release-recovery/pg-final-unknown/postgres-recovery.log"
+      },
+      "web_fixture_directed": {
+        "passed": 11,
+        "artifact": "artifacts/release-recovery/web-fixture-final.log"
+      },
+      "knowledge_offline_current": {
+        "total": 26,
+        "passed": 18,
+        "skipped": 8,
+        "not_embedding_or_http": "existing image dependencies + current source, CPU only; no model or DB DSN"
+      },
+      "typecheck": "PASS",
+      "changed_web_lint": "PASS",
+      "web_build": "PASS",
+      "agent_build": "PASS",
+      "contract_check": "PASS",
+      "web_previous_full_535": "RETAINED_NOT_RERUN",
+      "spring_previous_full": "RETAINED_NOT_RERUN_NO_SOURCE_API_FLYWAY_CHANGE"
+    },
+    "case_deltas": {
+      "AB01": "ORIGINAL_PARTIAL; REAL_MODEL_SAFE_STAGING_PASS",
+      "AB07": "PARTIAL; EXISTING_CARD_RECURRING_RECEIPT_GET_BUT_NO_INTENT_RECEIPT_LINK",
+      "AB10": "PARTIAL; BANK_LOSS_REAUTH_HISTORY_BROWSER_REFRESH_PASS; BROWSER_SSE_SUBMIT_POINT_NOT_RUN",
+      "MA03": "GOAL_LEVEL_PASS_WITH_FAILED_ATTEMPT_RETAINED; FULL_MULTI_GATE_PARTIAL",
+      "MA01": "RESOURCE_BLOCKED_CURRENT_KNOWLEDGE",
+      "MA06": "RESOURCE_BLOCKED_CURRENT_KNOWLEDGE"
+    },
+    "gates": {
+      "CODE_COMPLETE": "PARTIAL",
+      "DEPLOYED_LATEST": "PASS_CORE_WEB_AGENT_ONLY",
+      "LIVE_MODEL_VERIFIED": "PARTIAL",
+      "LIVE_E2E_VERIFIED": "PARTIAL",
+      "MULTI_AGENT_VERIFIED": "PARTIAL_NO_GO_DEFAULT_OFF",
+      "S1": "PARTIAL",
+      "R1": "PARTIAL",
+      "DEMO_READY": "CONDITIONAL_SUBSET_ONLY",
+      "PRODUCTION_READY": false
+    },
+    "evidence_manifest": "artifacts/release-recovery/evidence-manifest.json",
+    "evidence_manifest_sha256": "456bb3abaa71bc1d9f9522a2dfdd660d803caad53d8ca887ed20090f13d6904a",
+    "evidence_local_only": true,
+    "browser_evidence": "artifacts/release-recovery/browser-history-evidence.json",
+    "limitations": [
+      "No current online Knowledge/MCP tests under unmet 4GiB guard",
+      "Raw failed model assessments retained; separate unchanged-evidence goal-level rescore explicitly labelled",
+      "Not a browser SSE commit-point fault",
+      "No frozen contract, schema, original checkout or external reviewer scripts modified"
+    ],
+    "web_runtime_commit": "97b68b9",
+    "unknown_override_regression": {
+      "release_targeted": 9,
+      "history_targeted": 3,
+      "pass": true,
+      "deployed_agent_commit": "0e3d6a5",
+      "web_after_97b68b9_changes": "test fixtures only"
+    }
   }
 }

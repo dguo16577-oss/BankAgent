@@ -1,6 +1,6 @@
 # RC 基线与缺口矩阵
 
-> Final Closure更新：下表保留上一轮原始状态；最新增量及最终部署见文末和 [rc-final-closure.md](rc-final-closure.md)。主服务当前回滚为五项核心服务，Knowledge/MCP暂停。
+> Release Recovery 2026-10-22：旧表格保留历史，当前最新核心Web/Agent已部署；Knowledge/MCP仍暂停。最新增量见文末与 [release-recovery-report.md](release-recovery-report.md)。
 
 2026-10-21（UTC+08）。本轮总体 **PARTIAL**。原始基线16110e9；历史完整PASS为AB02/04/06/08/12，原记录不修改。本轮不是一次连续全量运行。
 
@@ -82,4 +82,22 @@
 
 ## 资源与部署
 
+以下段落为原先RC历史部署，不代表2026-10-22状态。
+
 已通过既有 start.ps1 恢复主项目18088，六项健康；43个Agent源码文件与运行镜像一致，五张主库业务表数量和哈希不变。隔离项目18089已停止、卷保留。未覆盖D:\BankProject，未修改分页文件/网络模式或停止无关进程。
+
+## Release Recovery — 2026-10-22 delta
+
+| Case / gate | Latest evidence and status |
+| --- | --- |
+| DEPLOYED_LATEST | 核心PASS：Agent0e3d6a5、Web运行代码97b68b9、新镜像运行，44 Agent文件一致；Knowledge停止。 |
+| AB01 | 原oracle PARTIAL；新增真实模型安全分阶段PASS，100/200目标保留、单笔取消、零扣款。 |
+| AB07 | PARTIAL：复核现有receipt GET存在，缺Intent→Receipt ID关联，不重提，不改冻结API。 |
+| AB10 | PARTIAL：真实银行原键恢复+浏览器新登录history/刷新/旧授权404/跨客户404通过；提交点SSE未齐。 |
+| AB14 | 原复合查询门禁仍PARTIAL；本轮新历史浏览器跨客户拒绝通过。 |
+| AB19 | PARTIAL：Fixture/CONFIRM解析自测通过；保留离线独立评分器，完整标签仍缺。 |
+| MA03 | 当前目标层可核实完成（10元PREPARE），raw多AgentFAIL因历史失败尝试判据；独立离线复核另记，原文件未改。完整多Agent门禁PARTIAL。 |
+| MA01 / MA06 | 本轮RESOURCE_BLOCKED：Knowledge未启；历史失败与对照保留，不再投入多Agent优化。 |
+| S1 / R1 | PARTIAL，分别按原冻结门禁判断。 |
+
+其他AB/MA案例未新增证据时保留先前状态，不因本轮部署或回执层通过而批量升级。

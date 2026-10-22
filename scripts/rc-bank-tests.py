@@ -14,7 +14,7 @@ from datetime import datetime, timezone
 ROOT = Path(__file__).resolve().parents[1]
 PROJECT = "aster-final-sprint-20261020"
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument("--case", choices=["lease", "scopes", "errors", "staging", "regression", "all"], default="all")
+parser.add_argument("--case", choices=["lease", "scopes", "errors", "staging", "history", "regression", "all"], default="all")
 options = parser.parse_args()
 for service in ("agent-runtime", "banking-core", "postgres"):
     label = subprocess.check_output(["docker", "inspect", f"{PROJECT}-{service}-1", "--format",
@@ -177,6 +177,39 @@ async def rc_main():
                     'oracle_variant':'USER_APPROVED_SAFE_STAGING; not simultaneous prepare; deterministic planner not real DeepSeek'}
             await runtime.cancel(first.task_id,cookie)
             return result
+        async def history(before):
+            from app.agent_v2.history import TaskHistoryService
+            proxy=LossProxy()
+            runtime=AgentRuntimeV2(BankingGateway(transport=proxy),FixedPlanner('给张三转1元'),state_store=PostgresTaskStore())
+            prepared=await runtime.chat('给张三转1元',cookie)
+            intent=prepared.confirmation;auth=await authorize(intent)
+            request=ConfirmRequest(intent_id=intent['id'],intent_hash=intent['intentHash'],action_authorization_id=auth)
+            lost=await runtime.confirm(prepared.task_id,request,cookie)
+            assert proxy.dropped and lost.error_code=='EXECUTION_OUTCOME_UNKNOWN'
+            recovered=await runtime.confirm(prepared.task_id,request,cookie)
+            assert recovered.receipt['id']==proxy.receipt_id and delta(before,snapshot(),'1.00',1)
+            after=snapshot()
+            new_cookie=await login('alex@aster.local')
+            reader=AgentRuntimeV2(BankingGateway(),object(),state_store=PostgresTaskStore())
+            service=TaskHistoryService(reader)
+            view=await service.get(prepared.task_id,new_cookie)
+            assert any(r.get('receipt_id')==proxy.receipt_id and r.get('verification')=='VERIFIED_BANK_RECORD' for r in view['receipts'])
+            assert view['read_only'] and not view['confirmation_required']
+            for operation in [reader.get(prepared.task_id,new_cookie),reader.confirm(prepared.task_id,request,new_cookie)]:
+                try:await operation
+                except BankingApiError as exc:assert exc.status==404
+                else:raise AssertionError('Old session authority migrated')
+            foreign_cookie=await login('lin@aster.local')
+            try:await service.get(prepared.task_id,foreign_cookie)
+            except BankingApiError as exc:assert exc.status==404
+            else:raise AssertionError('Cross-customer history leak')
+            assert snapshot()==after
+            await proxy.inner.aclose()
+            return {'task_id':prepared.task_id,'receipt_id':proxy.receipt_id,'history':view,
+                'post_commit_loss':True,'same_key_recovery':True,'new_session_old_operations_denied':True,
+                'foreign_history_denied':True,'database_after_recovery':after,
+                'limitation':'Deterministic Planner + real Spring/PG; bank response loss, not browser SSE fault. Browser read-only validation is separate.'}
+        if CASE in {'history','all'}:await case('AB10-HISTORY-BANK',history)
         if CASE in {'staging','all'}:await case('AB01-STAGING',staging)
         if CASE in {'lease','all'}:await case('AB09',lease)
         if CASE in {'scopes','all'}:await case('AB03-AUTH-SCOPE',scopes)

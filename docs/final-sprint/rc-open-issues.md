@@ -1,5 +1,23 @@
 # RC Final Closure — open issues
 
+## Release Recovery — current delta 2026-10-22
+
+最新结果见 [release-recovery-report.md](release-recovery-report.md)。以下原2026-10-21表格保留为历史，不能作为当前部署/网络状态。
+
+| Item | Current status |
+| --- | --- |
+| RC-NET / latest deployment | 原路径恢复，最新Web/Agent已实际部署，44文件一致、主库五表不变；旧“receipt修复未部署”阻塞已关闭。 |
+| R-03 semantic safety | 明确动作/对象冲突与显式回执矛盾否决通过；复杂自然语言覆盖不完整，PARTIAL。 |
+| Completeness/reply recovery | 相同争议有界停止、保留银行证据、答复摘要租约内保存、GET只读；未知状态优先PARTIAL、隐藏旧确认/当前回执；PG13/13通过。 |
+| RC-AB10 | 银行丢响应+原键恢复、新登录只读回执及浏览器刷新/隔离通过；真实浏览器提交点SSE故障仍PARTIAL。 |
+| RC-AB07 | 已有card/recurring不可变回执GET；缺已执行Intent到Receipt ID关联，不能恢复丢失的整个响应。仍安全UNKNOWN/PARTIAL，未修改冻结合同。 |
+| RC-KNOWLEDGE | 资源提交余量3166MiB未过4GiB门禁；当前MCP/RAG关闭，在线生成/攻击送达未验收。 |
+| RC-MA | MA03最终目标层可核实完成，但历史失败尝试保留，成本明显更高；MA01/06本轮受Knowledge条件阻塞，默认关闭。 |
+| Model authorization | 本轮用户明确无费用/调用上限；41次尝试/40次HTTP200，598510输入/20680输出Token；不变更另一副本计数器，不推算货币费用。 |
+| S1/R1 | 独立保持PARTIAL；未完成的RAG/MCP攻击、完整审计、SSE与非转账恢复仍是门禁。 |
+
+## Historical closure issues
+
 2026-10-21. Historical failures remain in `rc-results.json`; no frozen oracle was changed.
 
 | ID | Severity | Current evidence | Required closure |

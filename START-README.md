@@ -2,6 +2,12 @@
 
 入口为根目录 `start.cmd` → `start.ps1`。统一启动 Web、Agent v2、Spring、PostgreSQL 和代理；知识服务可选。Docker 后台运行，成功退出后不需保持 PowerShell 窗口打开，Docker Desktop 需保持运行。
 
+## 最新实际状态 — 2026-10-22
+
+`aster-acceptance-20261012` / 18088 已通过本启动器部署新Web运行代码 `97b68b9` 与Agent `0e3d6a5`（未知结果保护），五项核心服务健康，44个Agent源文件一致，演示库五表哈希不变。Knowledge因4GiB资源门禁未恢复，`ASTER_MCP_ENABLED=0`；多Agent保持0。下文旧六服务部署记录是历史，不代表当前在线RAG可用。
+
+日常恢复核心服务：`& .\start.cmd start -NoBuild -ProjectName aster-acceptance-20261012 -Port 18088`。NoBuild不会构建新源码；镜像ID/指纹、已验证功能、剩余S1/R1缺口及回滚见 [Release Recovery](docs/final-sprint/release-recovery-report.md) 与 [演示门禁](docs/final-sprint/final-demo-acceptance.md)。隔离资金测试项目已停止、数据卷保留。
+
 ## 首次准备
 
 1. 启动 Docker Desktop，等待引擎就绪。
