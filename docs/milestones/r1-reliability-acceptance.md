@@ -1,5 +1,9 @@
 # R1 Agent Runtime Reliability — acceptance record
 
+## Final Release Gate — 2026-10-22
+
+**R1 = PARTIAL。** 新增 SSE01–09 socket/API 故障证据，真实隔离 Spring/PG 三笔各1 CNY授权执行无重复扣款；当前源码PG恢复13/13。恢复GET隐藏银行已取消/过期/执行或不可核实的旧确认，保持只读、不伪造回执。未完成新版浏览器故障点、最新镜像部署及非转账不可变回执定位。两项目服务因提交内存门禁停止，不能沿用历史可用性。详见 [最终发布门禁](../final-sprint/final-release-gate.md)。以下历史证据不改写。
+
 ## RC Final Closure — 2026-10-21
 
 R1保持 **PARTIAL**。Agent全量371项（359通过/12缺隔离PG跳过），隔离PG随后12项0skip通过。新增只读重新认证历史保留旧session mutation绑定；真实浏览器发现回执查询网关错误，源码`6183c47`修正后3项定向通过，最终镜像构建因Registry连接超时阻塞。

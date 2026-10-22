@@ -1,5 +1,9 @@
 # Aster Bank 启动与维护
 
+## 最新运行状态 — Final Release Gate / 2026-10-22
+
+**当前主项目和隔离项目均停止，卷及旧镜像保留。** 本轮Agent修复提交`9577cf0`尚未部署：原启动器在Windows提交内存余量低于2GiB时拒绝构建/启动。Knowledge要求4GiB。不要降低门槛。资源足够后的恢复、Agent唯一增量构建、镜像/源码核对与回滚见 [Final demo runbook](docs/final-sprint/final-demo-runbook.md)。下方旧轮次的“已部署/健康”不代表当前状态。
+
 入口为根目录 `start.cmd` → `start.ps1`。统一启动 Web、Agent v2、Spring、PostgreSQL 和代理；知识服务可选。Docker 后台运行，成功退出后不需保持 PowerShell 窗口打开，Docker Desktop 需保持运行。
 
 ## 最新实际状态 — 2026-10-22

@@ -4195,5 +4195,265 @@
       "deployed_agent_commit": "0e3d6a5",
       "web_after_97b68b9_changes": "test fixtures only"
     }
+  },
+  "final_release_gate": {
+    "recorded_at": "2026-10-22T02:19:39.688712+00:00",
+    "baseline_commit": "8f920e5228d21e06712aa73c39684c085be691a9",
+    "source_fix_commit": "9577cf065b037d29d8e6d55c3a330b7ace45ec87",
+    "gates": {
+      "CODE_COMPLETE": "PARTIAL",
+      "DEPLOYED_LATEST": "ENVIRONMENT_BLOCKED",
+      "LIVE_E2E_VERIFIED": "PARTIAL",
+      "SSE_RECOVERY_VERIFIED": "PARTIAL",
+      "KNOWLEDGE_MCP_VERIFIED": "ENVIRONMENT_BLOCKED",
+      "MULTI_AGENT_VERIFIED": "PARTIAL_EXPERIMENTAL_OFF",
+      "S1": "PARTIAL",
+      "R1": "PARTIAL",
+      "DEMO_READY": "NO_SERVICES_STOPPED_RESOURCE_BLOCKED",
+      "PRODUCTION_READY": "NO"
+    },
+    "sse_cases": [
+      {
+        "case_id": "SSE01",
+        "socket_api_status": "PASS",
+        "full_acceptance_status": "PARTIAL",
+        "model_calls": 0,
+        "browser_status": "ENVIRONMENT_BLOCKED",
+        "transport": "REAL_SSE_SOCKET_CLOSE",
+        "evidence": "artifacts/final-release-gate/sse-20261022T021018.jsonl"
+      },
+      {
+        "case_id": "SSE02",
+        "socket_api_status": "PASS",
+        "full_acceptance_status": "PARTIAL",
+        "model_calls": 0,
+        "browser_status": "ENVIRONMENT_BLOCKED",
+        "transport": "ACTUAL_FINANCIAL_CONFIRM_JSON_NOT_SSE",
+        "evidence": "artifacts/final-release-gate/sse-20261022T021018.jsonl"
+      },
+      {
+        "case_id": "SSE03",
+        "socket_api_status": "PASS",
+        "full_acceptance_status": "PARTIAL",
+        "model_calls": 0,
+        "browser_status": "ENVIRONMENT_BLOCKED",
+        "transport": "ACTUAL_FINANCIAL_CONFIRM_JSON_NOT_SSE",
+        "evidence": "artifacts/final-release-gate/sse-20261022T021018.jsonl"
+      },
+      {
+        "case_id": "SSE04",
+        "socket_api_status": "PASS",
+        "full_acceptance_status": "PARTIAL",
+        "model_calls": 0,
+        "browser_status": "ENVIRONMENT_BLOCKED",
+        "transport": "ACTUAL_FINANCIAL_CONFIRM_JSON_NOT_SSE",
+        "evidence": "artifacts/final-release-gate/sse-20261022T021018.jsonl"
+      },
+      {
+        "case_id": "SSE05",
+        "socket_api_status": "PASS",
+        "full_acceptance_status": "PARTIAL",
+        "model_calls": 0,
+        "browser_status": "ENVIRONMENT_BLOCKED",
+        "transport": "REAL_SSE_SOCKET_CLOSE",
+        "evidence": "artifacts/final-release-gate/sse-20261022T021018.jsonl"
+      },
+      {
+        "case_id": "SSE06",
+        "socket_api_status": "PASS",
+        "full_acceptance_status": "PARTIAL",
+        "model_calls": 0,
+        "browser_status": "ENVIRONMENT_BLOCKED",
+        "transport": "OWNED_GET_AND_THREAD_STATE",
+        "evidence": "artifacts/final-release-gate/sse-20261022T021018.jsonl"
+      },
+      {
+        "case_id": "SSE07",
+        "socket_api_status": "PASS",
+        "full_acceptance_status": "PARTIAL",
+        "model_calls": 0,
+        "browser_status": "ENVIRONMENT_BLOCKED",
+        "transport": "READ_ONLY_REAUTH_HTTP",
+        "evidence": "artifacts/final-release-gate/sse-20261022T021018.jsonl"
+      },
+      {
+        "case_id": "SSE08",
+        "socket_api_status": "PASS",
+        "full_acceptance_status": "PARTIAL",
+        "model_calls": 0,
+        "browser_status": "ENVIRONMENT_BLOCKED",
+        "transport": "CROSS_CUSTOMER_HTTP",
+        "evidence": "artifacts/final-release-gate/sse-20261022T021018.jsonl"
+      },
+      {
+        "case_id": "SSE09",
+        "socket_api_status": "PASS",
+        "full_acceptance_status": "PARTIAL",
+        "model_calls": 0,
+        "browser_status": "ENVIRONMENT_BLOCKED",
+        "transport": "REAL_BANK_TERMINAL_STATE_AND_OWNED_RECOVERY_GET",
+        "evidence": "artifacts/final-release-gate/sse-20261022T021406.jsonl"
+      }
+    ],
+    "demo_cases": [
+      {
+        "case_id": "DEMO01",
+        "this_round_live_status": "ENVIRONMENT_BLOCKED",
+        "historical_evidence_preserved": true
+      },
+      {
+        "case_id": "DEMO02",
+        "this_round_live_status": "ENVIRONMENT_BLOCKED",
+        "historical_evidence_preserved": true
+      },
+      {
+        "case_id": "DEMO03",
+        "this_round_live_status": "ENVIRONMENT_BLOCKED",
+        "historical_evidence_preserved": true
+      },
+      {
+        "case_id": "DEMO04",
+        "this_round_live_status": "ENVIRONMENT_BLOCKED",
+        "historical_evidence_preserved": true
+      },
+      {
+        "case_id": "DEMO05",
+        "this_round_live_status": "ENVIRONMENT_BLOCKED",
+        "historical_evidence_preserved": true
+      },
+      {
+        "case_id": "DEMO06",
+        "this_round_live_status": "ENVIRONMENT_BLOCKED",
+        "historical_evidence_preserved": true
+      },
+      {
+        "case_id": "DEMO07",
+        "this_round_live_status": "ENVIRONMENT_BLOCKED",
+        "historical_evidence_preserved": true
+      },
+      {
+        "case_id": "DEMO08",
+        "this_round_live_status": "ENVIRONMENT_BLOCKED",
+        "historical_evidence_preserved": true
+      },
+      {
+        "case_id": "DEMO09",
+        "this_round_live_status": "ENVIRONMENT_BLOCKED",
+        "historical_evidence_preserved": true
+      },
+      {
+        "case_id": "DEMO10",
+        "this_round_live_status": "ENVIRONMENT_BLOCKED",
+        "historical_evidence_preserved": true
+      },
+      {
+        "case_id": "DEMO11",
+        "this_round_live_status": "ENVIRONMENT_BLOCKED",
+        "historical_evidence_preserved": true
+      },
+      {
+        "case_id": "DEMO12",
+        "this_round_live_status": "ENVIRONMENT_BLOCKED",
+        "historical_evidence_preserved": true
+      }
+    ],
+    "model_calls": 0,
+    "multi_agent_enabled": false,
+    "mcp_enabled": false,
+    "financial_effects": {
+      "project": "aster-final-sprint-20261020",
+      "authorized_transfers": 3,
+      "amount_each": "1.00",
+      "currency": "CNY",
+      "duplicate_effects": 0,
+      "retained_bank_mutations": 0
+    },
+    "test_results": {
+      "agent_full": {
+        "run": 389,
+        "passed": 376,
+        "skipped": 13,
+        "note": "Before final 3-line adapter summary fallback; final adapter focused suite below covers this last edit."
+      },
+      "final_agui": {
+        "run": 12,
+        "passed": 12
+      },
+      "final_review_methods": {
+        "run": 2,
+        "passed": 2
+      },
+      "postgres": {
+        "run": 13,
+        "passed": 13,
+        "skipped": 0
+      }
+    },
+    "evidence": [
+      {
+        "path": "artifacts/final-release-gate/agent-full.log",
+        "sha256": "d8f9914d7e5fe06536228a2850ff35d1d8528b85155ea261aef339fe72af2f9c"
+      },
+      {
+        "path": "artifacts/final-release-gate/agui-final.log",
+        "sha256": "b9c505132f279ba906f6c30e03c243ca5988e27a64358b7bbecad231d215c9a3"
+      },
+      {
+        "path": "artifacts/final-release-gate/review-before.log",
+        "sha256": "c4f893a81562a8639573baa4251ffa30a296860ec1d678bacbc3704e8ae3d0a4"
+      },
+      {
+        "path": "artifacts/final-release-gate/review-after.log",
+        "sha256": "78dfddecef8799468436643ba9b7cf4e275025c96624d74e0e0f39f6a78cfccb"
+      },
+      {
+        "path": "artifacts/final-release-gate/review-commit.log",
+        "sha256": "81225fc67c88007025590264d38a5891ccb175ff87985a30551c82ffc75bacfb"
+      },
+      {
+        "path": "artifacts/final-release-gate/agent-build.log",
+        "sha256": "7bbf9d73e867b1f4a30b187e49324cd6d3789d20968df62148ff99ee78c4a4a1"
+      },
+      {
+        "path": "artifacts/final-release-gate/final-environment.json",
+        "sha256": "40fb2623fad37c3300aaefa0040f3be8554bb5229ca7eb7dafdcc4a8b10a2dfc"
+      },
+      {
+        "path": "artifacts/final-release-gate/sse-20261022T021018.jsonl",
+        "sha256": "04b827d4e842e63aef48e495034975fcc52cf1a939e57875cbd49224ac5d0c32"
+      },
+      {
+        "path": "artifacts/final-release-gate/sse-20261022T021018-run.json",
+        "sha256": "88e00312a25901195eaba37aea42628731ab4236377ccfc3dca746ac24dc7cc0"
+      },
+      {
+        "path": "artifacts/final-release-gate/sse-20261022T021346-errors.log",
+        "sha256": "c95c498e9ab8c8f4c1f8ac2517bf409eea83f76f0750641c3e75954fdc4f78bc"
+      },
+      {
+        "path": "artifacts/final-release-gate/sse-20261022T021406.jsonl",
+        "sha256": "c335aec904ad34cdd9283d8c1aee82751420562a811a13019d48bc9e0b7e6fa6"
+      },
+      {
+        "path": "artifacts/final-release-gate/sse-20261022T021406-run.json",
+        "sha256": "1ba9d5bd31a5645a72520a2e6c84cdc4c0ca16524b68d3c23f9079322a94fe71"
+      },
+      {
+        "path": "artifacts/final-release-gate/pg/postgres-recovery.log",
+        "sha256": "eb92f4b79b11ecd37ba3ff0154be0b766d701a93fb668afa7296e75ead36cb09"
+      },
+      {
+        "path": "artifacts/final-release-gate/pg/postgres-recovery-evidence.jsonl",
+        "sha256": "947ac9ac6178677607be86fb3a8d524af89449bc69047f2ad54bc545bc8763f9"
+      }
+    ],
+    "limitations": [
+      "Current-source temporary-copy HTTP fixture is not the deployed image.",
+      "All new fault tests use deterministic Planner, no DeepSeek calls.",
+      "No new browser screenshot or live UI fault proof.",
+      "Production confirmation uses JSON HTTP; no financial execution SSE endpoint invented.",
+      "Retained bank hashes checked before stop; no fresh SQL hash claimed after its PG stopped.",
+      "Original launcher refused build below 2048 MiB commit; both project stacks currently stopped."
+    ]
   }
 }

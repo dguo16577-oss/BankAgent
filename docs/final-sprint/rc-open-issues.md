@@ -1,5 +1,13 @@
 # RC Final Closure — open issues
 
+## Final Release Gate — 2026-10-22 当前状态
+
+修复提交 `9577cf0`：恢复 GET 复核银行 Intent 状态/有效期并隐藏旧确认；成功答复摘要可恢复。真实 socket/API 的 SSE01–09 下层检查通过，含 3 笔隔离授权 1 CNY 转账且重复执行为零；13 项 PG 补验、12 项 AG-UI、2 项恢复测试通过。全部新故障测试使用确定性 Planner，不能当作 DeepSeek/浏览器通过。
+
+**最新部署 ENVIRONMENT_BLOCKED；当前主栈与隔离栈均停止，卷保留。** 原启动器在提交余量1283MiB时拒绝构建；释放本次 REPL 后1618MiB仍不足2048MiB。Agent旧镜像未更新。Knowledge/MCP因4GiB门禁关闭，多Agent实验关闭。无新增网络审批失败，历史记录保留。
+
+R1/S1独立PARTIAL：浏览器提交点恢复、非转账不可变回执定位、真实RAG/MCP攻击送达和完整审计未关闭。DEMO_READY当前NO，不沿用历史健康状态。详见 [Final Release Gate](final-release-gate.md)、[SSE逐项](final-sse-recovery.md)、[恢复与演示](final-demo-runbook.md)。以下均为此前记录。
+
 ## Release Recovery — current delta 2026-10-22
 
 最新结果见 [release-recovery-report.md](release-recovery-report.md)。以下原2026-10-21表格保留为历史，不能作为当前部署/网络状态。

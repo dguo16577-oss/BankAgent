@@ -1,5 +1,9 @@
 # S1 Security-First Architecture Audit & Hardening — acceptance
 
+## Final Release Gate — 2026-10-22
+
+**S1 = PARTIAL，与R1独立。** 本轮真实socket/银行/PG恢复检查保留客户归属、独立确认、原键幂等；跨客户history返回404、旧session无写权限迁移。没有新增金融执行通道或合同变化。新故障测试模型调用0，不能代替真实RAG/MCP恶意内容送达；Knowledge/MCP资源阻塞关闭，完整审计及线上攻击覆盖仍缺。无新增policy拒绝，历史拒绝记录保留。详见 [最终发布门禁](../final-sprint/final-release-gate.md)。以下历史证据不改写。
+
 ## RC Final Closure — 2026-10-21
 
 S1保持 **PARTIAL**，不随R1或Web测试自动升级。新增分阶段取消和只读重新认证历史没有放宽金融确认权限；原session绑定、银行对象归属、确认幂等和只读子Agent硬allowlist继续生效。Web535通过，Agent全量371项（359通过/12环境skip），隔离PG12项全通过；这些不能代替未完成的真实RAG/MCP注入送达和审计门禁。
