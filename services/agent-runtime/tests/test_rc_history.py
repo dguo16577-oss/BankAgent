@@ -63,6 +63,8 @@ class HistoryClosureTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(view['confirmation_required']);self.assertEqual(view['next_action'],'NEW_REVIEW_REQUIRED')
         self.assertNotIn('confirmation',view)
         task.execution_uncertain=True
+        task.status=Status.SUCCEEDED  # A stale status never overrides uncertainty.
         view=await TaskHistoryService(runtime).get(task.task_id,'SESSION=alice')
         self.assertEqual(view['next_action'],'RECONCILE_WITH_BANK')
+        self.assertEqual(view['status'],'PARTIAL')
         self.assertEqual(len(bank.calls),2)

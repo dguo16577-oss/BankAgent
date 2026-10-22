@@ -110,10 +110,11 @@ class AgentRuntimeV2:
     @staticmethod
     def _response(task: Task, message: str, code: str | None = None, options: list[dict[str, str]] | None = None,
                   *, include_plan_notice: bool = True) -> AgentResponse:
-        status = TaskStatus.FAILED if task.status == Status.BLOCKED else TaskStatus(task.status.value)
+        status = (TaskStatus.PARTIAL if task.execution_uncertain else
+                  TaskStatus.FAILED if task.status == Status.BLOCKED else TaskStatus(task.status.value))
         steps = [PlanStep(step_id=f"s{index + 1}", tool=entry["tool"], status="SUCCEEDED", result=entry.get("result"),
                           at=datetime.now(timezone.utc)) for index, entry in enumerate(task.trace) if entry.get("kind") == "TOOL_RESULT"]
-        confirmation = task.active_intent if task.status in {Status.WAITING_CONFIRMATION, Status.WAITING_AUTH} else None
+        confirmation = task.active_intent if not task.execution_uncertain and task.status in {Status.WAITING_CONFIRMATION, Status.WAITING_AUTH} else None
         financial_plan = financial_progress(task)
         if confirmation and len(financial_plan) > 1 and include_plan_notice:
             current = next((i + 1 for i, row in enumerate(financial_plan) if row.get('intent_id') == confirmation.get('id')), None)
@@ -121,7 +122,7 @@ class AgentRuntimeV2:
                         '其余目标仍保留，尚未准备的操作不会自动执行。可取消当前一笔并继续其他独立目标，或取消整个任务。')
         return AgentResponse(task_id=task.task_id, status=status, mode="DEEPSEEK", message=message, steps=steps,
                              confirmation_required=confirmation is not None, confirmation=confirmation,
-                             options=options or [], receipt=task.receipt,
+                             options=options or [], receipt=None if task.execution_uncertain else task.receipt,
                              completed_actions=task.completed_actions,
                              failed_actions=task.failed_actions, financial_plan=financial_plan, error_code=code)
 

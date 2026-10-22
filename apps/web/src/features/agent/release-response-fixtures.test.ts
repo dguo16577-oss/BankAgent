@@ -28,6 +28,15 @@ it("recognizes prepared, rejected and uncertain outcomes independently", () => {
   expect(parseAgentMessage(fixture.responses.unknown).task?.errorCode).toBe(
     "EXECUTION_OUTCOME_UNKNOWN",
   );
+  expect(parseAgentMessage(fixture.responses.unknown).task?.status).toBe(
+    "PARTIAL",
+  );
+  expect(
+    parseAgentMessage(fixture.responses.unknown).task?.confirmation,
+  ).toBeUndefined();
+  expect(
+    parseAgentMessage(fixture.responses.unknown).task?.receipt,
+  ).toBeUndefined();
 });
 
 it("compares the top-level receipts of duplicate confirmation responses", () => {

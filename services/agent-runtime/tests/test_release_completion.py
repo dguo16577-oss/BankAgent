@@ -21,6 +21,21 @@ class DisputedPlanner:
 
 
 class CompletionRecoveryTests(unittest.IsolatedAsyncioTestCase):
+    async def test_uncertainty_overrides_stale_success_or_review_without_writing_get(self):
+        from app.agent_v2.models import Status
+        runtime=AgentRuntimeV2(CancellableBank(),object())
+        from app.agent_v2.runtime import session_binding
+        for state in [Status.SUCCEEDED,Status.WAITING_CONFIRMATION]:
+            task=Task(customer_id='alice',session_binding=session_binding('SESSION=alice'),goal='transfer',
+                      status=state,execution_uncertain=True,active_intent={'id':'old_intent'},receipt={'id':'old_receipt'})
+            runtime.tasks[task.task_id]=task;before=task.model_dump_json()
+            result=await runtime.get(task.task_id,'SESSION=alice')
+            self.assertEqual(result.status.value,'PARTIAL')
+            self.assertFalse(result.confirmation_required)
+            self.assertIsNone(result.confirmation)
+            self.assertIsNone(result.receipt)
+            self.assertEqual(task.model_dump_json(),before)
+
     async def test_same_dispute_has_bounded_replanning_without_downgrading_bank_evidence(self):
         planner=DisputedPlanner(); runtime=AgentRuntimeV2(CancellableBank(),planner)
         result=await runtime.chat('查看余额','SESSION=alice')

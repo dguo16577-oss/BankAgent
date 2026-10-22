@@ -1,7 +1,7 @@
 {
   "provenance": {
     "execution_level": "DETERMINISTIC_RUNTIME_FAKE_BANK",
-    "source_commit": "58b67cb + release recovery source",
+    "source_commit": "Release Recovery source; unknown captured after deterministic post-commit loss",
     "purpose": "Saved response parser fixtures only; never live-model or real-bank evidence"
   },
   "responses": {
@@ -405,10 +405,10 @@
       "error_code": null
     },
     "unknown": {
-      "task_id": "5aacf68de6034edaa8d532188d30cc55",
-      "status": "SUCCEEDED",
+      "task_id": "492f5222a18a4606a3ecf88786c82b82",
+      "status": "PARTIAL",
       "mode": "DEEPSEEK",
-      "message": "银行执行结果尚未核实；请勿重新发起或创建新的身份验证。",
+      "message": "银行响应暂不可确认；可使用同一授权安全重试。",
       "steps": [
         {
           "step_id": "s2",
@@ -435,7 +435,7 @@
             }
           },
           "error": null,
-          "at": "2026-10-22T01:09:29.202201Z"
+          "at": "2026-10-22T01:30:34.513755Z"
         },
         {
           "step_id": "s4",
@@ -460,7 +460,7 @@
             ]
           },
           "error": null,
-          "at": "2026-10-22T01:09:29.202201Z"
+          "at": "2026-10-22T01:30:34.513755Z"
         },
         {
           "step_id": "s7",
@@ -479,28 +479,17 @@
               "id": "r_zhang",
               "masked_account": "••8821"
             },
-            "expiresAt": "2026-10-22T01:14:29.159843+00:00"
+            "expiresAt": "2026-10-22T01:35:34.513502+00:00"
           },
           "error": null,
-          "at": "2026-10-22T01:09:29.202201Z"
+          "at": "2026-10-22T01:30:34.513755Z"
         }
       ],
       "confirmation_required": false,
       "confirmation": null,
       "options": [],
-      "receipt": {
-        "id": "transfer_1",
-        "reference": "ASTER-1",
-        "status": "COMPLETED"
-      },
-      "completed_actions": [
-        {
-          "kind": "TRANSFER",
-          "intent_id": "intent_1",
-          "receipt_id": "transfer_1",
-          "status": "COMPLETED"
-        }
-      ],
+      "receipt": null,
+      "completed_actions": [],
       "failed_actions": [],
       "financial_plan": [],
       "error_code": "EXECUTION_OUTCOME_UNKNOWN"

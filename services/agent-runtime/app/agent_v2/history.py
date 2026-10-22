@@ -20,7 +20,7 @@ class TaskHistoryService:
     def _summary(task) -> dict:
         from ..agui_adapter import _safe_text
         return {"task_id": task.task_id, "goal": _safe_text(task.goal)[:2000],
-                "status": task.status.value, "read_only": True,
+                "status": "PARTIAL" if task.execution_uncertain else task.status.value, "read_only": True,
                 "confirmation_required": False,
                 "next_action": ("RECONCILE_WITH_BANK" if task.execution_uncertain else
                                 "NEW_REVIEW_REQUIRED" if task.active_intent else "NONE")}
