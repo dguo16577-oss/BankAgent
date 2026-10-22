@@ -19,4 +19,4 @@
 
 `NOT_IMPLEMENTED` 的 `oracle.allowed_outcomes` 描述**当前安全行为**；`future_target` 描述将来功能完成后的目标。不得把当前的诚实拒绝计为手机号、历史备注、定时或 AA 功能成功，也不得将这 20 条草案加入现有 80% 通过率分母。
 
-目前真正已运行的 20 条转账测试见 [既有试运行集](aster-transfer-eval-v1.jsonl)与[重复运行报告](../../docs/testing/transfer-benchmark-20-2026-10-07.md)。六大比赛场景的数据处理规范见[交接要求](../../docs/testing/competition-six-domain-data-handoff.md)。
+目前真正已运行的 20 条转账测试见 [既有试运行集](aster-transfer-eval-v1.jsonl)与[重复运行报告（历史资料）](../../docs/release-status.md#历史资料)。六大比赛场景的数据处理规范见[交接要求（历史资料）](../../docs/release-status.md#历史资料)。

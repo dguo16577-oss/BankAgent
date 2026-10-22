@@ -80,4 +80,4 @@ TransactionType now also includes `INVESTMENT_PURCHASE`, and TransactionCategory
 
 The current Customer contract is version 1.19.0. `TransactionSummary` and `TransactionDetail` may return a nullable `note` (maximum 140 characters). Historical transactions remain `null`. A completed transfer preserves its confirmed intent note on the sender's debit transaction; the recipient's credit transaction does not expose it.
 
-The authenticated, server-side `search` filter also matches notes owned by that customer. The Agent's existing `list_transactions(note_query)` maps to this search; it does not add an endpoint or tool. Notes are untrusted transaction data, never instructions or financial authorization. See [M17R.2a acceptance](../milestones/m17r-2a-transaction-note-persistence.md).
+The authenticated, server-side `search` filter also matches notes owned by that customer. The Agent's existing `list_transactions(note_query)` maps to this search; it does not add an endpoint or tool. Notes are untrusted transaction data, never instructions or financial authorization. See [M17R.2a acceptance（历史资料）](../release-status.md#历史资料).

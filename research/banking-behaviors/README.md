@@ -1,6 +1,6 @@
 # B0 research artifacts
 
-Start with [B0 report](../../docs/milestones/b0-report.md). This directory contains metadata and Aster-authored mappings, not vendored datasets or an Agent implementation.
+Start with [B0 report（历史资料）](../../docs/release-status.md#历史资料). This directory contains metadata and Aster-authored mappings, not vendored datasets or an Agent implementation.
 
 ## Reproduce
 

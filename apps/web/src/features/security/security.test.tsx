@@ -65,7 +65,7 @@ it("login form reports invalid credentials then returns to bank home on success"
   await userEvent.type(screen.getByLabelText("Email"), securityFixture.email);
   await userEvent.type(screen.getByLabelText("Password"), "incorrect");
   await userEvent.click(
-    screen.getByRole("button", { name: "Sign in to demo" }),
+    screen.getByRole("button", { name: "Sign in" }),
   );
   expect(await screen.findByRole("alert")).toHaveTextContent("incorrect");
   await userEvent.clear(screen.getByLabelText("Password"));
@@ -74,7 +74,7 @@ it("login form reports invalid credentials then returns to bank home on success"
     securityFixture.password,
   );
   await userEvent.click(
-    screen.getByRole("button", { name: "Sign in to demo" }),
+    screen.getByRole("button", { name: "Sign in" }),
   );
   await waitFor(() => expect(nav.replace).toHaveBeenCalledWith("/"));
 });

@@ -403,8 +403,8 @@ export function PendingAction({
         ) : (
           <p>
             {locale === "zh-CN"
-              ? "此操作请在原版助手确认。"
-              : "Confirm this action in the original assistant."}
+              ? "此操作请切换至简洁对话完成确认。"
+              : "Switch to classic chat to confirm this action."}
           </p>
         )}
         {!reconciliationRequired && (
@@ -1248,18 +1248,17 @@ export function CopilotWorkspace() {
       <div className="mx-auto max-w-5xl space-y-6">
         <div className="flex items-center justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold text-teal-800">Aster · AG-UI</p>
             <h1 className="text-3xl font-semibold">
               {locale === "zh-CN" ? "智能银行助手" : "Aster banking assistant"}
             </h1>
             <p className="text-sm text-muted-foreground">
               {locale === "zh-CN"
-                ? "实验版对话界面。银行操作仍由独立确认流程执行。"
-                : "Experimental conversation. Bank actions still require separate confirmation."}
+                ? "查询账户、分析消费，或让 Aster 协助办理业务。所有银行操作均需你独立确认。"
+                : "Explore your accounts and spending with Aster. Bank actions require your separate confirmation."}
             </p>
           </div>
           <Link className="text-sm underline" href="/app/agent">
-            {locale === "zh-CN" ? "返回原版助手" : "Original assistant"}
+            {locale === "zh-CN" ? "简洁对话" : "Classic chat"}
           </Link>
         </div>
         <AgentConversation threadId={threadId} />

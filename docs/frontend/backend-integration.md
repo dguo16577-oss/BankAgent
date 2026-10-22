@@ -56,7 +56,7 @@ Amounts remain decimal strings; only formatting occurs in React. Fees, projected
 
 ## Boundaries and evidence
 
-Current bank operation coverage is checked against the 87 Customer and 9 Public operations by the contract audit; historical counts are not current coverage. Agent proxy routes are separate from bank contracts. `pnpm test:e2e:backend` starts an isolated real system; see [E2E instructions](../testing/real-backend-e2e.md). Mock regression remains available with `pnpm test:e2e:mock`. Neither suite should attach to an already-running Web server.
+Current bank operation coverage is checked against the 87 Customer and 9 Public operations by the contract audit; historical counts are not current coverage. Agent proxy routes are separate from bank contracts. `pnpm test:e2e:backend` starts an isolated real system; see [E2E instructions（历史资料）](../release-status.md#历史资料). Mock regression remains available with `pnpm test:e2e:mock`. Neither suite should attach to an already-running Web server.
 
 This is a local competition Demo. Frozen `SIMULATED_AUTH` naming remains unchanged even though sessions now live in PostgreSQL. No production identity delivery, live financial connection or deployment is included. M23 hardening retains this integration architecture.
 

@@ -2,7 +2,7 @@
 
 ## M20 backend status
 
-The frozen Customer 1.9.0 endpoint is now implemented by Spring Boot against the existing PostgreSQL domain queries. Customer coverage is 39/39; Public remains 0/9 and the frontend remains MSW. The sections below retain historical M1–M11 Mock context; current backend design and validation are documented in [Overview read model](../backend/overview-read-model.md) and [M20 report](../milestones/m20-report.md).
+The frozen Customer 1.9.0 endpoint is now implemented by Spring Boot against the existing PostgreSQL domain queries. Customer coverage is 39/39; Public remains 0/9 and the frontend remains MSW. The sections below retain historical M1–M11 Mock context; current backend design and validation are documented in [Overview read model](../backend/overview-read-model.md) and [M20 report（历史资料）](../release-status.md#历史资料).
 
 The backend uses one read-only REPEATABLE READ snapshot. Its asOf and reporting periods use the injected runtime Clock. Existing DEMO_RATE provenance is preserved. Upcoming payments come from persistent eligible Recurring schedules; no Mock credit-card bill is fabricated where no backend billing source exists. Missing risk profile does not block Portfolio summary. Empty sections return legal zero/empty data; failed source reads return an overall error.
 

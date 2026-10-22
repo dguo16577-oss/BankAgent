@@ -1,6 +1,6 @@
 # 系统架构
 
-当前源码基线：2026-10-20。部署版本与验收证据需另外核对 [综合验收](../milestones/aster-integrated-final-acceptance.md) 和 [KG/RAG 验收](../milestones/kg-rag-completion.md)。本页替代早期 M0–M24 累积说明，历史设计仍见 ADR 与各里程碑。
+当前源码基线：2026-10-20。部署版本与验收证据需另外核对 [综合验收（历史资料）](../release-status.md#历史资料) 和 [KG/RAG 验收（历史资料）](../release-status.md#历史资料)。本页替代早期 M0–M24 累积说明，历史设计仍见 ADR 与各里程碑。
 
 ```mermaid
 flowchart TD

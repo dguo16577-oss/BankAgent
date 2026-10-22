@@ -2,7 +2,7 @@
 
 2026-10-20 follow-up: I06 Knowledge deployment now has a healthy service, 36
 documents / 156 chunks, persisted graph and real cited answers. The historical
-environment block below is retained; see [KG/RAG acceptance](../milestones/kg-rag-completion.md).
+environment block below is retained; see [KG/RAG acceptance（历史资料）](../release-status.md#历史资料).
 This closes that deployment gap, not the complete RAG adversarial, S1 or R1 gates.
 
 2026-10-16. This is an evidence matrix, not automatic milestone promotion.
@@ -51,4 +51,4 @@ The initial classifications above are preserved as the audit starting point.
 - I14: NOT_READY_FOR_PRODUCTION; assessment delivered, operational controls missing.
 
 Detailed evidence and release recommendations:
-[integrated acceptance](../milestones/aster-integrated-final-acceptance.md).
+[integrated acceptance（历史资料）](../release-status.md#历史资料).

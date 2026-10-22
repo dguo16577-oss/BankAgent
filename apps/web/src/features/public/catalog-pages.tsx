@@ -50,7 +50,7 @@ export function PageFrame({
         {t("Aster Bank home")}
       </Link>
       <p className="mt-8 text-xs font-semibold tracking-widest text-teal-800">
-        {t("DEMO / SIMULATED PRODUCT INFORMATION")}
+        {t("Products and services")}
       </p>
       <h1 className="mt-3 text-4xl font-semibold tracking-tight">{t(title)}</h1>
       {t(
@@ -62,7 +62,7 @@ export function PageFrame({
       )}
       <div className="mt-9 space-y-8">{t(children)}</div>
       <p className="mt-12 border-t pt-6 text-sm text-muted-foreground">
-        {t("Explore your personal demo workspace.")}
+        {t("Manage your banking in one place.")}
         {t(" ")}
         <span className="font-semibold text-primary underline">
           <CustomerEntry />

@@ -74,4 +74,4 @@ Real PostgreSQL Testcontainers tests compare all 21 catalog details and 15 suppo
 
 Run `docs/backend/public-content-smoke.ps1` against local port 18080 after starting the existing PostgreSQL volume and Banking Core local profile. This script logs in only to verify the boundary; it does not mutate financial state.
 
-See [M21 report](../milestones/m21-report.md) for actual command results. Frontend remains MSW.
+See [M21 report（历史资料）](../release-status.md#历史资料) for actual command results. Frontend remains MSW.

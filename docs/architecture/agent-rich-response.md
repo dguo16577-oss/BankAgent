@@ -7,7 +7,7 @@ PARTIAL_CURRENT_PERIOD, MISSING_PERIODS and UNKNOWN_COVERAGE; the UI displays
 requested/effective ranges and missing periods consistently. Table amount
 sorting uses integer cents. These changes are source-tested; current Docker
 images have not yet been rebuilt due to resource limits. See
-[UX4.5 acceptance](../milestones/ux4-5-final-acceptance.md).
+[UX4.5 acceptance（历史资料）](../release-status.md#历史资料).
 
 Status: implemented behind the existing `AGENT_UI_V2_ENABLED=true` experiment; live model/bank browser acceptance remains pending.
 

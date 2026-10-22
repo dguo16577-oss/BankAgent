@@ -1,17 +1,11 @@
-# 脚本交接
+# 脚本
 
-从仓库根目录运行脚本。根 `package.json` 是常用命令入口；不要通过文件名猜测脚本是否会操作数据库。
+从仓库根目录运行。服务启动、停止和重启统一使用 [start.cmd / start.ps1](../START-README.md)，不通过脚本文件名猜测数据库副作用。
 
-| 类别       | 入口与行为                                                                                                                                                                                                             |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 纯检查     | `audit.mjs`、`contract-hash.mjs`、`frontend-integration-audit.mjs`、`module-audit.mjs`：合同/边界/生成物检查。                                                                                                         |
-| 开发启动   | `web-runtime.mjs`、`start-web-local.ps1`、`start-core-local.ps1`、`start-agent-local.ps1`、`restart-local.cmd`：启动或重启本地服务。PowerShell 启动器可能停止**匹配本项目命令行**的旧进程；先保存未完成的 Agent 任务。 |
-| Agent 评测 | `agent-eval.py`、`m18-*`、`m19-*` 至 `m23-*`：有些只读，有些会创建意图或在隔离数据库执行演示金融动作。运行前阅读对应文件和里程碑报告。                                                                                 |
-| E2E        | `real-backend-e2e.mjs`、`packaged-e2e.mjs`：启动/连接后端和浏览器；可能创建临时容器及测试数据。                                                                                                                        |
-| 交接打包   | `create-handoff-package.py`：仅收集允许的源码/文档/脱敏证据，检查显式密钥模式，生成 ZIP、文件清单与 SHA-256。`verify-handoff-package.py <zip>` 在解压前逐项验证。                                                      |
+- `web-runtime.mjs`：Web 开发、构建及运行。
+- `audit.mjs`、`contract-hash.mjs`：API 合同与生成物检查。
+- `repository-hygiene.mjs`：仓库文件及 Markdown 链接检查。
+- `create-handoff-package.py`、`verify-handoff-package.py`：源码交付包与清单校验。
+- 其余验证、数据处理和故障脚本供开发维护使用，可能创建银行意图、容器或隔离数据。运行前阅读脚本的目标环境和断言，禁止对保留演示库做故障注入或扣款检查。
 
-推荐启动入口为根 [start.cmd / start.ps1](../START-README.md)。旧本机启动脚本依赖开发者机器的 Node、Python 或密钥位置，保留作本地兼容用途；新环境按统一启动说明配置。只使用获批准的模型网络路径，不用 DNS、代理或其他脚本绕过网络审批。
-
-## 仓库维护检查
-
-`pnpm repo:check`（`node scripts/repository-hygiene.mjs`）只检查 Git 受跟踪文件和 Markdown 目标，不扫描本机密钥或自动删除文件。保留规则见 [严格整理审计](../docs/maintenance/repository-hygiene.md)。
+常用开发命令统一见 [维护说明](../docs/release-status.md)，环境及密钥配置见 [启动说明](../START-README.md)。

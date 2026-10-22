@@ -90,6 +90,6 @@ Spending continues to query the canonical transaction table and excludes investm
 
 WealthPostgreSqlIT uses an isolated PostgreSQL 17 Testcontainer, deterministic Clock, real HTTP session/CSRF requests, concurrency, fault injection at five stages, actual constraint failure and full Spring context restart. Existing M12–M18 suites continue to run.
 
-Run the [smoke script](wealth-smoke.ps1) against local profile on port 18080 with a fresh isolated demo database for the exact baseline. It creates persistent investment state and does not reset it. The full validation results and database used are recorded in [M19 report](../milestones/m19-report.md).
+Run the [smoke script](wealth-smoke.ps1) against local profile on port 18080 with a fresh isolated demo database for the exact baseline. It creates persistent investment state and does not reset it. The full validation results and database used are recorded in [M19 report（历史资料）](../release-status.md#历史资料).
 
 No Overview/Public backend, frontend runtime switch, redemption, KYC, investment recommendation, real brokerage or M20 work is included.

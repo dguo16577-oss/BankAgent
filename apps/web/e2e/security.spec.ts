@@ -27,7 +27,7 @@ for (const width of [320, 390, 768, 1024, 1440]) {
     });
     await page.getByLabel("Email", { exact: true }).fill(securityFixture.email);
     await page.getByLabel("Password", { exact: true }).fill("incorrect");
-    await page.getByRole("button", { name: "Sign in to demo" }).click();
+    await page.getByRole("button", { name: "Sign in" }).click();
     await expect(page.locator("main").getByRole("alert")).toContainText(
       "incorrect",
     );
@@ -94,7 +94,7 @@ for (const width of [320, 390, 768, 1024, 1440]) {
     await page.goto("/app/accounts");
     await expect(page).toHaveURL(/\/login/);
     await expect(
-      page.getByRole("button", { name: "Sign in to demo" }),
+      page.getByRole("button", { name: "Sign in" }),
     ).toBeVisible();
     const response = await page.evaluate(async () => {
       const r = await fetch("/customer/accounts");

@@ -74,4 +74,4 @@ The script uses real Session/CSRF cookies, checks standard Spending, rejects mis
 
 It requires initially ACTIVE Netflix and **leaves Netflix STOPPED with durable history**. It deliberately does not reset an existing database. To repeat the initial scenario use a separate disposable demo database; M18 introduces no restart action.
 
-See [database schema](database-schema.md), [Spending](spending-domain.md) and [M18 report](../milestones/m18-report.md).
+See [database schema](database-schema.md), [Spending](spending-domain.md) and [M18 report（历史资料）](../release-status.md#历史资料).

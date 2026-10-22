@@ -85,4 +85,4 @@ OverviewPostgreSqlIT covers baseline/direct-domain parity; separate Transfer, Ca
 
 [overview-smoke.ps1](overview-smoke.ps1) logs in against local :18080 and compares Overview with current direct API responses. It does not assume initial account/portfolio/card/recurring state and executes no financial mutation. It derives exact Spending windows from the Overview response before querying the direct Spending API.
 
-See [M20 report](../milestones/m20-report.md) for actual validation and local state. Customer Banking Backend COMPLETE means frozen Customer API coverage, not entire-backend or production completion. Public and frontend integration remain separate future work.
+See [M20 report（历史资料）](../release-status.md#历史资料) for actual validation and local state. Customer Banking Backend COMPLETE means frozen Customer API coverage, not entire-backend or production completion. Public and frontend integration remain separate future work.

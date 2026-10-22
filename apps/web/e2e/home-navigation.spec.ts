@@ -11,7 +11,7 @@ test("public sign-in returns to the originating product and application stays th
   await page.getByLabel("Email", { exact: true }).fill("alex@aster.local");
   await page.getByLabel("Password", { exact: true }).fill("demo-password");
   await page
-    .getByRole("button", { name: "Sign in to demo", exact: true })
+    .getByRole("button", { name: "Sign in", exact: true })
     .click();
   await expect(page).toHaveURL(
     /\/products\/personal-loan\?source=manual#apply$/,
@@ -32,7 +32,7 @@ test("anonymous product application signs in and resumes on the same product", a
   await page.getByLabel("Email", { exact: true }).fill("alex@aster.local");
   await page.getByLabel("Password", { exact: true }).fill("demo-password");
   await page
-    .getByRole("button", { name: "Sign in to demo", exact: true })
+    .getByRole("button", { name: "Sign in", exact: true })
     .click();
   await expect(page).toHaveURL(/\/products\/everyday-debit-card#apply$/);
   await expect(page.getByLabel("Contact email", { exact: true })).toBeVisible();
@@ -54,7 +54,7 @@ for (const width of [320, 390, 1440]) {
     await page.getByLabel("Email", { exact: true }).fill("alex@aster.local");
     await page.getByLabel("Password", { exact: true }).fill("demo-password");
     await page
-      .getByRole("button", { name: "Sign in to demo", exact: true })
+      .getByRole("button", { name: "Sign in", exact: true })
       .click();
     await expect(page).toHaveURL(/\/$/);
     await page

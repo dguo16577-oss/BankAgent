@@ -337,6 +337,10 @@ export const zhCN: Readonly<Record<string, string>> = {
   "Check balances, spending, transactions and public banking information. For a transfer, the assistant can suggest details; you review and verify them before any money moves.":
     "查询余额、支出、交易和公开银行资料。需要转账时，助手可以提出方案；资金划转前仍需由你核对并验证。",
   "Demo assistant": "演示助手",
+  "Privacy and security": "隐私与安全",
+  "Products and services": "产品与服务",
+  "Manage your banking in one place.": "一站式管理你的银行业务。",
+  "Please do not use a real banking password.": "请勿使用真实银行账户的密码。",
   "With Agent v2, DeepSeek may receive your message and selected banking observations, including masked account and recipient details. Session cookies, passwords, verification codes and authorization tokens are not sent. Do not include secrets in messages.":
     "使用 Agent v2 时，DeepSeek 可能收到你的提问和选定的银行查询结果，包括已掩码的账户与收款人信息。会话 Cookie、密码、验证码和授权令牌不会发送给模型。请勿在消息中填写秘密信息。",
   "Suggested questions": "建议提问",

@@ -39,4 +39,4 @@ Blocking regression compares every ID and its order from full filtered results w
 
 Unknown/foreign transaction details both return 404 `TRANSACTION_NOT_FOUND`. Account lookup for detail is scoped to the same customer. API exposes only masked identifiers; domain seed has no full PAN/account number, CVV, PIN or authentication secret. Controllers implement only the four intended generated operations; all other banking/Public APIs remain absent.
 
-See [demo data](demo-data.md) for the independent backend fixture and [M13 report](../milestones/m13-report.md) for test results.
+See [demo data](demo-data.md) for the independent backend fixture and [M13 report（历史资料）](../release-status.md#历史资料) for test results.

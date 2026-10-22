@@ -60,4 +60,4 @@ A CNY 500 transfer adds BANK_TRANSFER activity but leaves Spending unchanged. Ca
 
 With a live Clock, asOf advances independently of mutations. Compare explicit windows and aggregate fields when checking historical invariance over real HTTP.
 
-See [Recurring domain](recurring-payments-domain.md), [M18 report](../milestones/m18-report.md) and [ADR 0015](../adr/0015-recurring-payments-and-derived-spending.md).
+See [Recurring domain](recurring-payments-domain.md), [M18 report（历史资料）](../release-status.md#历史资料) and [ADR 0015](../adr/0015-recurring-payments-and-derived-spending.md).

@@ -128,7 +128,7 @@ test("anonymous application returns to the requested product after login", async
   await page.getByLabel("Email", { exact: true }).fill("alex@aster.local");
   await page.getByLabel("Password", { exact: true }).fill("demo-password");
   await page
-    .getByRole("button", { name: "Sign in to demo", exact: true })
+    .getByRole("button", { name: "Sign in", exact: true })
     .click();
   await expect(page).toHaveURL(/applications\/new\?product=personal-loan/);
   await expect(

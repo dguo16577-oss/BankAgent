@@ -17,7 +17,7 @@ the pending action. Unrelated queries during pending confirmation are currently
 deferred rather than cancelling that action; this is a known same-task limit.
 Four real provider classification cases passed, but updated images and full
 browser/bank acceptance remain blocked by resources. See
-[UX4.5 acceptance](../milestones/ux4-5-final-acceptance.md).
+[UX4.5 acceptance（历史资料）](../release-status.md#历史资料).
 
 Status: structured model goal profile implemented; live accuracy has not been measured.
 

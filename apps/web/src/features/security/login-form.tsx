@@ -55,9 +55,6 @@ export function LoginForm({
             {t("Aster Bank.")}
           </p>
           <div>
-            <p className="text-xs tracking-widest text-muted-foreground">
-              {t("DEMO ENVIRONMENT · SIMULATED_AUTH")}
-            </p>
             <h1 className="mt-3 text-3xl font-semibold">
               {t("Welcome to Aster")}
             </h1>
@@ -137,16 +134,11 @@ export function LoginForm({
               </p>
             )}
             <Button className="w-full" disabled={auth.isPending}>
-              {t(auth.isPending ? "Signing in…" : "Sign in to demo")}
+              {t(auth.isPending ? "Signing in…" : "Sign in")}
             </Button>
           </form>
           <p className="break-words text-xs leading-5 text-muted-foreground">
-            {t("Local test credentials are documented in")}
-            {t(" ")}
-            <code className="break-all">
-              {t("docs/backend/authentication-session.md")}
-            </code>
-            {t(". Never use a real password here.")}
+            {t("Please do not use a real banking password.")}
           </p>
         </CardContent>
       </Card>

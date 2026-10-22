@@ -6,7 +6,7 @@ export async function signIn(page: Page) {
   await page
     .getByLabel("Password", { exact: true })
     .fill(securityFixture.password);
-  await page.getByRole("button", { name: "Sign in to demo" }).click();
+  await page.getByRole("button", { name: "Sign in" }).click();
   await expect(page).toHaveURL(/\/$/);
   await page
     .locator("header")

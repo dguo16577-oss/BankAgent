@@ -1,6 +1,6 @@
 # Card domain and persistent actions — M17
 
-This document records the original M17 card implementation. M21 subsequently added formal loss, card-intent cancellation, configurable limits, a simulated authorization boundary and separate credit-limit applications. See the [M21 acceptance report](../milestones/m21-card-management-agent.md) and current [implementation matrix](implementation-matrix.md) for the current API and behavior.
+This document records the original M17 card implementation. M21 subsequently added formal loss, card-intent cancellation, configurable limits, a simulated authorization boundary and separate credit-limit applications. See the [M21 acceptance report（历史资料）](../release-status.md#历史资料) and current [implementation matrix](implementation-matrix.md) for the current API and behavior.
 
 ## Frozen API surface
 

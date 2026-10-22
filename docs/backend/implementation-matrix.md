@@ -1,8 +1,8 @@
 # Backend implementation matrix — M22 subscription and direct debit
 
-Customer 87/87, Public 9/9: all 96 current contract operations have PostgreSQL adapters. Zero remain NOT_IMPLEMENTED. Runtime method/path/operationId coverage is checked against both frozen manifests, not inferred from this document. M22 adds cancellation of prepared recurring-payment intents and persistent renewal reminder actions and notifications; acceptance details are in the [M22 report](../milestones/m22-subscription-direct-debit-agent.md).
+Customer 87/87, Public 9/9: all 96 current contract operations have PostgreSQL adapters. Zero remain NOT_IMPLEMENTED. Runtime method/path/operationId coverage is checked against both frozen manifests, not inferred from this document. M22 adds cancellation of prepared recurring-payment intents and persistent renewal reminder actions and notifications; acceptance details are in the [M22 report（历史资料）](../release-status.md#历史资料).
 
-Public is anonymous informational content in banking.publiccontent. Customer remains session-authenticated. M22 connects the normal frontend runtime to Spring; explicit mock mode remains for tests. The user-authorized application extension adds three persistent Customer endpoints after the M24 freeze. See [M22 integration](../frontend/backend-integration.md), [M21 report](../milestones/m21-report.md) and [Public Content](public-content-domain.md).
+Public is anonymous informational content in banking.publiccontent. Customer remains session-authenticated. M22 connects the normal frontend runtime to Spring; explicit mock mode remains for tests. The user-authorized application extension adds three persistent Customer endpoints after the M24 freeze. See [M22 integration](../frontend/backend-integration.md), [M21 report（历史资料）](../release-status.md#历史资料) and [Public Content](public-content-domain.md).
 
 B2 adds five Payments recipient operations and extends existing transfer/security binding. Historical M24 remains 39 Customer + 9 Public operations; its archive is independent of the current development freeze.
 

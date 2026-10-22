@@ -92,9 +92,6 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
       >
         {t("Skip to content")}
       </a>
-      <div className="border-b bg-primary px-5 py-2 text-center text-[11px] tracking-wide text-white/80">
-        {t("Aster Bank demo · Explore our public website without signing in")}
-      </div>
       <header
         ref={header}
         className="relative z-30 border-b bg-white"
@@ -293,12 +290,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                 "Demo environment. Products, promotions and content are illustrative. No live rates or real banking services are provided.",
               )}
             </p>
-            <p>
-              {t(
-                "Legal information placeholder · Terms, privacy and regulatory disclosures will be provided before any production service.",
-              )}
-            </p>
-            <p>{t("© Aster Bank · Public website demo")}</p>
+            <p>© Aster Bank</p>
           </div>
         </div>
       </footer>

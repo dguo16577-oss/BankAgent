@@ -215,16 +215,16 @@ export function AgentChat() {
         </p>
       </div>
 
-      <Card className="border-teal-200 bg-teal-50 shadow-none">
-        <CardContent className="space-y-1 text-sm leading-6">
-          <p className="font-semibold">{t("Demo assistant")}</p>
-          <p>
-            {t(
-              "With Agent v2, DeepSeek may receive your message and selected banking observations, including masked account and recipient details. Session cookies, passwords, verification codes and authorization tokens are not sent. Do not include secrets in messages.",
-            )}
-          </p>
-        </CardContent>
-      </Card>
+      <details className="rounded-xl border px-4 py-3 text-sm text-muted-foreground">
+        <summary className="cursor-pointer font-medium">
+          {t("Privacy and security")}
+        </summary>
+        <p className="mt-3 leading-6">
+          {t(
+            "With Agent v2, DeepSeek may receive your message and selected banking observations, including masked account and recipient details. Session cookies, passwords, verification codes and authorization tokens are not sent. Do not include secrets in messages.",
+          )}
+        </p>
+      </details>
 
       <div
         className="flex flex-wrap gap-2"
@@ -269,13 +269,6 @@ export function AgentChat() {
             >
               <CardContent className="space-y-4 text-sm leading-6">
                 <p className="font-semibold">{t("Aster Agent")}</p>
-                <p className="text-xs text-muted-foreground">
-                  {t(
-                    turn.response.mode === "DEEPSEEK"
-                      ? "DeepSeek-assisted"
-                      : "Rules and banking APIs",
-                  )}
-                </p>
                 <p className="whitespace-pre-wrap break-words">
                   {turn.response.reply}
                 </p>

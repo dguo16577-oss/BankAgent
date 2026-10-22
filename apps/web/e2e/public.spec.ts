@@ -104,7 +104,7 @@ for (const width of [320, 390, 768, 1440]) {
     ).toBe(true);
     await page.getByLabel("Email", { exact: true }).fill("alex@aster.local");
     await page.getByLabel("Password", { exact: true }).fill("demo-password");
-    await page.getByRole("button", { name: "Sign in to demo" }).click();
+    await page.getByRole("button", { name: "Sign in" }).click();
     await expect(page).toHaveURL(/\/app\/agent$/);
     await expect(
       page.getByRole("heading", { name: "Ask Aster about your banking" }),
