@@ -1,0 +1,606 @@
+{
+  "provenance": {
+    "execution_level": "DETERMINISTIC_RUNTIME_FAKE_BANK",
+    "source_commit": "58b67cb + release recovery source",
+    "purpose": "Saved response parser fixtures only; never live-model or real-bank evidence"
+  },
+  "responses": {
+    "prepared": {
+      "task_id": "5aacf68de6034edaa8d532188d30cc55",
+      "status": "WAITING_CONFIRMATION",
+      "mode": "DEEPSEEK",
+      "message": "转账已准备好。请核对完整银行复核单并完成验证，确认前不会扣款。",
+      "steps": [
+        {
+          "step_id": "s2",
+          "tool": "resolve_recipient",
+          "depends_on": [],
+          "status": "SUCCEEDED",
+          "result": {
+            "status": "RESOLVED",
+            "query_reference": "张三",
+            "query_reference_hash": null,
+            "candidates": [
+              {
+                "recipient_id": "r_zhang",
+                "display_name_untrusted": "张三",
+                "masked_account": "••8821",
+                "phone_masked": "138****8000"
+              }
+            ],
+            "recipient": {
+              "recipient_id": "r_zhang",
+              "display_name_untrusted": "张三",
+              "masked_account": "••8821",
+              "phone_masked": "138****8000"
+            }
+          },
+          "error": null,
+          "at": "2026-10-22T01:09:29.159843Z"
+        },
+        {
+          "step_id": "s4",
+          "tool": "list_accounts",
+          "depends_on": [],
+          "status": "SUCCEEDED",
+          "result": {
+            "accounts": [
+              {
+                "id": "acc_alice",
+                "displayName": "CNY Current",
+                "type": "CURRENT",
+                "status": "ACTIVE",
+                "currency": "CNY",
+                "maskedAccountNumber": "••1048",
+                "balance": null,
+                "availableBalance": {
+                  "amount": "2000.00",
+                  "currency": "CNY"
+                }
+              }
+            ]
+          },
+          "error": null,
+          "at": "2026-10-22T01:09:29.159843Z"
+        },
+        {
+          "step_id": "s7",
+          "tool": "prepare_transfer",
+          "depends_on": [],
+          "status": "SUCCEEDED",
+          "result": {
+            "id": "intent_1",
+            "intent_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "status": "PREPARED",
+            "amount": {
+              "amount": "500.00",
+              "currency": "CNY"
+            },
+            "recipient": {
+              "id": "r_zhang",
+              "masked_account": "••8821"
+            },
+            "expiresAt": "2026-10-22T01:14:29.159843+00:00"
+          },
+          "error": null,
+          "at": "2026-10-22T01:09:29.159843Z"
+        }
+      ],
+      "confirmation_required": true,
+      "confirmation": {
+        "id": "intent_1",
+        "status": "PREPARED",
+        "intentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "expiresAt": "2026-10-22T01:14:29.159843+00:00",
+        "sourceAccount": {
+          "id": "acc_alice",
+          "displayName": "CNY Current",
+          "maskedAccountNumber": "••1048"
+        },
+        "recipient": {
+          "id": "r_zhang",
+          "displayName": "张三",
+          "status": "ACTIVE",
+          "currency": "CNY",
+          "maskedAccountNumber": "••8821",
+          "phoneMasked": "138****8000"
+        },
+        "amount": {
+          "amount": "500.00",
+          "currency": "CNY"
+        },
+        "fee": {
+          "amount": "0.00",
+          "currency": "CNY"
+        },
+        "totalDebit": {
+          "amount": "500.00",
+          "currency": "CNY"
+        }
+      },
+      "options": [],
+      "receipt": null,
+      "completed_actions": [],
+      "failed_actions": [],
+      "financial_plan": [],
+      "error_code": null
+    },
+    "completed": {
+      "task_id": "5aacf68de6034edaa8d532188d30cc55",
+      "status": "SUCCEEDED",
+      "mode": "DEEPSEEK",
+      "message": "转账已完成，请查看银行回执。",
+      "steps": [
+        {
+          "step_id": "s2",
+          "tool": "resolve_recipient",
+          "depends_on": [],
+          "status": "SUCCEEDED",
+          "result": {
+            "status": "RESOLVED",
+            "query_reference": "张三",
+            "query_reference_hash": null,
+            "candidates": [
+              {
+                "recipient_id": "r_zhang",
+                "display_name_untrusted": "张三",
+                "masked_account": "••8821",
+                "phone_masked": "138****8000"
+              }
+            ],
+            "recipient": {
+              "recipient_id": "r_zhang",
+              "display_name_untrusted": "张三",
+              "masked_account": "••8821",
+              "phone_masked": "138****8000"
+            }
+          },
+          "error": null,
+          "at": "2026-10-22T01:09:29.169915Z"
+        },
+        {
+          "step_id": "s4",
+          "tool": "list_accounts",
+          "depends_on": [],
+          "status": "SUCCEEDED",
+          "result": {
+            "accounts": [
+              {
+                "id": "acc_alice",
+                "displayName": "CNY Current",
+                "type": "CURRENT",
+                "status": "ACTIVE",
+                "currency": "CNY",
+                "maskedAccountNumber": "••1048",
+                "balance": null,
+                "availableBalance": {
+                  "amount": "2000.00",
+                  "currency": "CNY"
+                }
+              }
+            ]
+          },
+          "error": null,
+          "at": "2026-10-22T01:09:29.169915Z"
+        },
+        {
+          "step_id": "s7",
+          "tool": "prepare_transfer",
+          "depends_on": [],
+          "status": "SUCCEEDED",
+          "result": {
+            "id": "intent_1",
+            "intent_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "status": "PREPARED",
+            "amount": {
+              "amount": "500.00",
+              "currency": "CNY"
+            },
+            "recipient": {
+              "id": "r_zhang",
+              "masked_account": "••8821"
+            },
+            "expiresAt": "2026-10-22T01:14:29.159843+00:00"
+          },
+          "error": null,
+          "at": "2026-10-22T01:09:29.169915Z"
+        }
+      ],
+      "confirmation_required": false,
+      "confirmation": null,
+      "options": [],
+      "receipt": {
+        "id": "transfer_1",
+        "reference": "ASTER-1",
+        "status": "COMPLETED"
+      },
+      "completed_actions": [
+        {
+          "kind": "TRANSFER",
+          "intent_id": "intent_1",
+          "receipt_id": "transfer_1",
+          "status": "COMPLETED"
+        }
+      ],
+      "failed_actions": [],
+      "financial_plan": [],
+      "error_code": null
+    },
+    "repeated": {
+      "task_id": "5aacf68de6034edaa8d532188d30cc55",
+      "status": "SUCCEEDED",
+      "mode": "DEEPSEEK",
+      "message": "该确认已处理；不会重复执行银行操作。",
+      "steps": [
+        {
+          "step_id": "s2",
+          "tool": "resolve_recipient",
+          "depends_on": [],
+          "status": "SUCCEEDED",
+          "result": {
+            "status": "RESOLVED",
+            "query_reference": "张三",
+            "query_reference_hash": null,
+            "candidates": [
+              {
+                "recipient_id": "r_zhang",
+                "display_name_untrusted": "张三",
+                "masked_account": "••8821",
+                "phone_masked": "138****8000"
+              }
+            ],
+            "recipient": {
+              "recipient_id": "r_zhang",
+              "display_name_untrusted": "张三",
+              "masked_account": "••8821",
+              "phone_masked": "138****8000"
+            }
+          },
+          "error": null,
+          "at": "2026-10-22T01:09:29.169915Z"
+        },
+        {
+          "step_id": "s4",
+          "tool": "list_accounts",
+          "depends_on": [],
+          "status": "SUCCEEDED",
+          "result": {
+            "accounts": [
+              {
+                "id": "acc_alice",
+                "displayName": "CNY Current",
+                "type": "CURRENT",
+                "status": "ACTIVE",
+                "currency": "CNY",
+                "maskedAccountNumber": "••1048",
+                "balance": null,
+                "availableBalance": {
+                  "amount": "2000.00",
+                  "currency": "CNY"
+                }
+              }
+            ]
+          },
+          "error": null,
+          "at": "2026-10-22T01:09:29.169915Z"
+        },
+        {
+          "step_id": "s7",
+          "tool": "prepare_transfer",
+          "depends_on": [],
+          "status": "SUCCEEDED",
+          "result": {
+            "id": "intent_1",
+            "intent_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "status": "PREPARED",
+            "amount": {
+              "amount": "500.00",
+              "currency": "CNY"
+            },
+            "recipient": {
+              "id": "r_zhang",
+              "masked_account": "••8821"
+            },
+            "expiresAt": "2026-10-22T01:14:29.159843+00:00"
+          },
+          "error": null,
+          "at": "2026-10-22T01:09:29.169915Z"
+        }
+      ],
+      "confirmation_required": false,
+      "confirmation": null,
+      "options": [],
+      "receipt": {
+        "id": "transfer_1",
+        "reference": "ASTER-1",
+        "status": "COMPLETED"
+      },
+      "completed_actions": [
+        {
+          "kind": "TRANSFER",
+          "intent_id": "intent_1",
+          "receipt_id": "transfer_1",
+          "status": "COMPLETED"
+        }
+      ],
+      "failed_actions": [],
+      "financial_plan": [],
+      "error_code": null
+    },
+    "ambiguous": {
+      "task_id": "599896f7b01b46d1b90b9143bc006b2a",
+      "status": "WAITING_USER",
+      "mode": "DEEPSEEK",
+      "message": "请选择收款人",
+      "steps": [
+        {
+          "step_id": "s2",
+          "tool": "resolve_recipient",
+          "depends_on": [],
+          "status": "SUCCEEDED",
+          "result": {
+            "status": "AMBIGUOUS",
+            "query_reference": "张三",
+            "query_reference_hash": null,
+            "candidates": [
+              {
+                "recipient_id": "r_zhang",
+                "display_name_untrusted": "张三",
+                "masked_account": "••8821",
+                "phone_masked": "138****8000"
+              },
+              {
+                "recipient_id": "r_second",
+                "display_name_untrusted": "张三",
+                "masked_account": "••8821",
+                "phone_masked": "138****8000"
+              }
+            ]
+          },
+          "error": null,
+          "at": "2026-10-22T01:09:29.201675Z"
+        },
+        {
+          "step_id": "s4",
+          "tool": "list_accounts",
+          "depends_on": [],
+          "status": "SUCCEEDED",
+          "result": {
+            "accounts": [
+              {
+                "id": "acc_alice",
+                "displayName": "CNY Current",
+                "type": "CURRENT",
+                "status": "ACTIVE",
+                "currency": "CNY",
+                "maskedAccountNumber": "••1048",
+                "balance": null,
+                "availableBalance": {
+                  "amount": "2000.00",
+                  "currency": "CNY"
+                }
+              }
+            ]
+          },
+          "error": null,
+          "at": "2026-10-22T01:09:29.201675Z"
+        }
+      ],
+      "confirmation_required": false,
+      "confirmation": null,
+      "options": [
+        {
+          "id": "r_zhang",
+          "label": "张三 · 138****8000 · ••8821"
+        },
+        {
+          "id": "r_second",
+          "label": "张三 · 138****8000 · ••8821"
+        }
+      ],
+      "receipt": null,
+      "completed_actions": [],
+      "failed_actions": [],
+      "financial_plan": [],
+      "error_code": null
+    },
+    "unknown": {
+      "task_id": "5aacf68de6034edaa8d532188d30cc55",
+      "status": "SUCCEEDED",
+      "mode": "DEEPSEEK",
+      "message": "银行执行结果尚未核实；请勿重新发起或创建新的身份验证。",
+      "steps": [
+        {
+          "step_id": "s2",
+          "tool": "resolve_recipient",
+          "depends_on": [],
+          "status": "SUCCEEDED",
+          "result": {
+            "status": "RESOLVED",
+            "query_reference": "张三",
+            "query_reference_hash": null,
+            "candidates": [
+              {
+                "recipient_id": "r_zhang",
+                "display_name_untrusted": "张三",
+                "masked_account": "••8821",
+                "phone_masked": "138****8000"
+              }
+            ],
+            "recipient": {
+              "recipient_id": "r_zhang",
+              "display_name_untrusted": "张三",
+              "masked_account": "••8821",
+              "phone_masked": "138****8000"
+            }
+          },
+          "error": null,
+          "at": "2026-10-22T01:09:29.202201Z"
+        },
+        {
+          "step_id": "s4",
+          "tool": "list_accounts",
+          "depends_on": [],
+          "status": "SUCCEEDED",
+          "result": {
+            "accounts": [
+              {
+                "id": "acc_alice",
+                "displayName": "CNY Current",
+                "type": "CURRENT",
+                "status": "ACTIVE",
+                "currency": "CNY",
+                "maskedAccountNumber": "••1048",
+                "balance": null,
+                "availableBalance": {
+                  "amount": "2000.00",
+                  "currency": "CNY"
+                }
+              }
+            ]
+          },
+          "error": null,
+          "at": "2026-10-22T01:09:29.202201Z"
+        },
+        {
+          "step_id": "s7",
+          "tool": "prepare_transfer",
+          "depends_on": [],
+          "status": "SUCCEEDED",
+          "result": {
+            "id": "intent_1",
+            "intent_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "status": "PREPARED",
+            "amount": {
+              "amount": "500.00",
+              "currency": "CNY"
+            },
+            "recipient": {
+              "id": "r_zhang",
+              "masked_account": "••8821"
+            },
+            "expiresAt": "2026-10-22T01:14:29.159843+00:00"
+          },
+          "error": null,
+          "at": "2026-10-22T01:09:29.202201Z"
+        }
+      ],
+      "confirmation_required": false,
+      "confirmation": null,
+      "options": [],
+      "receipt": {
+        "id": "transfer_1",
+        "reference": "ASTER-1",
+        "status": "COMPLETED"
+      },
+      "completed_actions": [
+        {
+          "kind": "TRANSFER",
+          "intent_id": "intent_1",
+          "receipt_id": "transfer_1",
+          "status": "COMPLETED"
+        }
+      ],
+      "failed_actions": [],
+      "financial_plan": [],
+      "error_code": "EXECUTION_OUTCOME_UNKNOWN"
+    },
+    "failed": {
+      "task_id": "5aacf68de6034edaa8d532188d30cc55",
+      "status": "FAILED",
+      "mode": "DEEPSEEK",
+      "message": "银行拒绝了本次操作。",
+      "steps": [
+        {
+          "step_id": "s2",
+          "tool": "resolve_recipient",
+          "depends_on": [],
+          "status": "SUCCEEDED",
+          "result": {
+            "status": "RESOLVED",
+            "query_reference": "张三",
+            "query_reference_hash": null,
+            "candidates": [
+              {
+                "recipient_id": "r_zhang",
+                "display_name_untrusted": "张三",
+                "masked_account": "••8821",
+                "phone_masked": "138****8000"
+              }
+            ],
+            "recipient": {
+              "recipient_id": "r_zhang",
+              "display_name_untrusted": "张三",
+              "masked_account": "••8821",
+              "phone_masked": "138****8000"
+            }
+          },
+          "error": null,
+          "at": "2026-10-22T01:09:29.202201Z"
+        },
+        {
+          "step_id": "s4",
+          "tool": "list_accounts",
+          "depends_on": [],
+          "status": "SUCCEEDED",
+          "result": {
+            "accounts": [
+              {
+                "id": "acc_alice",
+                "displayName": "CNY Current",
+                "type": "CURRENT",
+                "status": "ACTIVE",
+                "currency": "CNY",
+                "maskedAccountNumber": "••1048",
+                "balance": null,
+                "availableBalance": {
+                  "amount": "2000.00",
+                  "currency": "CNY"
+                }
+              }
+            ]
+          },
+          "error": null,
+          "at": "2026-10-22T01:09:29.202201Z"
+        },
+        {
+          "step_id": "s7",
+          "tool": "prepare_transfer",
+          "depends_on": [],
+          "status": "SUCCEEDED",
+          "result": {
+            "id": "intent_1",
+            "intent_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "status": "PREPARED",
+            "amount": {
+              "amount": "500.00",
+              "currency": "CNY"
+            },
+            "recipient": {
+              "id": "r_zhang",
+              "masked_account": "••8821"
+            },
+            "expiresAt": "2026-10-22T01:14:29.159843+00:00"
+          },
+          "error": null,
+          "at": "2026-10-22T01:09:29.202201Z"
+        }
+      ],
+      "confirmation_required": false,
+      "confirmation": null,
+      "options": [],
+      "receipt": null,
+      "completed_actions": [
+        {
+          "kind": "TRANSFER",
+          "intent_id": "intent_1",
+          "receipt_id": "transfer_1",
+          "status": "COMPLETED"
+        }
+      ],
+      "failed_actions": [],
+      "financial_plan": [],
+      "error_code": "BANK_REJECTED"
+    }
+  }
+}

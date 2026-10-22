@@ -53,6 +53,39 @@ def _source(task: Task, step: dict, require_quote: bool) -> dict:
             "source_user_turn_index": index}
 
 
+def authorize_action_constraints(task: Task, tool: str, arguments: dict) -> dict:
+    """Reject explicit object/action contradictions; never select tools or supply terms.
+
+    These deliberately limited checks do not certify arbitrary natural-language
+    understanding. Unrecognized language remains subject to policy and review.
+    """
+    step = select_financial_step(task, tool, task.selected_financial_step_id)
+    proof = _source(task, step, True) if step and step.get('source_quote') else {}
+    text = (proof.get('source_text_span', {}).get('text') or next(
+        (turn['text'] for turn in reversed(task.conversation) if turn.get('role') == 'user'), task.goal))
+    if tool == 'prepare_card_action':
+        patterns = {
+            'FREEZE': r'冻结|锁卡|锁住|锁定|锁起来|(?<![a-z])(?:freeze|lock)(?![a-z])',
+            'UNFREEZE': r'解冻|解锁|(?<![a-z])(?:unfreeze|unlock)(?![a-z])',
+            'REPORT_LOST': r'挂失|(?<![a-z])report\s+lost(?![a-z])',
+        }
+        explicit = {action for action, pattern in patterns.items() if re.search(pattern, text, re.I)}
+        if explicit and explicit != {arguments['action_type']}:
+            raise ValueError('STEP_ACTION_NOT_USER_AUTHORIZED')
+        suffixes = re.findall(r'(?:尾号|末四位|ending)\s*(\d{4})|(?<!\d)(\d{4})\s*卡', text, re.I)
+        suffixes = {a or b for a, b in suffixes}
+        if suffixes:
+            cards = [card for ob in task.observations if ob.success and ob.tool_name == 'list_cards'
+                     for card in ob.structured_result.get('cards', [])
+                     if card.get('card_id') == arguments['card_id']]
+            if len(suffixes) != 1 or not any(str(card.get('masked_number', '')).endswith(next(iter(suffixes))) for card in cards):
+                raise ValueError('STEP_CARD_NOT_USER_AUTHORIZED')
+    if tool == 'prepare_stop_recurring_payment' and re.search(
+            r'恢复|重启|重新开启|\b(?:resume|restore|restart|enable)\b', text, re.I):
+        raise ValueError('STEP_ACTION_NOT_USER_AUTHORIZED')
+    return proof
+
+
 def authorize_transfer_terms(task: Task, arguments: dict, tool: str = "prepare_transfer") -> dict | None:
     step = select_financial_step(task, tool, task.selected_financial_step_id)
     if step is None:
@@ -146,6 +179,11 @@ def bind_prepared_intent(task: Task, tool: str, arguments: dict, intent: dict) -
     else:
         record = {**_source(task, step, False), "task_id": task.task_id, "step_id": step["step_id"],
                   "operation_type": tool, "terms_version": task.revision}
+    if tool == 'prepare_card_action':
+        authorize_action_constraints(task, tool, arguments)
+        if intent.get('card', {}).get('id') != arguments['card_id'] or intent.get('actionType') != arguments['action_type']:
+            raise ValueError('BANK_PREPARED_TERMS_MISMATCH')
+        record.update(target_reference=arguments['card_id'], action_type=arguments['action_type'])
     if tool == "prepare_transfer":
         if (intent.get("sourceAccount", {}).get("id") != arguments["source_account_id"] or
                 intent.get("recipient", {}).get("id") != arguments["recipient_id"] or
@@ -185,10 +223,32 @@ def bind_execution_receipt(task: Task, intent: dict, receipt: dict) -> dict:
         raise ValueError("FINANCIAL_RECEIPT_BINDING_CONFLICT")
     if receipt.get("intentId", intent["id"]) != intent["id"]:
         raise ValueError("BANK_RECEIPT_INTENT_MISMATCH")
+    # An explicit contradictory receipt must not be laundered through a correct
+    # intent ID/hash. Optional legacy fields remain optional, never invented.
+    for field, expected in [('recipient', record.get('recipient_reference')),
+                            ('sourceAccount', record.get('account_reference')),
+                            ('card', record.get('target_reference'))]:
+        if field in receipt and expected and (not isinstance(receipt[field], dict) or receipt[field].get('id') != expected):
+            raise ValueError('BANK_RECEIPT_TERMS_MISMATCH')
+    if 'actionType' in receipt and record.get('action_type') and receipt['actionType'] != record['action_type']:
+        raise ValueError('BANK_RECEIPT_TERMS_MISMATCH')
+    if 'amount' in receipt and record.get('amount'):
+        amount = receipt['amount']
+        if (not isinstance(amount, dict) or amount.get('currency') != record['currency']
+                or not _equal_amount(amount.get('amount'), record['amount'])):
+            raise ValueError('BANK_RECEIPT_TERMS_MISMATCH')
     record.update({"status": "EXECUTED", "receipt_id": receipt["id"]})
     step = next(s for s in task.ledger if s.get("step_id") == record["step_id"])
     step["financial_binding"] = dict(record)
     return {**base, **{key: record[key] for key in ("step_id", "terms_hash", "execution_key")}}
+
+
+def _equal_amount(actual: Any, expected: str) -> bool:
+    from decimal import InvalidOperation
+    try:
+        return isinstance(actual, str) and Decimal(actual).is_finite() and Decimal(actual) == Decimal(expected)
+    except InvalidOperation:
+        return False
 
 
 def validate_execution_binding(task: Task, intent: dict) -> None:

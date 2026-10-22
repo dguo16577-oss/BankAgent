@@ -108,13 +108,14 @@ class AgentRuntimeV2:
         return task
 
     @staticmethod
-    def _response(task: Task, message: str, code: str | None = None, options: list[dict[str, str]] | None = None) -> AgentResponse:
+    def _response(task: Task, message: str, code: str | None = None, options: list[dict[str, str]] | None = None,
+                  *, include_plan_notice: bool = True) -> AgentResponse:
         status = TaskStatus.FAILED if task.status == Status.BLOCKED else TaskStatus(task.status.value)
         steps = [PlanStep(step_id=f"s{index + 1}", tool=entry["tool"], status="SUCCEEDED", result=entry.get("result"),
                           at=datetime.now(timezone.utc)) for index, entry in enumerate(task.trace) if entry.get("kind") == "TOOL_RESULT"]
         confirmation = task.active_intent if task.status in {Status.WAITING_CONFIRMATION, Status.WAITING_AUTH} else None
         financial_plan = financial_progress(task)
-        if confirmation and len(financial_plan) > 1:
+        if confirmation and len(financial_plan) > 1 and include_plan_notice:
             current = next((i + 1 for i, row in enumerate(financial_plan) if row.get('intent_id') == confirmation.get('id')), None)
             message += (f' 金融目标共{len(financial_plan)}项，按阶段分别复核和确认；当前为第{current}项。'
                         '其余目标仍保留，尚未准备的操作不会自动执行。可取消当前一笔并继续其他独立目标，或取消整个任务。')
@@ -132,6 +133,14 @@ class AgentRuntimeV2:
                 self.state_store.thread_bind(task.customer_id, task.session_binding,
                                              task.conversation_id, task.task_id)
         self.tasks[task.task_id] = task
+
+    def _remember_response(self, response: AgentResponse) -> AgentResponse:
+        task = self.tasks.get(response.task_id)
+        if task is not None:
+            task.last_response_summary = {'message': response.message, 'error_code': response.error_code,
+                'options': response.options, 'status': task.status.value, 'revision': task.revision}
+            self._save(task)  # Called before releasing the command's versioned lease.
+        return response
 
     @staticmethod
     def _recipient_choices(task: Task) -> dict[str, dict[str, str]]:
@@ -179,8 +188,8 @@ class AgentRuntimeV2:
                    event_sink: Callable[[str, str], Awaitable[None]] | None = None,
                    conversation_id: str | None = None) -> AgentResponse:
         if not self.state_store:
-            return await self._chat_impl(message, cookie, task_id, request_id, event_sink,
-                                         conversation_id=conversation_id)
+            return self._remember_response(await self._chat_impl(message, cookie, task_id, request_id, event_sink,
+                                         conversation_id=conversation_id))
         binding, customer = await self._identity(cookie)
         prior = self.state_store.request_lookup(customer, binding, request_id) if request_id else None
         leased_task_id = prior[1] if prior else task_id
@@ -192,8 +201,8 @@ class AgentRuntimeV2:
             except Exception as exc:
                 raise BankingApiError(409, "TASK_STATE_CONFLICT") from exc
         try:
-            return await self._chat_impl(message, cookie, task_id, request_id, event_sink,
-                                         new_task_id, conversation_id)
+            return self._remember_response(await self._chat_impl(message, cookie, task_id, request_id, event_sink,
+                                         new_task_id, conversation_id))
         finally:
             self.state_store.release(leased_task_id or new_task_id, self.worker_id)
 
@@ -520,9 +529,18 @@ class AgentRuntimeV2:
                     if task.active_intent is not None:
                         missing.append({"goal": "待确认的银行操作", "step_id": "confirmation"})
                     if missing:
-                        task.trace.append({"kind": "COMPLETENESS_REJECTED", "missing": missing})
+                        # Model wording cannot invalidate trusted bank evidence.
+                        # A repeated coverage dispute with identical evidence is
+                        # saved as PARTIAL, not another unbounded planning cycle.
+                        signature = hashlib.sha256(json.dumps([task.revision, missing,
+                            [o.model_dump(mode='json') for o in task.observations]],
+                            sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+                        repeated = any(t.get('kind') == 'COMPLETENESS_REJECTED' and
+                                       t.get('signature') == signature for t in task.trace)
+                        task.trace.append({"kind": "COMPLETENESS_REJECTED", "missing": missing,
+                                           "signature": signature, "repeated": repeated})
                         self._save(task)
-                        if completion_retries < 2 and task.step_count < self.max_steps - 1:
+                        if not repeated and completion_retries < 2 and task.step_count < self.max_steps - 1:
                             completion_retries += 1
                             retry_context = self.context_builder.build(task, self.registry.visible())
                             retry_context["completion_verification"] = {
@@ -628,6 +646,12 @@ class AgentRuntimeV2:
                 try:
                     self.registry.validate(call.tool_name, arguments, task)
                 except RegistryError as exc:
+                    if str(exc) in {'STEP_ACTION_NOT_USER_AUTHORIZED', 'STEP_CARD_NOT_USER_AUTHORIZED'}:
+                        task.trace.append({'kind': 'SEMANTIC_CONSTRAINT_REJECTED', 'tool': call.tool_name,
+                                           'code': str(exc), 'step_id': task.selected_financial_step_id})
+                        task.status = Status.WAITING_USER
+                        self._save(task)
+                        return self._response(task, '拟准备的操作与您指定的对象或动作不一致。请明确卡片尾号或代扣对象及要执行的动作；本次提议没有提交银行。', str(exc))
                     if str(exc) not in {"RECURRING_PAYMENT_NOT_INSPECTED",
                                         "RECURRING_PAYMENT_ID_NOT_OBSERVED",
                                         "REMINDER_ID_NOT_OBSERVED"}:
@@ -767,6 +791,10 @@ class AgentRuntimeV2:
         if task.pending_tool and task.status == Status.RUNNING:
             return self._response(task, "任务在工具调用期间中断；已保存此前进度。请继续同一任务，金融准备状态会先核实。",
                                   "TASK_INTERRUPTED")
+        summary = task.last_response_summary or {}
+        if summary.get('status') == task.status.value and summary.get('revision') == task.revision:
+            return self._response(task, summary['message'], summary.get('error_code'), summary.get('options'),
+                                  include_plan_notice=False)
         return self._response(task, "当前任务状态。")
 
     async def cancel(self, task_id: str, cookie: str, *, action_intent_id: str | None = None) -> AgentResponse:
@@ -777,12 +805,12 @@ class AgentRuntimeV2:
             except Exception as exc:
                 raise BankingApiError(409, "TASK_STATE_CONFLICT") from exc
             try:
-                return await self._cancel_impl(task_id, cookie, action_intent_id)
+                return self._remember_response(await self._cancel_impl(task_id, cookie, action_intent_id))
             except TaskStateConflict as exc:
                 raise BankingApiError(409, 'TASK_STATE_CONFLICT') from exc
             finally:
                 self.state_store.release(task_id, self.worker_id)
-        return await self._cancel_impl(task_id, cookie, action_intent_id)
+        return self._remember_response(await self._cancel_impl(task_id, cookie, action_intent_id))
 
     async def _cancel_impl(self, task_id: str, cookie: str, action_intent_id: str | None = None) -> AgentResponse:
         async with self._lock:
@@ -827,12 +855,12 @@ class AgentRuntimeV2:
             except Exception as exc:
                 raise BankingApiError(409, "TASK_STATE_CONFLICT") from exc
             try:
-                return await self._confirm_impl(task_id, body, cookie)
+                return self._remember_response(await self._confirm_impl(task_id, body, cookie))
             except TaskStateConflict as exc:
                 raise BankingApiError(409, "TASK_STATE_CONFLICT") from exc
             finally:
                 self.state_store.release(task_id, self.worker_id)
-        return await self._confirm_impl(task_id, body, cookie)
+        return self._remember_response(await self._confirm_impl(task_id, body, cookie))
 
     async def _confirm_impl(self, task_id: str, body: ConfirmRequest, cookie: str) -> AgentResponse:
         async with self._lock:

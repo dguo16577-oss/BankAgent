@@ -16,7 +16,7 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_valida
 
 from ..banking import BankingGateway
 from .amount_safety import contradicts_explicit_user_amount, contradicts_half_holding_request
-from .financial_terms import authorize_transfer_terms
+from .financial_terms import authorize_transfer_terms, authorize_action_constraints
 from ..telemetry import traced
 from .timing_safety import conflicts_with_immediate_transfer
 from .history_link import verified_recipient_id
@@ -484,6 +484,11 @@ class ToolRegistry:
             args = definition[2].model_validate(arguments)
         except ValidationError as exc:
             raise RegistryError("SCHEMA_VALIDATION_FAILED") from exc
+        if name in {'prepare_card_action', 'prepare_stop_recurring_payment'}:
+            try:
+                authorize_action_constraints(task, name, args.model_dump(mode='json'))
+            except ValueError as exc:
+                raise RegistryError(str(exc)) from exc
         if name in {"prepare_transfer", "prepare_scheduled_transfer", "prepare_cancel_scheduled_transfer", "prepare_split_request", "prepare_cancel_split_request", "prepare_investment_purchase", "prepare_investment_redemption", "prepare_card_action", "prepare_card_application", "prepare_credit_limit_application"}:
             if task.active_intent is not None:
                 raise RegistryError("ACTIVE_INTENT_ALREADY_EXISTS")

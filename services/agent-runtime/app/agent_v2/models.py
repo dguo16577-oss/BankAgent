@@ -81,6 +81,7 @@ class Task(StrictModel):
     query_ledger: list[dict[str, Any]] = Field(default_factory=list)
     pending_tool: dict[str, Any] | None = None
     last_error: dict[str, str] | None = None
+    last_response_summary: dict[str, Any] | None = None
     session_binding: str
     customer_id: str
     goal: str

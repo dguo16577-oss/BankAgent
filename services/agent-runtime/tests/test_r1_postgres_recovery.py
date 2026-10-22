@@ -26,6 +26,18 @@ class PostgresRecoveryTests(unittest.IsolatedAsyncioTestCase):
         self.bank = CancellableBank()
         self.cookie = "SESSION=alice"
 
+    async def test_last_response_persisted_before_release_and_get_is_read_only(self):
+        runtime = AgentRuntimeV2(self.bank, SequencePlanner(), state_store=self.store)
+        original = await runtime.chat('给张三转10元', self.cookie)
+        restored = AgentRuntimeV2(self.bank, object(), state_store=self.store)
+        before = self.store.load(original.task_id, 'alice', runtime.tasks[original.task_id].session_binding)
+        result = await restored.get(original.task_id, self.cookie)
+        after = self.store.load(original.task_id, 'alice', before.session_binding)
+        self.assertEqual(result.message, original.message)
+        self.assertEqual(result.confirmation['id'], original.confirmation['id'])
+        self.assertEqual(before.state_version, after.state_version)
+        self.assertEqual(before.last_response_summary, after.last_response_summary)
+
     async def test_reauthenticated_history_filters_customer_without_rebinding(self):
         from app.agent_v2.history import TaskHistoryService
         from app.agent_v2.runtime import session_binding

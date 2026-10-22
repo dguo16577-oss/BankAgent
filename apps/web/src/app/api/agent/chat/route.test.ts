@@ -1,5 +1,46 @@
 import { expect, it, vi } from "vitest";
 import { POST } from "./route";
+import fixture from "@/features/agent/__fixtures__/release-responses.json";
+
+it("CONFIRM uses the actual chat proxy contract and returns an unwrapped receipt", async () => {
+  const fetcher = vi
+    .spyOn(globalThis, "fetch")
+    .mockResolvedValue(Response.json(fixture.responses.completed));
+  try {
+    const result = await POST(
+      new Request("http://localhost:3000/api/agent/chat", {
+        method: "POST",
+        headers: {
+          Origin: "http://localhost:3000",
+          Host: "localhost:3000",
+          Cookie: "SESSION=demo",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "CONFIRM",
+          taskId: "a".repeat(32),
+          intentId: "intent_one",
+          intentHash: "b".repeat(64),
+          actionAuthorizationId: "auth_one",
+        }),
+      }),
+    );
+    expect(result.status).toBe(200);
+    expect(String(fetcher.mock.calls[0][0])).toMatch(
+      /\/agent\/tasks\/a{32}\/confirm$/,
+    );
+    expect(JSON.parse(String(fetcher.mock.calls[0][1]?.body))).toEqual({
+      intent_id: "intent_one",
+      intent_hash: "b".repeat(64),
+      action_authorization_id: "auth_one",
+    });
+    const raw = await result.json();
+    expect(raw).not.toHaveProperty("task");
+    expect(raw.receipt.id).toBe(fixture.responses.completed.receipt?.id);
+  } finally {
+    fetcher.mockRestore();
+  }
+});
 
 it("cancels only the selected current intent through a fixed route without forwarding authorization", async () => {
   const previous = process.env.ASTER_AGENT_RUNTIME_URL;
