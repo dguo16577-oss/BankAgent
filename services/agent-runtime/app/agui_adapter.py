@@ -202,6 +202,9 @@ class AgUiAdapter:
                           if turn.get("role") == "user"), "")
         last_answer = next((turn.get("text", "") for turn in reversed(turns)
                             if turn.get("role") == "assistant"), "")
+        summary = getattr(checkpoint, 'last_response_summary', None)
+        if isinstance(summary, dict) and summary.get('status') == task.status.value:
+            last_answer = task.message  # Runtime GET already checked revision/uncertainty.
         return {"taskId": task.task_id, "status": task.status.value,
                 "confirmationRequired": task.confirmation_required,
                 "completedActionCount": len(task.completed_actions),

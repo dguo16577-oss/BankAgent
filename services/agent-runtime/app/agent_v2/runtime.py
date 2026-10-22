@@ -789,6 +789,41 @@ class AgentRuntimeV2:
         if task.execution_uncertain:
             return self._response(task, "银行执行结果尚未核实；请勿重新发起或创建新的身份验证。",
                                   "EXECUTION_OUTCOME_UNKNOWN")
+        if task.active_intent and task.status in {Status.WAITING_CONFIRMATION, Status.WAITING_AUTH}:
+            # GET stays read-only: invalidate only the returned view. A stale
+            # browser/checkpoint must not recreate a bank-cancelled review.
+            view = task.model_copy(deep=True)
+            kind = task.active_intent_kind or 'TRANSFER'
+            segment = {'TRANSFER':'transfer-intents','SCHEDULE':'scheduled-payment-intents',
+                       'SPLIT':'split-action-intents','CARD_ACTION':'card-action-intents',
+                       'RECURRING_STOP':'recurring-payment-action-intents',
+                       'RENEWAL_REMINDER':'renewal-reminder-action-intents',
+                       'INVESTMENT_PURCHASE':'investment-order-intents',
+                       'INVESTMENT_REDEMPTION':'investment-redemption-intents'}.get(kind)
+            try:
+                bank = (await self.gateway.customer_get(f'/customer/{segment}/{task.active_intent["id"]}', cookie)
+                        if segment else task.active_intent)
+                if (bank.get('id') != task.active_intent['id'] or
+                        bank.get('intentHash') != task.active_intent.get('intentHash')):
+                    raise ValueError('INTENT_TERMS_UNVERIFIED')
+                state = bank.get('status', 'PREPARED')
+                expires = datetime.fromisoformat(bank['expiresAt'].replace('Z', '+00:00'))
+                if expires.tzinfo is None:
+                    raise ValueError('INTENT_EXPIRY_UNVERIFIED')
+                if state != 'PREPARED' or expires <= datetime.now(timezone.utc):
+                    view.active_intent = None
+                    view.receipt = None
+                    view.status = Status.CANCELLED if state == 'CANCELLED' else Status.PARTIAL
+                    return self._response(view, '银行复核单已失效或执行结果需要核实；旧确认不可再次执行。',
+                                          'BANK_REVIEW_UNAVAILABLE')
+            except BankingAuthenticationError:
+                raise
+            except (BankingUnavailableError, BankingApiError, ValueError, KeyError, TypeError):
+                view.active_intent = None
+                view.status = Status.PARTIAL
+                view.receipt = None
+                return self._response(view, '暂时无法核实银行复核单，已隐藏确认操作；请稍后查询。',
+                                      'BANK_REVIEW_UNVERIFIED')
         if task.pending_tool and task.status == Status.RUNNING:
             return self._response(task, "任务在工具调用期间中断；已保存此前进度。请继续同一任务，金融准备状态会先核实。",
                                   "TASK_INTERRUPTED")

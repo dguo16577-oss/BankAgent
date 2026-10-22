@@ -224,3 +224,21 @@ class AgUiAdapterTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("账户尾号 1234", task["lastAssistantMessage"])
         self.assertNotIn("SESSION=secret", task["lastAssistantMessage"])
         self.assertIsNone(other.json()["task"])
+
+    async def test_completed_runtime_summary_restores_answer_without_assistant_turn(self):
+        task_id = "b" * 32
+        self.app.state.agui._threads[("SESSION=alice", "alice", "thread-1")] = task_id
+        self.runtime.tasks = {task_id: SimpleNamespace(conversation=[
+            {"role": "user", "text": "查询账户"},
+        ], observations=[], last_response_summary={"status": "SUCCEEDED"})}
+
+        async def completed(task_id, cookie):
+            return AgentResponse(task_id=task_id, status=TaskStatus.SUCCEEDED,
+                                 mode="DEEPSEEK", message="银行已核实当前结果。")
+
+        self.runtime.get = completed
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=self.app),
+                                     base_url="http://agent.test") as client:
+            response = await client.get("/agent/ag-ui/thread-state/thread-1",
+                                        headers={"Cookie": "SESSION=alice"})
+        self.assertEqual(response.json()["task"]["lastAssistantMessage"], "银行已核实当前结果。")
