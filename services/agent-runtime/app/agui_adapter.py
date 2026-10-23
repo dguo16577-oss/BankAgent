@@ -143,12 +143,20 @@ def _knowledge_cards(runtime: AgentRuntimeV2, task_id: str) -> list[dict]:
         return []
     evidence: dict[str, dict] = {}
     searched = False
+    summary = getattr(task, 'last_response_summary', None)
+    cited = None
+    if (isinstance(summary, dict) and summary.get('status') == 'SUCCEEDED'
+            and summary.get('revision') == getattr(task, 'revision', None)
+            and isinstance(summary.get('message'), str)):
+        cited = set(re.findall(r'\[([0-9a-fA-F-]{36})\]', summary.get('message', '')))
     for observation in getattr(task, "observations", []):
         if observation.tool_name != "search_bank_knowledge" or not observation.success:
             continue
         searched = True
         for item in observation.structured_result.get("evidence", [])[:10]:
             if not isinstance(item, dict):
+                continue
+            if cited is not None and item.get('evidence_id') not in cited:
                 continue
             identifier = item.get("evidence_id")
             if not isinstance(identifier, str) or len(identifier) > 64:

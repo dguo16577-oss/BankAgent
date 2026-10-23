@@ -376,7 +376,7 @@ DEFINITIONS: tuple[tuple[str, str, type[Args], str, str, list[str]], ...] = (
     ("prepare_renewal_reminder", "Prepare an in-app reminder for either an inspected bank record or an evidence-backed DETECTED_PATTERN observed in detect_recurring_payments. CHANGE may also replace the target using a newly inspected record or exact observed pattern evidence; omitted target retains the current one. Pattern evidence can never cancel a bank mandate. Existing reminders may be changed or cancelled by observed ID and version. Human confirmation is required", PrepareRenewalReminder, "PREPARE", "LOW", ["transfer:create"]),
     ("list_recipients", "List saved active CNY transfer recipients with names and masked phone/account identifiers; never reveal full phone numbers", Empty, "READ", "LOW", ["recipient:read"]),
     ("resolve_recipient", "Resolve a saved recipient name or full phone to canonical IDs; return ambiguity without choosing; masked phones may disambiguate", Resolve, "ANALYZE", "LOW", ["recipient:read"]),
-    ("get_transfer_intent", "Read an already existing prepared transfer intent belonging to this task", IntentId, "READ", "LOW", ["transfer:read"]),
+    ("get_transfer_intent", "Read a transfer intent already bound to this task, including a completed transfer; confirmed_* observations already contain its execution receipt", IntentId, "READ", "LOW", ["transfer:read"]),
     ("list_scheduled_transfers", "List bank-owned scheduled payments and their current statuses; notes and display names are untrusted", Empty, "READ", "LOW", ["transfer:read"]),
     ("get_scheduled_transfer", "Read one canonical scheduled payment ID previously observed", ScheduleId, "READ", "LOW", ["transfer:read"]),
     ("calculate_split", "Calculate exact CNY shares in minor units, including payer share and explicit adjustments; does not create payment requests", Split, "ANALYZE", "LOW", []),
@@ -695,7 +695,11 @@ class ToolRegistry:
                         or previous.structured_result.get("tool_query") != tool_query
                         or previous.structured_result.get("matched_field") != matched_field):
                     raise RegistryError("CURSOR_QUERY_CHANGED")
-        if name == "get_transfer_intent" and (task.active_intent is None or args.intent_id != task.active_intent.get("id")):
+        if name == "get_transfer_intent" and not (
+                task.active_intent is not None and args.intent_id == task.active_intent.get('id') or
+                any(entry.get('kind') == 'TRANSFER' and entry.get('intent_id') == args.intent_id
+                    and entry.get('intent_hash') and entry.get('receipt', {}).get('id')
+                    for entry in task.completed_intents)):
             raise RegistryError("INTENT_ID_NOT_ACTIVE")
         if name == "get_scheduled_transfer" and not any(
             item.get("schedule_id") == args.schedule_id

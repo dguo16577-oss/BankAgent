@@ -17,6 +17,11 @@ import {
 } from "./agent-contract";
 import { RichPresentation } from "./rich-presentation";
 import { TaskHistory } from "./task-history";
+import { visibleMessages } from "./visible-messages";
+import {
+  readRecoveryHint,
+  writeRecoveryHint,
+} from "@/lib/api/thread-recovery-hint";
 import { getService } from "./service-catalog";
 import {
   AgentProgress,
@@ -823,14 +828,7 @@ function AgentConversation({ threadId }: { threadId: string }) {
           value && typeof value === "object" && "task" in value
             ? value.task
             : undefined;
-        const rawMarker = sessionStorage.getItem(recoveryKey);
-        const marker = rawMarker
-          ? (JSON.parse(rawMarker) as {
-              taskId?: string;
-              status?: string;
-              assistantCount?: number;
-            })
-          : undefined;
+        const marker = readRecoveryHint(threadId);
         let newerTranscript = false;
         let assistantCount = 0;
         if (marker) {
@@ -848,7 +846,7 @@ function AgentConversation({ threadId }: { threadId: string }) {
             Array.isArray(transcript.messages)
               ? (transcript.messages as Message[])
               : [];
-          assistantCount = messages.filter(
+          assistantCount = visibleMessages(messages).filter(
             (message) => message.role === "assistant",
           ).length;
           newerTranscript = assistantCount > (marker.assistantCount ?? 0);
@@ -955,16 +953,14 @@ function AgentConversation({ threadId }: { threadId: string }) {
     setDraft("");
     const previousTask =
       typeof state?.taskId === "string" ? state : recoveredState;
-    sessionStorage.setItem(
-      `aster-agui-inflight-${threadId}`,
-      JSON.stringify({
-        taskId: previousTask?.taskId,
-        status: previousTask?.status,
-        assistantCount: [...recoveredMessages, ...agent.messages].filter(
-          (item) => item.role === "assistant",
-        ).length,
-      }),
-    );
+    writeRecoveryHint(threadId, {
+      taskId: previousTask?.taskId,
+      status: previousTask?.status,
+      assistantCount: visibleMessages([
+        ...recoveredMessages,
+        ...agent.messages,
+      ]).filter((item) => item.role === "assistant").length,
+    });
     agent.setMessages([
       ...agent.messages,
       { id: crypto.randomUUID(), role: "user", content: message },
@@ -1117,12 +1113,8 @@ function AgentConversation({ threadId }: { threadId: string }) {
       />
       <div className="min-h-[34rem] rounded-2xl border bg-white p-5 shadow-sm">
         <div className="space-y-4" aria-live="polite">
-          {[...recoveredMessages, ...agent.messages]
-            .filter(
-              (message) =>
-                message.role === "user" || message.role === "assistant",
-            )
-            .map((message) => (
+          {visibleMessages([...recoveredMessages, ...agent.messages]).map(
+            (message) => (
               <article
                 key={message.id}
                 className={`max-w-[90%] rounded-2xl p-4 text-sm leading-7 ${message.role === "user" ? "ml-auto bg-slate-900 text-white" : "border bg-slate-50"}`}
@@ -1134,11 +1126,10 @@ function AgentConversation({ threadId }: { threadId: string }) {
                       : "You"
                     : "Aster"}
                 </p>
-                <p className="whitespace-pre-wrap">
-                  {typeof message.content === "string" ? message.content : ""}
-                </p>
+                <p className="whitespace-pre-wrap">{message.visibleText}</p>
               </article>
-            ))}
+            ),
+          )}
           {bankResult?.reply && (
             <article
               className="max-w-[90%] rounded-2xl border bg-teal-50 p-4 text-sm leading-7"

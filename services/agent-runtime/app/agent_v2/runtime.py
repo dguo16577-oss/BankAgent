@@ -482,6 +482,19 @@ class AgentRuntimeV2:
                 task.trace.append({"kind": "PLANNER_DECISION", "step": task.step_count + 1,
                                    "decision": _trace_safe(decision.model_dump(mode="json"))})
                 task.step_count += 1
+                if decision.type == 'COMPLETE' and decision.completion_kind == 'REFUSAL':
+                    # A refusal ends a read request, never certifies its data was
+                    # obtained. It cannot terminate/authorize a financial goal.
+                    if (task.active_intent or task.execution_uncertain or task.completed_actions or
+                            any(step.get('kind') == 'FINANCIAL_ACTION' for step in task.ledger)):
+                        raise RegistryError('REFUSAL_CANNOT_RESOLVE_FINANCIAL_ACTION')
+                    task.status = Status.BLOCKED
+                    for step in task.ledger:
+                        step.update(status='BLOCKED', failure_reason='CUSTOMER_SCOPE_POLICY', evidence_refs=[])
+                    task.trace.append({'kind': 'POLICY_REFUSAL', 'reason': 'CUSTOMER_SCOPE'})
+                    self._save(task)
+                    return self._response(task, '当前会话只能查询本人的银行资料，不能访问其他客户的数据。',
+                                          'REQUEST_REFUSED')
                 if (decision.type == "COMPLETE" and followup
                         and len(task.observations) == observation_start
                         and any(o.success and o.tool_name in {"summarize_spending", "detect_transaction_anomalies"}
@@ -526,7 +539,8 @@ class AgentRuntimeV2:
                             task.ledger, decision.final_message)
                         missing = [{"step_id": step["step_id"], "goal": step["goal"],
                                     "evidence_tools": step.get("evidence_tools", [])}
-                                   for step in task.ledger if step["step_id"] in semantic_missing]
+                                   for step in task.ledger if step["step_id"] in semantic_missing
+                                   and step.get('kind') != 'FINANCIAL_ACTION']
                     if task.active_intent is not None:
                         missing.append({"goal": "待确认的银行操作", "step_id": "confirmation"})
                     if missing:
@@ -901,15 +915,23 @@ class AgentRuntimeV2:
     async def _confirm_impl(self, task_id: str, body: ConfirmRequest, cookie: str) -> AgentResponse:
         async with self._lock:
             task = await self._owned(task_id, cookie)
-            if task.status == Status.SUCCEEDED and task.receipt:
-                previous = next((entry for entry in task.completed_intents
-                                 if entry.get("intent_id") == body.intent_id
-                                 and entry.get("intent_hash") == body.intent_hash), None)
-                if previous is None:
-                    raise BankingApiError(409, "TRANSFER_INTENT_HASH_MISMATCH")
+            previous = next((entry for entry in task.completed_intents
+                             if entry.get('intent_id') == body.intent_id), None)
+            if previous is not None:
+                if previous.get('intent_hash') != body.intent_hash:
+                    raise BankingApiError(409, 'TRANSFER_INTENT_HASH_MISMATCH')
                 if previous.get("kind") == "CARD_ACTION":
                     raise BankingApiError(409, "TASK_NOT_CONFIRMABLE")
-                return self._response(task, "该确认已处理；不会重复执行银行操作。")
+                if not previous.get('receipt', {}).get('id'):
+                    raise BankingApiError(409, 'COMPLETED_RECEIPT_UNVERIFIED')
+                if not any(action.get('intent_id') == body.intent_id and
+                           action.get('kind') == previous.get('kind') and
+                           action.get('receipt_id') == previous['receipt']['id']
+                           for action in task.completed_actions):
+                    raise BankingApiError(409, 'COMPLETED_RECEIPT_BINDING_UNVERIFIED')
+                view = task.model_copy(deep=True)
+                view.receipt = previous['receipt']
+                return self._response(view, "该确认已处理；不会重复执行银行操作。")
             if task.status not in {Status.WAITING_CONFIRMATION, Status.WAITING_AUTH} or not task.active_intent:
                 raise BankingApiError(409, "TASK_NOT_CONFIRMABLE")
             intent = task.active_intent
@@ -1073,4 +1095,10 @@ class AgentRuntimeV2:
             task.conversation.append({"role": "assistant", "text":
                 "操作已获用户确认并由银行执行。根据原始请求、已有分析和完成回执，继续处理尚未完成的部分；若已全部完成，请汇总所有结果，不要重复操作。"})
             self._save(task)
+            if task.ledger and not update_ledger(task) and all(
+                    step.get('kind') == 'FINANCIAL_ACTION' and step.get('status') == 'SUCCEEDED'
+                    for step in task.ledger):
+                task.status = Status.SUCCEEDED
+                self._save(task)
+                return self._response(task, '银行操作已完成，已核实每项操作对应的银行回执。')
             return await self._run(task, cookie, len(task.observations), False)

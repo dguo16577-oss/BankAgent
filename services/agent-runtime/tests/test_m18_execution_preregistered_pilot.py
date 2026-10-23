@@ -15,13 +15,13 @@ pilot = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(pilot)
 
 from evals.m18_cases import load_cases  # noqa: E402
+from m18_grader_fixtures import transfer_sample
 
 
 class ExecutionPreregisteredPilotTests(unittest.TestCase):
     def setUp(self) -> None:
         self.case = load_cases(ROOT / "research/agent-transfer/m18-execution-preregistered.jsonl")[0]
-        self.evidence = json.loads((ROOT / "artifacts/m18-isolated-transfer-smoke.json")
-                                   .read_text(encoding="utf-8"))
+        self.evidence = transfer_sample()
 
     def test_existing_bank_evidence_meets_registered_terms(self):
         row = pilot.grade(self.case, self.evidence, process_ok=True)

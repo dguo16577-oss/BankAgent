@@ -8,6 +8,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
+from m18_grader_fixtures import transfer_sample, funds_sample
 
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -108,8 +109,7 @@ class M18EvidenceInventoryTests(unittest.TestCase):
     def test_transfer_lifecycle_requires_single_db_effect_and_same_receipt(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            source = INVENTORY.ARTIFACTS / INVENTORY.TRANSFER_LIFECYCLE
-            case = json.loads(source.read_text(encoding="utf-8"))
+            case = transfer_sample()
             path = root / INVENTORY.TRANSFER_LIFECYCLE
             with patch.object(INVENTORY, "ARTIFACTS", root), patch.object(INVENTORY, "ROOT", root):
                 path.write_text(json.dumps(case), encoding="utf-8")
@@ -131,8 +131,7 @@ class M18EvidenceInventoryTests(unittest.TestCase):
     def test_funds_revalidation_requires_bank_rejection_and_zero_new_debit(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            source = INVENTORY.ARTIFACTS / INVENTORY.FUNDS_REVALIDATION
-            case = json.loads(source.read_text(encoding="utf-8"))
+            case = funds_sample()
             path = root / INVENTORY.FUNDS_REVALIDATION
             with patch.object(INVENTORY, "ARTIFACTS", root), patch.object(INVENTORY, "ROOT", root):
                 path.write_text(json.dumps(case), encoding="utf-8")

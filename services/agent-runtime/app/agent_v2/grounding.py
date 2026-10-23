@@ -17,7 +17,7 @@ FACT_FIELDS = {"merchant_untrusted": "merchant", "counterparty_untrusted": "coun
                "transaction_id": "transaction_id", "amount": "amount", "currency": "currency",
                "category": "category"}
 MONEY = re.compile(r"(?:(?:CNY|USD|JPY|EUR|GBP|HKD|AUD|SGD|[¥￥])\s*([0-9][0-9,]*\.\d{2})|([0-9][0-9,]*\.\d{2})\s*元)")
-MASK = re.compile(r"(?:[•*]{2,}|尾号\s*)(?:\s|\.)*([0-9]{4})")
+MASK = re.compile(r"(?!(?:\*{2,})(?:\s|\.)*[0-9]{4}[年月日])(?:[•*]{2,}|尾号\s*)(?:\s|\.)*([0-9]{4})(?![0-9])")
 BULLET_MERCHANT = re.compile(
     r"^\s*[-*]\s*([^，,:：\n]{2,80})[，,]\s*(?:CNY|USD|JPY|EUR|GBP|HKD|AUD|SGD|[¥￥])\s*([0-9][0-9,]*\.\d{2})",
     re.MULTILINE,

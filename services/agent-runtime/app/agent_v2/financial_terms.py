@@ -151,13 +151,31 @@ def authorize_transfer_terms(task: Task, arguments: dict, tool: str = "prepare_t
                 matched = True
     if not matched:
         raise ValueError("STEP_RECIPIENT_NOT_USER_AUTHORIZED")
-    suffixes = re.findall(r"(?:尾号|末四位|ending)\s*(\d{4})", quote, re.IGNORECASE)
-    if suffixes:
-        accounts = [row for ob in task.observations if ob.success and ob.tool_name == "list_accounts"
-                    for row in ob.structured_result.get("accounts", []) if row.get("id") == arguments["source_account_id"]]
-        if len(set(suffixes)) != 1 or not any(str(row.get("maskedAccountNumber", "")).endswith(suffixes[0]) for row in accounts):
-            raise ValueError("STEP_ACCOUNT_NOT_USER_AUTHORIZED")
-    elif previous and previous.get("account_reference") != arguments["source_account_id"]:
+    accounts = [row for ob in task.observations if ob.success and ob.tool_name == "list_accounts"
+                for row in ob.structured_result.get("accounts", [])]
+    payer_suffixes, payee_suffixes = [], []
+    for match in re.finditer(r"(?:尾号|末四位|ending)\s*(\d{4})", quote, re.IGNORECASE):
+        (payee_suffixes if _account_role(quote, match.start()) == 'RECIPIENT'
+         else payer_suffixes).append(match.group(1))
+    if payer_suffixes and (len(set(payer_suffixes)) != 1 or not any(
+            row.get('id') == arguments['source_account_id'] and
+            str(row.get('maskedAccountNumber', '')).endswith(payer_suffixes[0]) for row in accounts)):
+        raise ValueError("STEP_ACCOUNT_NOT_USER_AUTHORIZED")
+    if payee_suffixes and (len(set(payee_suffixes)) != 1 or not any(
+            str(candidate.get('masked_account', '')).endswith(payee_suffixes[0]) for _, candidate in candidates)):
+        raise ValueError("STEP_RECIPIENT_ACCOUNT_NOT_USER_AUTHORIZED")
+    named_accounts = set()
+    for row in accounts:
+        name = row.get('displayName') or row.get('name')
+        if not isinstance(name, str) or not name.strip():
+            continue
+        name_pattern = r'\s*'.join(re.escape(part) for part in name.split())
+        for match in re.finditer(r'(?<![A-Za-z0-9])' + name_pattern + r'(?![A-Za-z0-9])', quote, re.I):
+            if _account_role(quote, match.start()) != 'RECIPIENT':
+                named_accounts.add(row.get('id'))
+    if named_accounts and named_accounts != {arguments['source_account_id']}:
+        raise ValueError('STEP_ACCOUNT_NOT_USER_AUTHORIZED')
+    if not payer_suffixes and not named_accounts and previous and previous.get("account_reference") != arguments["source_account_id"]:
         raise ValueError("STEP_ACCOUNT_CHANGE_NOT_USER_AUTHORIZED")
     for code, labels in {"USD": r"USD|美元", "JPY": r"JPY|日元", "EUR": r"EUR|欧元",
                          "GBP": r"GBP|英镑", "CNY": r"CNY|RMB|人民币"}.items():
@@ -168,6 +186,19 @@ def authorize_transfer_terms(task: Task, arguments: dict, tool: str = "prepare_t
     return {**source, "task_id": task.task_id, "step_id": step["step_id"], "operation_type": tool,
             "recipient_reference": arguments["recipient_id"], "account_reference": arguments["source_account_id"],
             "amount": arguments["amount"], "currency": arguments["currency"], "terms_version": task.revision}
+
+
+def _account_role(text: str, position: int) -> str:
+    """Only attribute explicit account constraints; never select a tool or ID.
+
+    Closest role marker in the same clause distinguishes sender from payee.
+    Unqualified suffixes retain the existing sender veto and fail closed.
+    """
+    before = re.split(r'[，,；;。\n]', text[:position])[-1]
+    markers = list(re.finditer(
+        r'(?P<payee>收款|收款人|对方|转入|给|\bto\b|\brecipient\b|\bpayee\b|\bbeneficiary\b)'
+        r'|(?P<payer>付款|扣款|转出|从|用|我的|\bfrom\b|\bsource\b|\bpayer\b)', before, re.I))
+    return 'RECIPIENT' if markers and markers[-1].lastgroup == 'payee' else 'PAYER'
 
 
 def bind_prepared_intent(task: Task, tool: str, arguments: dict, intent: dict) -> dict | None:

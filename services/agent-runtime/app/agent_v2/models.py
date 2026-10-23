@@ -33,9 +33,15 @@ class PlannerDecision(StrictModel):
     tool_call: ToolCall | None = None
     question: Question | None = None
     final_message: str | None = None
+    completion_kind: Literal['ANSWER', 'REFUSAL'] = 'ANSWER'
+    refusal_reason: Literal['CUSTOMER_SCOPE'] | None = None
 
     @model_validator(mode="after")
     def valid_shape(self) -> "PlannerDecision":
+        if self.type != 'COMPLETE' and (self.completion_kind != 'ANSWER' or self.refusal_reason is not None):
+            raise ValueError('Refusal only applies to COMPLETE')
+        if (self.completion_kind == 'REFUSAL') != (self.refusal_reason is not None):
+            raise ValueError('Refusal requires an explicit policy reason')
         if self.type == "TOOL_CALL" and (self.tool_call is None or self.question is not None or self.final_message is not None):
             raise ValueError("Invalid TOOL_CALL shape")
         if self.type == "ASK_USER" and (self.question is None or self.tool_call is not None or self.final_message is not None):

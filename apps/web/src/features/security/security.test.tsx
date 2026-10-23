@@ -64,18 +64,14 @@ it("login form reports invalid credentials then returns to bank home on success"
   mount(<LoginForm />);
   await userEvent.type(screen.getByLabelText("Email"), securityFixture.email);
   await userEvent.type(screen.getByLabelText("Password"), "incorrect");
-  await userEvent.click(
-    screen.getByRole("button", { name: "Sign in" }),
-  );
+  await userEvent.click(screen.getByRole("button", { name: "Sign in" }));
   expect(await screen.findByRole("alert")).toHaveTextContent("incorrect");
   await userEvent.clear(screen.getByLabelText("Password"));
   await userEvent.type(
     screen.getByLabelText("Password"),
     securityFixture.password,
   );
-  await userEvent.click(
-    screen.getByRole("button", { name: "Sign in" }),
-  );
+  await userEvent.click(screen.getByRole("button", { name: "Sign in" }));
   await waitFor(() => expect(nav.replace).toHaveBeenCalledWith("/"));
 });
 it("login explicitly explains demo authentication and session expiry", () => {

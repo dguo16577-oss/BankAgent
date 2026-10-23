@@ -11,13 +11,23 @@ import httpx
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 
-from app.agui_adapter import AgUiAdapter, _safe_text, _spending_cards
+from app.agui_adapter import AgUiAdapter, _safe_text, _spending_cards, _knowledge_cards
 from app.banking import BankingAuthenticationError
 from app.main import create_app
 from app.task_models import AgentResponse, TaskStatus
 
 
 class KnowledgeCitationMaskTests(unittest.TestCase):
+    def test_completed_reply_omits_uncited_retrieval_hits_from_source_cards(self):
+        first, second = '7035d1f0-0490-40a9-bf12-123456789012', '7035d1f0-0490-40a9-bf12-223456789012'
+        task = SimpleNamespace(revision=1, observations=[SimpleNamespace(
+            tool_name='search_bank_knowledge', success=True, structured_result={'evidence': [
+                {'evidence_id': first, 'document_title': '相关规则'},
+                {'evidence_id': second, 'document_title': '旁支资料'}, None]})],
+            last_response_summary={'status': 'SUCCEEDED', 'revision': 1, 'message': f'说明 [{first}]'})
+        cards = _knowledge_cards(SimpleNamespace(tasks={'t': task}), 't')
+        self.assertEqual([s['evidenceId'] for s in cards[0]['sources']], [first])
+
     def test_observed_uuid_citation_survives_number_mask(self):
         citation = "7035d1f0-0490-40a9-bf12-123456789012"
         answer = f"Source [{citation}]; account 1234567890123456"

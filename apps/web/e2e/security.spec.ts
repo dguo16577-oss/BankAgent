@@ -93,9 +93,7 @@ for (const width of [320, 390, 768, 1024, 1440]) {
     await expect(page).toHaveURL(/\/login/);
     await page.goto("/app/accounts");
     await expect(page).toHaveURL(/\/login/);
-    await expect(
-      page.getByRole("button", { name: "Sign in" }),
-    ).toBeVisible();
+    await expect(page.getByRole("button", { name: "Sign in" })).toBeVisible();
     const response = await page.evaluate(async () => {
       const r = await fetch("/customer/accounts");
       return { status: r.status, body: await r.json() };
