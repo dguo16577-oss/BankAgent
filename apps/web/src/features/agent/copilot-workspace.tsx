@@ -3,6 +3,12 @@
 import { type FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import {
+  Sparkles,
+  Wallet,
+  ChartNoAxesCombined,
+  ArrowLeftRight,
+} from "lucide-react";
+import {
   CopilotKitProvider,
   useAgent,
   type Message,
@@ -18,6 +24,8 @@ import {
 import { RichPresentation } from "./rich-presentation";
 import { TaskHistory } from "./task-history";
 import { visibleMessages } from "./visible-messages";
+import { AnswerContent } from "./answer-content";
+import { ChatComposer } from "./chat-composer";
 import {
   readRecoveryHint,
   writeRecoveryHint,
@@ -1044,101 +1052,114 @@ function AgentConversation({ threadId }: { threadId: string }) {
   const displayState =
     typeof state?.taskId === "string" ? state : recoveredState;
   const presentation = displayState?.presentation;
+  const conversationMessages = visibleMessages([
+    ...recoveredMessages,
+    ...agent.messages,
+  ]);
 
   return (
-    <div className="space-y-5">
-      <TaskHistory />
-      <PendingAction
-        state={
-          typeof state?.taskId === "string"
-            ? state
-            : (recoveredState ??
-              (bankResult?.task as unknown as
-                Record<string, unknown> | undefined))
-        }
-        onResolved={(result) => {
-          agent.setState({});
-          setRecoveredState(undefined);
-          setBankResult(result);
-        }}
-      />
-      <TaskProgressCard state={displayState} bankResult={bankResult} />
-      <RichPresentation
-        raw={presentation}
-        busy={busy}
-        onCancel={() => {
-          const taskId = displayState?.taskId;
-          if (
-            typeof taskId !== "string" ||
-            displayState?.status === "SUCCEEDED"
-          )
-            return;
-          setBusy(true);
-          void fetch("/api/agent/chat", {
-            method: "POST",
-            credentials: "same-origin",
-            cache: "no-store",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ action: "CANCEL", taskId, locale }),
-          })
-            .then(async (response) => {
-              if (!response.ok) throw new Error("Could not cancel assistance");
-              const result = parseAgentMessage(await response.json());
-              setBankResult(result);
-              setRecoveredState(undefined);
-              agent.setState({});
-            })
-            .catch((cause) =>
-              setError(
-                cause instanceof Error
-                  ? cause.message
-                  : "Could not cancel assistance",
-              ),
-            )
-            .finally(() => setBusy(false));
-        }}
-        onAssist={(serviceId) => {
-          const service = getService(serviceId);
-          if (service)
-            void send(
-              locale === "zh-CN"
-                ? `请协助我了解${service.title}服务。先说明需要补充的信息；本次点击不授权创建或执行任何银行操作。`
-                : `Help me understand the ${service.titleEn} service. Ask for missing details first. This click does not authorize preparing or executing a bank action.`,
-            );
-        }}
-      />
-      {!Array.isArray(presentation) && <SpendingCard state={displayState} />}
-      <KnowledgeSources
-        state={typeof state?.taskId === "string" ? state : recoveredState}
-      />
-      <div className="min-h-[34rem] rounded-2xl border bg-white p-5 shadow-sm">
-        <div className="space-y-4" aria-live="polite">
-          {visibleMessages([...recoveredMessages, ...agent.messages]).map(
-            (message) => (
-              <article
-                key={message.id}
-                className={`max-w-[90%] rounded-2xl p-4 text-sm leading-7 ${message.role === "user" ? "ml-auto bg-slate-900 text-white" : "border bg-slate-50"}`}
+    <div className="space-y-6">
+      <details className="text-sm text-slate-500">
+        <summary className="w-fit cursor-pointer rounded-lg px-2 py-1 hover:bg-slate-100">
+          {locale === "zh-CN" ? "任务历史" : "Task history"}
+        </summary>
+        <div className="mt-2">
+          <TaskHistory />
+        </div>
+      </details>
+      <div className="min-h-[26rem]">
+        {conversationMessages.length === 0 && !bankResult && !busy && (
+          <div className="mx-auto flex min-h-[22rem] max-w-2xl flex-col items-center justify-center px-2 text-center">
+            <span className="mb-5 grid size-12 place-items-center rounded-2xl bg-teal-50 text-teal-800">
+              <Sparkles size={25} aria-hidden="true" />
+            </span>
+            <h2 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
+              {locale === "zh-CN"
+                ? "今天，有什么可以帮你？"
+                : "How can I help you today?"}
+            </h2>
+            <p className="mt-3 text-sm leading-6 text-slate-500">
+              {locale === "zh-CN"
+                ? "查询账户、了解消费，或一起处理银行事务。"
+                : "Explore your accounts, understand spending, or get help with banking."}
+            </p>
+            <div className="mt-7 grid w-full gap-3 text-left sm:grid-cols-3">
+              {[
+                { Icon: Wallet, zh: "查看账户余额", en: "Check my balances" },
+                {
+                  Icon: ChartNoAxesCombined,
+                  zh: "分析本月消费",
+                  en: "Analyze this month’s spending",
+                },
+                {
+                  Icon: ArrowLeftRight,
+                  zh: "转账页面在哪里？",
+                  en: "Where is the transfer page?",
+                },
+              ].map(({ Icon, zh, en }) => (
+                <button
+                  key={en}
+                  type="button"
+                  onClick={() => setDraft(locale === "zh-CN" ? zh : en)}
+                  className="rounded-2xl border border-slate-200 bg-white p-4 text-sm text-slate-600 transition-colors hover:border-teal-300 hover:bg-teal-50/40"
+                >
+                  <Icon
+                    size={19}
+                    className="mb-3 text-teal-700"
+                    aria-hidden="true"
+                  />
+                  {locale === "zh-CN" ? zh : en}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+        <div
+          className="space-y-7 pb-6"
+          aria-live="polite"
+          aria-label={locale === "zh-CN" ? "对话" : "Conversation"}
+        >
+          {conversationMessages.map((message) => (
+            <article
+              key={message.id}
+              className={
+                message.role === "user"
+                  ? "ml-auto w-fit max-w-[88%] rounded-3xl bg-slate-100 px-5 py-3 text-[15px] leading-7 text-slate-800 sm:max-w-[80%]"
+                  : "min-w-0 px-1 py-2 sm:px-2"
+              }
+            >
+              <p
+                className={
+                  message.role === "user"
+                    ? "sr-only"
+                    : "mb-3 flex items-center gap-2 text-xs font-semibold tracking-wide text-teal-800"
+                }
               >
-                <p className="mb-1 text-xs font-semibold">
-                  {message.role === "user"
-                    ? locale === "zh-CN"
-                      ? "你"
-                      : "You"
-                    : "Aster"}
-                </p>
+                {message.role !== "user" && (
+                  <Sparkles size={14} aria-hidden="true" />
+                )}
+                {message.role === "user"
+                  ? locale === "zh-CN"
+                    ? "你"
+                    : "You"
+                  : "Aster"}
+              </p>
+              {message.role === "user" ? (
                 <p className="whitespace-pre-wrap">{message.visibleText}</p>
-              </article>
-            ),
-          )}
+              ) : (
+                <AnswerContent text={message.visibleText} />
+              )}
+            </article>
+          ))}
           {bankResult?.reply && (
             <article
-              className="max-w-[90%] rounded-2xl border bg-teal-50 p-4 text-sm leading-7"
+              className="min-w-0 rounded-2xl border-l-2 border-teal-600 bg-teal-50/40 px-5 py-4"
               aria-label={
                 locale === "zh-CN" ? "银行任务结果" : "Bank task result"
               }
             >
               <p className="mb-1 text-xs font-semibold">Aster</p>
-              <p className="whitespace-pre-wrap">{bankResult.reply}</p>
+              <AnswerContent text={bankResult.reply} />
             </article>
           )}
           <AgentProgress
@@ -1157,29 +1178,82 @@ function AgentConversation({ threadId }: { threadId: string }) {
             }
           />
         </div>
-        <form onSubmit={submit} className="mt-6 flex gap-3 border-t pt-5">
-          <label className="sr-only" htmlFor="aster-copilot-message">
-            {locale === "zh-CN" ? "你的消息" : "Your message"}
-          </label>
-          <input
-            id="aster-copilot-message"
-            className="min-w-0 flex-1 rounded-xl border px-4 py-3 text-sm"
-            value={draft}
-            onChange={(event) => setDraft(event.target.value)}
-            maxLength={2000}
-            placeholder={
-              locale === "zh-CN"
-                ? "咨询账户、消费，或提出转账需求…"
-                : "Ask about accounts, spending, or a transfer…"
+        <div className="space-y-5 pb-6">
+          <PendingAction
+            state={
+              typeof state?.taskId === "string"
+                ? state
+                : (recoveredState ??
+                  (bankResult?.task as unknown as
+                    Record<string, unknown> | undefined))
             }
+            onResolved={(result) => {
+              agent.setState({});
+              setRecoveredState(undefined);
+              setBankResult(result);
+            }}
           />
-          <Button
-            type="submit"
-            disabled={!isReady || !hydrated || busy || !draft.trim()}
-          >
-            {busy ? "…" : locale === "zh-CN" ? "发送" : "Send"}
-          </Button>
-        </form>
+          <TaskProgressCard state={displayState} bankResult={bankResult} />
+          <RichPresentation
+            raw={presentation}
+            busy={busy}
+            onCancel={() => {
+              const taskId = displayState?.taskId;
+              if (
+                typeof taskId !== "string" ||
+                displayState?.status === "SUCCEEDED"
+              )
+                return;
+              setBusy(true);
+              void fetch("/api/agent/chat", {
+                method: "POST",
+                credentials: "same-origin",
+                cache: "no-store",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ action: "CANCEL", taskId, locale }),
+              })
+                .then(async (response) => {
+                  if (!response.ok)
+                    throw new Error("Could not cancel assistance");
+                  const result = parseAgentMessage(await response.json());
+                  setBankResult(result);
+                  setRecoveredState(undefined);
+                  agent.setState({});
+                })
+                .catch((cause) =>
+                  setError(
+                    cause instanceof Error
+                      ? cause.message
+                      : "Could not cancel assistance",
+                  ),
+                )
+                .finally(() => setBusy(false));
+            }}
+            onAssist={(serviceId) => {
+              const service = getService(serviceId);
+              if (service)
+                void send(
+                  locale === "zh-CN"
+                    ? `请协助我了解${service.title}服务。先说明需要补充的信息；本次点击不授权创建或执行任何银行操作。`
+                    : `Help me understand the ${service.titleEn} service. Ask for missing details first. This click does not authorize preparing or executing a bank action.`,
+                );
+            }}
+          />
+          {!Array.isArray(presentation) && (
+            <SpendingCard state={displayState} />
+          )}
+          <KnowledgeSources
+            state={typeof state?.taskId === "string" ? state : recoveredState}
+          />
+        </div>
+        <ChatComposer
+          id="aster-copilot-message"
+          value={draft}
+          onChange={setDraft}
+          onSubmit={submit}
+          busy={busy}
+          disabled={!isReady || !hydrated}
+        />
         {error && (
           <p role="alert" className="mt-3 text-sm text-destructive">
             {error}
@@ -1236,19 +1310,22 @@ export function CopilotWorkspace() {
       agentId="aster"
       enableInspector={false}
     >
-      <div className="mx-auto max-w-5xl space-y-6">
-        <div className="flex items-center justify-between gap-4">
+      <div className="mx-auto max-w-3xl space-y-6 pb-4">
+        <div className="flex items-start justify-between gap-4 border-b border-slate-200/70 pb-5">
           <div>
-            <h1 className="text-3xl font-semibold">
+            <h1 className="text-xl font-semibold tracking-tight">
               {locale === "zh-CN" ? "智能银行助手" : "Aster banking assistant"}
             </h1>
-            <p className="text-sm text-muted-foreground">
+            <p className="mt-2 max-w-lg text-xs leading-5 text-muted-foreground">
               {locale === "zh-CN"
                 ? "查询账户、分析消费，或让 Aster 协助办理业务。所有银行操作均需你独立确认。"
                 : "Explore your accounts and spending with Aster. Bank actions require your separate confirmation."}
             </p>
           </div>
-          <Link className="text-sm underline" href="/app/agent">
+          <Link
+            className="shrink-0 rounded-full border bg-white px-3 py-1.5 text-xs text-slate-500 transition-colors hover:bg-slate-50"
+            href="/app/agent"
+          >
             {locale === "zh-CN" ? "简洁对话" : "Classic chat"}
           </Link>
         </div>

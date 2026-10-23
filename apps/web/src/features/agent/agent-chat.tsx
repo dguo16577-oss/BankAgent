@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowUpRight, Send, Sparkles } from "lucide-react";
+import { ArrowUpRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ActionVerification } from "@/features/security/action-verification";
@@ -12,6 +12,8 @@ import { useLocale } from "@/lib/i18n/locale";
 import { usePrepareTransfer } from "@/features/payments/use-payments";
 import { parseAgentMessage, type AgentMessage } from "./agent-contract";
 import { taskStepLabels } from "./agent-progress";
+import { AnswerContent } from "./answer-content";
+import { ChatComposer } from "./chat-composer";
 
 type Turn =
   | { id: number; role: "user"; message: string }
@@ -200,7 +202,7 @@ export function AgentChat() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl space-y-7">
+    <div className="mx-auto max-w-3xl space-y-7 pb-4">
       <div className="space-y-2">
         <p className="flex items-center gap-2 text-sm font-semibold text-teal-800">
           <Sparkles size={18} aria-hidden="true" /> {t("AI Agent")}
@@ -255,23 +257,22 @@ export function AgentChat() {
           turn.role === "user" ? (
             <div
               key={turn.id}
-              className="ml-auto max-w-[90%] rounded-xl bg-slate-900 p-4 text-sm leading-6 text-white sm:max-w-[75%]"
+              className="ml-auto w-fit max-w-[90%] rounded-3xl bg-slate-100 px-5 py-3 text-[15px] leading-7 text-slate-800 sm:max-w-[80%]"
             >
-              <p className="mb-1 text-xs font-semibold text-slate-300">
-                {t("You")}
-              </p>
+              <p className="sr-only">{t("You")}</p>
               <p className="whitespace-pre-wrap break-words">{turn.message}</p>
             </div>
           ) : (
             <Card
               key={turn.id}
-              className="max-w-[95%] shadow-none sm:max-w-[85%]"
+              className="w-full border-0 bg-transparent shadow-none"
             >
-              <CardContent className="space-y-4 text-sm leading-6">
-                <p className="font-semibold">{t("Aster Agent")}</p>
-                <p className="whitespace-pre-wrap break-words">
-                  {turn.response.reply}
+              <CardContent className="space-y-4 px-1 text-sm leading-7 sm:px-2">
+                <p className="flex items-center gap-2 text-xs font-semibold text-teal-800">
+                  <Sparkles size={14} aria-hidden="true" />
+                  {t("Aster Agent")}
                 </p>
+                <AnswerContent text={turn.response.reply} />
                 {turn.response.task && turn.response.task.steps.length > 0 && (
                   <ol
                     className="space-y-1 rounded-lg border p-3 text-xs"
@@ -1056,36 +1057,20 @@ export function AgentChat() {
         )}
       </section>
 
-      <form
+      <ChatComposer
+        id="agent-message"
+        value={draft}
+        onChange={setDraft}
+        busy={pending}
+        label={t("Message Aster Agent")}
+        placeholder={t(
+          "Ask about your accounts, spending, transactions or a transfer…",
+        )}
         onSubmit={(event) => {
           event.preventDefault();
           void send(draft);
         }}
-        className="space-y-3 rounded-xl border bg-white p-4"
-      >
-        <label htmlFor="agent-message" className="block text-sm font-semibold">
-          {t("Your message")}
-        </label>
-        <textarea
-          id="agent-message"
-          aria-label={t("Message Aster Agent")}
-          rows={3}
-          maxLength={2000}
-          value={draft}
-          onChange={(event) => setDraft(event.target.value)}
-          className="w-full resize-y rounded-lg border p-3 text-sm outline-none focus:ring-2 focus:ring-teal-500"
-          placeholder={t(
-            "Ask about your accounts, spending, transactions or a transfer…",
-          )}
-        />
-        <div className="flex items-center justify-between gap-3">
-          <p className="text-xs text-muted-foreground">{draft.length}/2000</p>
-          <Button disabled={pending || !draft.trim()} type="submit">
-            <Send size={16} aria-hidden="true" />
-            {t("Send message")}
-          </Button>
-        </div>
-      </form>
+      />
     </div>
   );
 }

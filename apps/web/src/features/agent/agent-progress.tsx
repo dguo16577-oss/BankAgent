@@ -158,7 +158,7 @@ export function AgentProgress({
   return (
     <section
       aria-label="Agent execution progress"
-      className="rounded-xl border bg-teal-50 p-4 text-sm"
+      className="rounded-2xl border border-slate-200 bg-white/80 px-4 py-3 text-sm"
     >
       <p role="status" aria-live="polite" className="font-medium">
         {busy ? "◌ " : ""}
@@ -218,47 +218,54 @@ export function AgentProgress({
           : "Actual execution progress. Financial and card actions still need separate confirmation."}
       </p>
       {steps.length > 0 && (
-        <ol className="mt-3 space-y-2">
-          {steps.map((step) => (
-            <li key={step.id} className="flex gap-2">
-              <span aria-hidden="true">
-                {step.status === "SUCCEEDED"
-                  ? "✓"
-                  : step.status === "FAILED"
-                    ? "!"
-                    : busy
-                      ? "◌"
-                      : "—"}
-              </span>
-              <span>
-                {zh && additionalChinese[step.tool]
-                  ? additionalChinese[step.tool]
-                  : taskStepLabels[step.tool]
-                    ? t(taskStepLabels[step.tool])
-                    : zh
-                      ? "银行工具"
-                      : "Banking tool"}
-                <span className="ml-2 text-xs text-muted-foreground">
+        <details open={busy || hasFailure} className="mt-3">
+          <summary className="w-fit cursor-pointer text-xs text-slate-500">
+            {zh
+              ? `执行记录 · ${steps.length} 步`
+              : `Execution details · ${steps.length} steps`}
+          </summary>
+          <ol className="mt-3 space-y-2 border-l border-slate-200 pl-3 text-xs">
+            {steps.map((step) => (
+              <li key={step.id} className="flex gap-2">
+                <span aria-hidden="true">
                   {step.status === "SUCCEEDED"
-                    ? zh
-                      ? "已返回结果"
-                      : "Result received"
+                    ? "✓"
                     : step.status === "FAILED"
-                      ? zh
-                        ? "失败"
-                        : "Failed"
+                      ? "!"
                       : busy
-                        ? zh
-                          ? "处理中"
-                          : "In progress"
-                        : zh
-                          ? "结果未确认"
-                          : "Result unverified"}
+                        ? "◌"
+                        : "—"}
                 </span>
-              </span>
-            </li>
-          ))}
-        </ol>
+                <span>
+                  {zh && additionalChinese[step.tool]
+                    ? additionalChinese[step.tool]
+                    : taskStepLabels[step.tool]
+                      ? t(taskStepLabels[step.tool])
+                      : zh
+                        ? "银行工具"
+                        : "Banking tool"}
+                  <span className="ml-2 text-xs text-muted-foreground">
+                    {step.status === "SUCCEEDED"
+                      ? zh
+                        ? "已返回结果"
+                        : "Result received"
+                      : step.status === "FAILED"
+                        ? zh
+                          ? "失败"
+                          : "Failed"
+                        : busy
+                          ? zh
+                            ? "处理中"
+                            : "In progress"
+                          : zh
+                            ? "结果未确认"
+                            : "Result unverified"}
+                  </span>
+                </span>
+              </li>
+            ))}
+          </ol>
+        </details>
       )}
     </section>
   );
