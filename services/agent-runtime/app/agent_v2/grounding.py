@@ -16,8 +16,19 @@ FACT_FIELDS = {"merchant_untrusted": "merchant", "counterparty_untrusted": "coun
                "counterparty_masked_account": "account_mask", "untrusted_title": "transaction_title",
                "transaction_id": "transaction_id", "amount": "amount", "currency": "currency",
                "category": "category"}
-MONEY = re.compile(r"(?:(?:CNY|USD|JPY|EUR|GBP|HKD|AUD|SGD|[¥￥])\s*([0-9][0-9,]*\.\d{2})|([0-9][0-9,]*\.\d{2})\s*元)")
-MASK = re.compile(r"(?!(?:\*{2,})(?:\s|\.)*[0-9]{4}[年月日])(?:[•*]{2,}|尾号\s*)(?:\s|\.)*([0-9]{4})(?![0-9])")
+_CURRENCIES = r'CNY|USD|JPY|EUR|GBP|HKD|AUD|SGD|人民币|美元|日元|欧元|英镑|港元|港币|澳元|新加坡元|元|[¥￥€£]'
+_NUMBER = r'[+\-−]?(?:[0-9]{1,3}(?:,[0-9]{3})+|[0-9]+)(?:\.[0-9]+)?'
+MONEY = re.compile(rf'(?<![A-Za-z0-9.,])(?:(?P<prefix>{_CURRENCIES})\s*(?P<left>{_NUMBER})(?![0-9]|[.,][0-9])|(?P<right>{_NUMBER})\s*(?P<suffix>{_CURRENCIES}))(?![A-Za-z])', re.IGNORECASE)
+_CURRENCY_NAMES = {'人民币': 'CNY', '元': 'CNY', '¥': 'CNY', '￥': 'CNY', '美元': 'USD',
+    '日元': 'JPY', '欧元': 'EUR', '€': 'EUR', '英镑': 'GBP', '£': 'GBP',
+    '港元': 'HKD', '港币': 'HKD', '澳元': 'AUD', '新加坡元': 'SGD'}
+
+
+def _money_value(match: re.Match) -> tuple[Decimal | None, str]:
+    currency = match.group('prefix') or match.group('suffix')
+    return (_dec((match.group('left') or match.group('right')).replace('−', '-')),
+            _CURRENCY_NAMES.get(currency, currency.upper()))
+MASK = re.compile(r"(?!(?:\*{2,})(?:\s|\.)*[0-9]{4}[年月日])(?:[•*]{2,}|尾号\s*)(?:\s|\.)*([0-9]{4})(?![0-9]|\.\d)")
 BULLET_MERCHANT = re.compile(
     r"^\s*[-*]\s*([^，,:：\n]{2,80})[，,]\s*(?:CNY|USD|JPY|EUR|GBP|HKD|AUD|SGD|[¥￥])\s*([0-9][0-9,]*\.\d{2})",
     re.MULTILINE,
@@ -61,7 +72,7 @@ def validate_analytical_reply(task: Task, message: str) -> str | None:
 
     The bank supplies entity facts; model prose cannot manufacture financial figures.
     """
-    allowed_amounts: set[Decimal] = {Decimal("0.00")}
+    allowed_money: set[tuple[Decimal, str]] = set()
     allowed_masks: set[str] = set()
     merchant_amounts: dict[str, set[Decimal]] = defaultdict(set)
     transaction_merchants: dict[str, str] = {}
@@ -70,19 +81,23 @@ def validate_analytical_reply(task: Task, message: str) -> str | None:
             continue
         result = observation.structured_result
 
-        def visit(value: Any) -> None:
+        def visit(value: Any, inherited_currency: str | None = None) -> None:
             if isinstance(value, dict):
+                currency = value.get('currency', inherited_currency)
+                if not isinstance(currency, str) or not re.fullmatch(r'[A-Z]{3}', currency):
+                    currency = inherited_currency
                 for key, item in value.items():
                     if key in {"amount", "current_amount", "previous_amount", "absolute_change"}:
                         amount = _dec(item)
                         if amount is not None:
-                            allowed_amounts.add(amount)
+                            if currency:
+                                allowed_money.add((amount, currency))
                     if "mask" in key.lower() and isinstance(item, str):
                         allowed_masks.update(MASK.findall(item))
-                    visit(item)
+                    visit(item, key if re.fullmatch(r'[A-Z]{3}', key) else currency)
             elif isinstance(value, list):
                 for item in value:
-                    visit(item)
+                    visit(item, inherited_currency)
 
         visit(result)
         for collection in ("transactions", "anomalies", "top_merchants"):
@@ -102,10 +117,27 @@ def validate_analytical_reply(task: Task, message: str) -> str | None:
     for match in MASK.finditer(message):
         if match.group(1) not in allowed_masks:
             return "UNOBSERVED_MASK"
-    for match in MONEY.finditer(message):
-        amount = _dec(match.group(1) or match.group(2))
-        if amount is not None and amount not in allowed_amounts:
+    # Ignore typography, never arithmetic: both prefix and suffix currency,
+    # signs, integer values and grouped decimals must match observed money.
+    plain_message = message.replace('**', '').replace('`', '')
+    for match in MONEY.finditer(plain_message):
+        amount, currency = _money_value(match)
+        if amount is not None and amount != 0 and (amount, currency) not in allowed_money:
             return "UNOBSERVED_AMOUNT"
+    # Tables and sections often state the currency once and omit it on each
+    # row. A bare two-decimal subtotal still needs an actual bank observation.
+    # Percentages are a different measure; do not treat them as money here.
+    allowed_values = {amount for amount, _ in allowed_money}
+    for match in re.finditer(rf'(?<![\w.,]){_NUMBER}(?![\d.,])', plain_message):
+        raw = match.group()
+        if not re.search(r'\.\d{2}$', raw):
+            continue
+        tail = plain_message[match.end():].lstrip()
+        if tail.startswith(('%', '％')):
+            continue
+        amount = _dec(raw.replace('−', '-'))
+        if amount is not None and amount != 0 and amount not in allowed_values:
+            return 'UNOBSERVED_AMOUNT'
     # A merchant label paired with a monetary value must be copied from a
     # bank observation. This catches translations and near-name substitutions
     # without a merchant-specific dictionary or an LLM judge.
@@ -114,7 +146,7 @@ def validate_analytical_reply(task: Task, message: str) -> str | None:
         amount = _dec(raw_amount)
         if amount is not None and merchant_amounts and amount not in merchant_amounts.get(name.strip(), set()):
             return "UNOBSERVED_MERCHANT_AMOUNT_PAIR"
-    for clause in re.split(r"[\n。；;]", message):
+    for clause in re.split(r"[\n。；;]", plain_message):
         names = [(match.start(), match.end(), merchant)
                  for merchant in merchant_amounts
                  for match in re.finditer(re.escape(merchant), clause)]
@@ -122,7 +154,7 @@ def validate_analytical_reply(task: Task, message: str) -> str | None:
             if ident in clause and names and all(name != expected for _, _, name in names):
                 return "TRANSACTION_MERCHANT_MISMATCH"
         for match in MONEY.finditer(clause):
-            amount = _dec(match.group(1) or match.group(2))
+            amount, _ = _money_value(match)
             if amount is None or not names:
                 continue
             nearest = min(names, key=lambda item: min(abs(item[0] - match.end()), abs(item[1] - match.start())))

@@ -11,7 +11,10 @@ import { RecurringService } from "@/mocks/bank/recurring-service";
 import { ActionVerification } from "./action-verification";
 import { SecurityService } from "@/mocks/bank/security-service";
 import { completeVerification } from "@/test/verification-ui";
-async function mount(passwordOnly = false) {
+async function mount(
+  passwordOnly = false,
+  onVerificationConflict?: () => Promise<void>,
+) {
   const intent = passwordOnly
     ? await new RecurringService(bankingStore).prepare({
         recurringPaymentId: "rec_netflix",
@@ -44,6 +47,7 @@ async function mount(passwordOnly = false) {
         resourceHash={intent.intentHash}
         label="Confirm action"
         onVerified={confirmed}
+        onVerificationConflict={onVerificationConflict}
       />
     </QueryClientProvider>,
   );
@@ -108,4 +112,30 @@ it("six-digit input preserves a pasted leading zero", async () => {
   await user.paste("012345");
   expect(field).toHaveValue("012345");
   expect(field).toHaveAttribute("inputmode", "numeric");
+});
+
+it("reconciles a consumed challenge by read callback without confirming or creating another challenge", async () => {
+  let verificationCalls = 0;
+  server.use(
+    http.post("/customer/auth/step-up-challenges/:id/verify", () => {
+      verificationCalls++;
+      return HttpResponse.json(
+        { code: "INVALID_REQUEST", message: "Verification consumed" },
+        { status: 409 },
+      );
+    }),
+  );
+  const reconcile = vi.fn().mockResolvedValue(undefined);
+  const confirmed = await mount(false, reconcile);
+  await completeVerification();
+  await waitFor(() => expect(reconcile).toHaveBeenCalledTimes(1));
+  expect(confirmed).not.toHaveBeenCalled();
+  expect(verificationCalls).toBe(1);
+  expect(
+    screen.queryByRole("button", { name: "Verify again" }),
+  ).not.toBeInTheDocument();
+  expect(
+    screen.queryByRole("button", { name: "Retry confirmation" }),
+  ).not.toBeInTheDocument();
+  expect(screen.getByText(/Another page may have used/)).toBeInTheDocument();
 });

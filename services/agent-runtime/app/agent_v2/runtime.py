@@ -28,6 +28,7 @@ from .financial_terms import select_financial_step, bind_prepared_intent, bind_e
 from .lifecycle import CancellationUncertain, LifecycleCoordinator
 from .models import Observation, PlannerDecision, Status, Task
 from .planner import Planner
+from .model_diagnostics import diagnostic_sink
 from .recipient_names import mask_phone_text
 from .tools import RegistryError, ToolRegistry
 from .state_store import TaskStateConflict
@@ -470,6 +471,13 @@ class AgentRuntimeV2:
             self._save(task)
         return await self._run(task, cookie, len(task.observations), False)
 
+    async def _decide(self, task: Task, context: dict) -> PlannerDecision:
+        token = diagnostic_sink.set(task.trace.append)
+        try:
+            return PlannerDecision.model_validate(await self.planner.decide(context))
+        finally:
+            diagnostic_sink.reset(token)
+
     async def _run(self, task: Task, cookie: str, observation_start: int, followup: bool,
                    event_sink: Callable[[str, str], Awaitable[None]] | None = None) -> AgentResponse:
         completion_retries = 0
@@ -478,7 +486,7 @@ class AgentRuntimeV2:
                 update_ledger(task)
             context = self.context_builder.build(task, self.registry.visible())
             try:
-                decision = PlannerDecision.model_validate(await self.planner.decide(context))
+                decision = await self._decide(task, context)
                 task.trace.append({"kind": "PLANNER_DECISION", "step": task.step_count + 1,
                                    "decision": _trace_safe(decision.model_dump(mode="json"))})
                 task.step_count += 1
@@ -506,7 +514,7 @@ class AgentRuntimeV2:
                     retry_context["fresh_observation_required"] = (
                         "This is a new user turn. Call a read/analysis tool for this request before COMPLETE. "
                         "Previous observations have the old analytical scope.")
-                    decision = PlannerDecision.model_validate(await self.planner.decide(retry_context))
+                    decision = await self._decide(task, retry_context)
                     task.trace.append({"kind": "FRESH_OBSERVATION_RETRY", "step": task.step_count + 1,
                                        "decision": _trace_safe(decision.model_dump(mode="json"))})
                     task.step_count += 1
@@ -561,7 +569,7 @@ class AgentRuntimeV2:
                             retry_context["completion_verification"] = {
                                 "missing_subgoals": missing,
                                 "instruction": "The previous COMPLETE was rejected because these user goals lack trusted tool or bank-receipt evidence. Choose the next necessary tool or ASK_USER. Do not claim completion."}
-                            decision = PlannerDecision.model_validate(await self.planner.decide(retry_context))
+                            decision = await self._decide(task, retry_context)
                             task.trace.append({"kind": "COMPLETENESS_REPLAN", "decision":
                                                _trace_safe(decision.model_dump(mode="json"))})
                             task.step_count += 1
@@ -605,7 +613,7 @@ class AgentRuntimeV2:
                                 "instruction": "Return COMPLETE with verified citations from the search_bank_knowledge observation. "
                                                "Do not call tools or invent sources."
                             }
-                            repaired = PlannerDecision.model_validate(await self.planner.decide(repair_context))
+                            repaired = await self._decide(task, repair_context)
                             task.trace.append({"kind": "KNOWLEDGE_CITATION_REPAIR",
                                                "decision": _trace_safe(repaired.model_dump(mode="json"))})
                             final_message = repaired.final_message if repaired.type == "COMPLETE" else ""
@@ -623,7 +631,7 @@ class AgentRuntimeV2:
                             repair_context["grounding_repair"] = {"issue": issue,
                                 "instruction": "Return COMPLETE with corrected facts from evidence_facts only. "
                                                "Do not call tools or invent a merchant, amount or mask."}
-                            repaired = PlannerDecision.model_validate(await self.planner.decide(repair_context))
+                            repaired = await self._decide(task, repair_context)
                             task.trace.append({"kind": "GROUNDING_REPAIR", "issue": issue,
                                                "decision": _trace_safe(repaired.model_dump(mode="json"))})
                             if repaired.type != "COMPLETE" or validate_analytical_reply(task, repaired.final_message):

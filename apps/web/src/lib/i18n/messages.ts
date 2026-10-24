@@ -834,6 +834,8 @@ export const zhCN: Readonly<Record<string, string>> = {
   Retry: "重试",
   "Retry accounts": "重新加载账户",
   "Retry confirmation": "重试确认",
+  "Another page may have used this verification. Checking the bank task; no payment was retried.":
+    "另一页面可能已使用本次验证。正在核实银行任务，未重新付款。",
   "Retry load more": "重试加载更多",
   "Retry overview": "重新加载总览",
   "Retry transaction": "重新加载交易",

@@ -294,6 +294,10 @@ export function PendingAction({
               : {}),
         }),
       });
+      if (response.status === 409 && action === "CONFIRM") {
+        await reconcileConflict();
+        return;
+      }
       if (!response.ok) throw new Error("Bank action failed");
       const result: AgentMessage = parseAgentMessage(await response.json());
       setTask(result.task);
@@ -310,6 +314,38 @@ export function PendingAction({
       throw cause;
     } finally {
       setBusy(false);
+    }
+  }
+
+  async function reconcileConflict() {
+    const response = await fetch(`/api/agent/tasks/${taskId}`, {
+      credentials: "same-origin",
+      cache: "no-store",
+      signal: AbortSignal.timeout(5000),
+    });
+    if (!response.ok)
+      throw new Error(
+        locale === "zh-CN"
+          ? "暂时无法核实银行结果，请勿重复付款。"
+          : "Could not verify the bank result. Do not repeat the payment.",
+      );
+    const result = parseAgentMessage(await response.json());
+    if (!result.task || result.task.taskId !== taskId)
+      throw new Error("Task review mismatch");
+    setTask(result.task);
+    if (
+      !["WAITING_CONFIRMATION", "WAITING_AUTH", "RUNNING"].includes(
+        result.task.status,
+      )
+    ) {
+      setError(undefined);
+      onResolved(result);
+    } else {
+      setError(
+        locale === "zh-CN"
+          ? "另一页面可能正在验证或执行，正在核实任务结果；未重新付款。"
+          : "Another page may be verifying or executing. Checking task status; no payment was retried.",
+      );
     }
   }
 
@@ -404,6 +440,7 @@ export function PendingAction({
             label={locale === "zh-CN" ? "核对并确认" : "Verify and confirm"}
             disabled={busy}
             onVerified={(authorizationId) => act("CONFIRM", authorizationId)}
+            onVerificationConflict={reconcileConflict}
           />
         ) : task.confirmationKind === "RENEWAL_REMINDER" ? (
           <Button

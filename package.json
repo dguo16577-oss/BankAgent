@@ -15,7 +15,7 @@
     "build": "node scripts/web-runtime.mjs build",
     "start": "node scripts/web-runtime.mjs start",
     "api:generate": "openapi-typescript contracts/openapi/customer.yaml -o apps/web/src/generated/customer-api.d.ts && openapi-typescript contracts/openapi/public.yaml -o apps/web/src/generated/public-api.d.ts",
-    "api:check": "openapi-typescript contracts/openapi/customer.yaml -o apps/web/src/generated/customer-api.d.ts --check && openapi-typescript contracts/openapi/public.yaml -o apps/web/src/generated/public-api.d.ts --check",
+    "api:check": "node scripts/check-generated-api.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "contract:check": "redocly lint contracts/openapi/customer.yaml contracts/openapi/public.yaml && node scripts/audit.mjs",

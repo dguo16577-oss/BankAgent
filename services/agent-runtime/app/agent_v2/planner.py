@@ -12,6 +12,7 @@ from ..deepseek import DeepSeekClassifier
 from .models import PlannerDecision
 from .service_catalog import SERVICE_IDS, allowed_service_ids
 from .completeness import _PREPARE_RECEIPTS
+from .model_diagnostics import record_schema_error
 
 
 def _ledger_schema(names: list[str], categories: dict[str, str]) -> dict[str, Any]:
@@ -320,6 +321,11 @@ class DeepSeekPlanner:
             "After that page arrives, answer from its new transactions and COMPLETE. Do not reuse an older "
             "cursor, restart the first page, or keep fetching pages unless the user requested more. "
             "For spending, use summarize_spending and copy its decimal totals exactly; never calculate monetary totals yourself. "
+            "Report the requested totals/counts/categories without adding unrequested subtotals, rankings or advice. "
+            "Do not add a merchant breakdown unless the user requested merchant detail. All monetary values, "
+            "including bare decimals in a CNY-labeled section or table, must be copied from tool results. "
+            "Only state a category's ordinal rank if the tool explicitly supplies that rank. A top_merchants list "
+            "does not prove a category ranking; never infer 'second largest category' from merchant order. "
             "state.analytical_scope holds the last confirmed read/analysis filters across completed turns. "
             "For follow-up analysis, retain every filter the user has not changed, even when the prior turn SUCCEEDED. "
             "Only change fields the user changes. The runtime fills omitted filters from that scope. "
@@ -452,20 +458,21 @@ class DeepSeekPlanner:
             "Each original-user source_quote binds only that step's terms; never exchange amounts, recipients or accounts between steps. "
             "The top-level type value must be exactly TOOL_CALL, ASK_USER, or COMPLETE; never json_object."
         )
+        context = {**context, 'decision_schema': PlannerDecision.model_json_schema()}
         payload = json.dumps(context, ensure_ascii=False, separators=(",", ":"))
-        repair_schema = False
+        schema_repair = None
         for attempt in range(2):
             try:
                 result = await self.classifier._json_completion(
-                    instructions if not repair_schema else instructions + " Your prior JSON was invalid or did not match the required decision schema; correct it exactly.",
-                    payload,
+                    instructions if schema_repair is None else instructions + " Correct the schema issues supplied in schema_repair. Return exactly one valid decision; do not change bank facts or authorization.",
+                    payload if schema_repair is None else json.dumps({**context, 'schema_repair': schema_repair}, ensure_ascii=False, separators=(',', ':')),
                     1500,
                 )
                 return PlannerDecision.model_validate(result)
-            except (json.JSONDecodeError, ValidationError):
+            except (json.JSONDecodeError, ValidationError) as exc:
+                schema_repair = record_schema_error(exc, attempt + 1)
                 if attempt == 1:
                     raise
-                repair_schema = True
             except (httpx.ConnectTimeout, httpx.ReadTimeout, httpx.ConnectError):
                 if attempt == 1:
                     raise

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { receiptPath } from "@/lib/api/receipt-navigation";
 const subscribeReceipt = () => () => {};
 import { useQuery } from "@tanstack/react-query";
+import { ApiError } from "@/lib/api/client";
 import type { components } from "@/generated/customer-api";
 import { Button } from "@/components/ui/button";
 import { useLocale } from "@/lib/i18n/locale";
@@ -23,6 +24,7 @@ export function ActionVerification({
   label,
   disabled,
   onVerified,
+  onVerificationConflict,
   completed = false,
   completedLabel = "View completed receipt",
 }: {
@@ -33,6 +35,7 @@ export function ActionVerification({
   label: string;
   disabled?: boolean;
   onVerified: (authorizationId?: string) => Promise<void>;
+  onVerificationConflict?: () => Promise<void>;
   completed?: boolean;
   completedLabel?: string;
 }) {
@@ -52,6 +55,7 @@ export function ActionVerification({
   const [busy, setBusy] = useState(false);
   const lock = useRef(false);
   const [error, setError] = useState<unknown>();
+  const [conflict, setConflict] = useState(false);
   const profile = useQuery({
     queryKey: ["verification-profile"],
     queryFn: ({ signal }) => getVerificationProfile(signal),
@@ -75,6 +79,7 @@ export function ActionVerification({
     }
   }
   async function begin() {
+    setConflict(false);
     if (action === "CARD_FREEZE") {
       setAttempted(true);
       await onVerified();
@@ -104,13 +109,27 @@ export function ActionVerification({
     };
     setPassword("");
     setCode("");
+    let verificationSucceeded = false;
     try {
       const result = await verifyChallenge(challenge.id, body);
+      verificationSucceeded = true;
       setGrant(result.authorization.id);
       setSms(undefined);
       setChallenge(result.challenge);
       await onVerified(result.authorization.id);
     } catch (e) {
+      if (
+        !verificationSucceeded &&
+        e instanceof ApiError &&
+        e.status === 409 &&
+        onVerificationConflict
+      ) {
+        setConflict(true);
+        setGrant(undefined);
+        setSms(undefined);
+        await onVerificationConflict();
+        return;
+      }
       try {
         setChallenge(await getChallenge(challenge.id));
       } catch {
@@ -150,7 +169,7 @@ export function ActionVerification({
           )}
         </Button>
       )}
-      {pending && (
+      {pending && !conflict && (
         <section
           className="space-y-4 rounded-xl border p-4"
           aria-label={t("Verify this action")}
@@ -234,7 +253,14 @@ export function ActionVerification({
           </Button>
         </section>
       )}
-      {challenge && !pending && !grant && (
+      {conflict && (
+        <p role="status" className="text-sm text-slate-600">
+          {t(
+            "Another page may have used this verification. Checking the bank task; no payment was retried.",
+          )}
+        </p>
+      )}
+      {challenge && !pending && !grant && !conflict && (
         <p role="status">
           {t("Verification ")}
           {t(challenge.status.toLowerCase())}
@@ -249,7 +275,7 @@ export function ActionVerification({
           {t("Retry confirmation")}
         </Button>
       )}
-      {challenge && !pending && (
+      {challenge && !pending && !conflict && (
         <Button
           type="button"
           variant="outline"

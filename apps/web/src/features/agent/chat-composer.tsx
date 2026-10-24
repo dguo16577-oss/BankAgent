@@ -62,7 +62,7 @@ export function ChatComposer({
           }
         }}
         placeholder={placeholder ?? (zh ? "向 Aster 提问…" : "Message Aster…")}
-        className="max-h-44 min-h-14 w-full resize-none border-0 bg-transparent px-2 py-1 text-[15px] leading-6 placeholder:text-slate-400 focus-visible:outline-none"
+        className="max-h-44 min-h-14 w-full resize-none border-0 bg-transparent px-2 py-1 text-[15px] leading-6 placeholder:text-slate-500 focus-visible:outline-none"
       />
       <div className="flex items-center justify-between gap-3 px-2 pt-2">
         <span className="text-[11px] text-slate-500">
@@ -89,7 +89,7 @@ export function ChatComposer({
           )}
         </Button>
       </div>
-      <p className="mt-2 text-center text-[11px] text-slate-400">
+      <p className="mt-2 text-center text-xs text-slate-600">
         {zh
           ? "银行操作需要单独复核与确认"
           : "Bank actions require separate review and confirmation"}

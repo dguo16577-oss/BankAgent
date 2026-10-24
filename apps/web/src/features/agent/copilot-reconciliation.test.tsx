@@ -12,7 +12,9 @@ vi.mock("@copilotkit/react-core/v2", () => ({
   useAgent: vi.fn(),
 }));
 vi.mock("@/features/security/action-verification", () => ({
-  ActionVerification: () => <button>Verify and confirm</button>,
+  ActionVerification: ({ onVerified }: { onVerified: () => Promise<void> }) => (
+    <button onClick={() => void onVerified()}>Verify and confirm</button>
+  ),
 }));
 
 const taskId = "a".repeat(32);
@@ -43,6 +45,40 @@ const completed = {
 afterEach(() => {
   vi.useRealTimers();
   vi.unstubAllGlobals();
+});
+
+it("reads the owned receipt after confirmation conflict and never automatically resubmits", async () => {
+  let posts = 0;
+  const fetcher = vi.fn().mockImplementation((_url, options) => {
+    if (options?.method === "POST") {
+      posts++;
+      return Promise.resolve(new Response("{}", { status: 409 }));
+    }
+    return Promise.resolve(Response.json(posts ? completed : pending));
+  });
+  vi.stubGlobal("fetch", fetcher);
+  const resolved = vi.fn();
+  render(
+    <PendingAction
+      state={{ taskId, status: "WAITING_CONFIRMATION" }}
+      onResolved={resolved}
+    />,
+  );
+  const button = await screen.findByRole("button", {
+    name: "Verify and confirm",
+  });
+  await act(async () => {
+    button.click();
+  });
+  expect(resolved).toHaveBeenCalledWith(
+    expect.objectContaining({
+      task: expect.objectContaining({ status: "SUCCEEDED" }),
+    }),
+  );
+  expect(posts).toBe(1);
+  expect(
+    fetcher.mock.calls.filter(([, options]) => options?.method === "POST"),
+  ).toHaveLength(1);
 });
 
 it("shows every staged financial goal and cancels one separately from the whole task", async () => {
