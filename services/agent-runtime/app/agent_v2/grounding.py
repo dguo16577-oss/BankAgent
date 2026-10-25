@@ -120,20 +120,32 @@ def validate_analytical_reply(task: Task, message: str) -> str | None:
     # Ignore typography, never arithmetic: both prefix and suffix currency,
     # signs, integer values and grouped decimals must match observed money.
     plain_message = message.replace('**', '').replace('`', '')
-    for match in MONEY.finditer(plain_message):
+    money_matches = list(MONEY.finditer(plain_message))
+    for match in money_matches:
         amount, currency = _money_value(match)
         if amount is not None and amount != 0 and (amount, currency) not in allowed_money:
             return "UNOBSERVED_AMOUNT"
-    # Tables and sections often state the currency once and omit it on each
-    # row. A bare two-decimal subtotal still needs an actual bank observation.
-    # Percentages are a different measure; do not treat them as money here.
+    # Scan signed numbers once; never rescan the positive suffix of -10.
+    # Currency headings may apply to following rows, including integer money.
+    # Dates, counts, percentages, masks and list markers are different measures.
     allowed_values = {amount for amount, _ in allowed_money}
-    for match in re.finditer(rf'(?<![\w.,]){_NUMBER}(?![\d.,])', plain_message):
-        raw = match.group()
-        if not re.search(r'\.\d{2}$', raw):
+    non_money_spans = [m.span() for m in re.finditer(
+        r'\b\d{4}-\d{2}-\d{2}(?:T[0-9:.+Z-]+)?|\d{1,4}\s*[年月日号]|'
+        r'(?:[•*]{2,}|尾号\s*)\s*\d{4}|(?m:^\s*\d+[.)、]\s)', plain_message)]
+    currency_context = re.search(_CURRENCIES, plain_message, re.IGNORECASE) is not None
+    for match in re.finditer(rf'(?<![A-Za-z0-9.,+\-−]){_NUMBER}(?![0-9]|[.,][0-9])', plain_message):
+        if any(start < match.end() and match.start() < end
+               for start, end in non_money_spans + [m.span() for m in money_matches]):
             continue
+        raw = match.group()
         tail = plain_message[match.end():].lstrip()
-        if tail.startswith(('%', '％')):
+        if re.match(r'(?:[%％]|笔|天|个月|年|月|日|次|项|个|款|小时|分钟|秒|transactions?\b|days?\b)', tail, re.IGNORECASE):
+            continue
+        # Bare decimals retain the previous conservative check; integer money
+        # additionally needs an explicit currency context and a value slot.
+        prefix = plain_message[max(0, match.start() - 40):match.start()]
+        value_slot = re.search(r'(?:[:：|]|小计|合计|总额|金额|支出|消费)\s*$', prefix)
+        if '.' not in raw and not (currency_context and value_slot):
             continue
         amount = _dec(raw.replace('−', '-'))
         if amount is not None and amount != 0 and amount not in allowed_values:

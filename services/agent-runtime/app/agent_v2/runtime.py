@@ -30,7 +30,7 @@ from .models import Observation, PlannerDecision, Status, Task
 from .planner import Planner
 from .model_diagnostics import diagnostic_sink
 from .recipient_names import mask_phone_text
-from .tools import RegistryError, ToolRegistry
+from .tools import RegistryError, ToolArgumentError, ToolRegistry
 from .state_store import TaskStateConflict
 
 LOGGER = logging.getLogger(__name__)
@@ -540,6 +540,13 @@ class AgentRuntimeV2:
                     self._save(task)
                     return self._response(task, decision.question.text, options=options)
                 if decision.type == "COMPLETE":
+                    if any(o.tool_name == 'search_bank_knowledge' and not o.success
+                           and o.error == 'KNOWLEDGE_SEARCH_UNAVAILABLE'
+                           for o in task.observations[observation_start:]):
+                        task.status = Status.PARTIAL
+                        self._save(task)
+                        return self._response(task, '知识服务暂时不可用，无法核实相关政策；已取得的银行结果保留在任务中。',
+                                              'KNOWLEDGE_SEARCH_UNAVAILABLE')
                     missing = update_ledger(task) if task.ledger else []
                     if task.ledger and not missing and hasattr(self.planner, "audit_completion"):
                         semantic_missing = await self.planner.audit_completion(
@@ -646,6 +653,17 @@ class AgentRuntimeV2:
                     self._save(task)
                     return self._response(task, final_message)
                 call = decision.tool_call
+                if call.tool_name == 'search_bank_knowledge' and any(
+                        o.tool_name == call.tool_name and not o.success
+                        and o.error == 'KNOWLEDGE_SEARCH_UNAVAILABLE'
+                        for o in task.observations[observation_start:]):
+                    # A failed dependency is not policy evidence or completion.
+                    # Stop a repeated proposal without another network request.
+                    task.status = Status.PARTIAL
+                    task.trace.append({'kind': 'DEPENDENCY_UNAVAILABLE', 'tool': call.tool_name})
+                    self._save(task)
+                    return self._response(task, '知识服务暂时不可用，无法核实相关政策；知识检索不能授权或执行银行操作。',
+                                          'KNOWLEDGE_SEARCH_UNAVAILABLE')
                 if call.tool_name.startswith("prepare_"):
                     if task.read_only_overlay:
                         raise RegistryError("PENDING_QUERY_CANNOT_PREPARE")
@@ -669,6 +687,23 @@ class AgentRuntimeV2:
                 try:
                     self.registry.validate(call.tool_name, arguments, task)
                 except RegistryError as exc:
+                    tool_class = next((tool['side_effect_class'] for tool in self.registry.visible()
+                                       if tool['name'] == call.tool_name), None)
+                    if isinstance(exc, ToolArgumentError) and tool_class in {'READ', 'ANALYZE'}:
+                        # One correction per user revision, within the existing
+                        # step limit. No bank call and no guessed argument values.
+                        repaired = any(row.get('kind') == 'TOOL_SCHEMA_ERROR'
+                                       and row.get('revision') == task.revision
+                                       for row in task.trace)
+                        if not repaired:
+                            task.trace.append({'kind': 'TOOL_SCHEMA_ERROR', 'tool': call.tool_name,
+                                'revision': task.revision, 'issues': exc.issues})
+                            task.observations.append(Observation(tool_name=call.tool_name, success=False,
+                                error='SCHEMA_VALIDATION_FAILED', structured_result={
+                                    'error_code': 'SCHEMA_VALIDATION_FAILED', 'issues': exc.issues,
+                                    'instruction': 'Use the registered input schema to correct read-only arguments. No bank tool was invoked.'}))
+                            self._save(task)
+                            continue
                     if str(exc) in {'STEP_ACTION_NOT_USER_AUTHORIZED', 'STEP_CARD_NOT_USER_AUTHORIZED'}:
                         task.trace.append({'kind': 'SEMANTIC_CONSTRAINT_REJECTED', 'tool': call.tool_name,
                                            'code': str(exc), 'step_id': task.selected_financial_step_id})

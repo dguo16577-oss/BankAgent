@@ -5,10 +5,11 @@ import hashlib
 
 import asyncio
 import os
+import time
 from datetime import datetime, timedelta
 from decimal import Decimal, InvalidOperation
 import re
-from typing import Any, Literal
+from typing import Annotated, Any, Literal
 
 import httpx
 
@@ -26,6 +27,11 @@ from .spending import detect_anomalies, summarize
 from .recurring_analysis import detect_recurring
 from .split import calculate_split
 from .schedule_time import validate_scheduled_at
+
+
+OffsetTimestamp = Annotated[str, Field(
+    pattern=r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$',
+    description='ISO 8601 timestamp with seconds and explicit UTC offset, e.g. 2026-09-01T00:00:00+08:00. Date-only values are invalid; use the bank reporting timezone for period boundaries.')]
 
 
 class Args(BaseModel):
@@ -121,8 +127,8 @@ class KnowledgeSearch(Args):
 class Transactions(Args):
     account_id: str | None = Field(default=None, pattern=r"^[A-Za-z0-9_-]{1,128}$")
     card_id: str | None = Field(default=None, pattern=r"^[A-Za-z0-9_-]{1,128}$")
-    date_from: str | None = None
-    date_to: str | None = None
+    date_from: OffsetTimestamp | None = None
+    date_to: OffsetTimestamp | None = None
     direction: Literal["INCOMING", "OUTGOING", "ALL"] = "ALL"
     status: Literal["PENDING", "COMPLETED", "FAILED", "REVERSED", "CANCELLED"] | None = None
     type: Literal["CARD_PAYMENT", "BANK_TRANSFER", "SALARY", "DIRECT_DEBIT", "CASH_WITHDRAWAL", "FEE", "INTEREST", "FX_EXCHANGE", "INVESTMENT_PURCHASE", "INVESTMENT_REDEMPTION"] | None = None
@@ -144,14 +150,14 @@ class Transactions(Args):
 class Spending(Args):
     account_id: str | None = Field(default=None, pattern=r"^[A-Za-z0-9_-]{1,128}$")
     card_id: str | None = Field(default=None, pattern=r"^[A-Za-z0-9_-]{1,128}$")
-    date_from: str
-    date_to: str
+    date_from: OffsetTimestamp
+    date_to: OffsetTimestamp
     category: Literal["DINING", "GROCERIES", "SHOPPING", "TRANSPORT", "ENTERTAINMENT", "SUBSCRIPTIONS", "HOUSING", "TRAVEL", "HEALTH", "OTHER"] | None = None
     merchant: str | None = Field(default=None, min_length=1, max_length=160)
     currency: str | None = Field(default=None, pattern=r"^[A-Z]{3}$")
     bucket_by: Literal["NONE", "DAY", "WEEK", "MONTH"] = "NONE"
-    compare_from: str | None = None
-    compare_to: str | None = None
+    compare_from: OffsetTimestamp | None = None
+    compare_to: OffsetTimestamp | None = None
 
     @model_validator(mode="after")
     def valid_dates(self) -> "Spending":
@@ -166,8 +172,8 @@ class Spending(Args):
 class AnomalyScope(Args):
     account_id: str | None = Field(default=None, pattern=r"^[A-Za-z0-9_-]{1,128}$")
     card_id: str | None = Field(default=None, pattern=r"^[A-Za-z0-9_-]{1,128}$")
-    date_from: str
-    date_to: str
+    date_from: OffsetTimestamp
+    date_to: OffsetTimestamp
 
     @model_validator(mode="after")
     def valid_dates(self) -> "AnomalyScope":
@@ -461,16 +467,33 @@ class RegistryError(ValueError):
     pass
 
 
+class ToolArgumentError(RegistryError):
+    def __init__(self, issues: list[dict[str, str]]):
+        super().__init__('SCHEMA_VALIDATION_FAILED')
+        self.issues = issues
+
+
 class ToolRegistry:
     def __init__(self, gateway: BankingGateway, mcp_bridge: Any | None = None):
         self.gateway = gateway
         self.mcp_bridge = mcp_bridge
         self._definitions = {entry[0]: entry for entry in DEFINITIONS}
+        self._knowledge_unavailable_until = 0.0
+
+    def _knowledge_failure(self, *, open_circuit: bool = True) -> Observation:
+        # Short circuit breaker, not a cached policy result or customer data.
+        if open_circuit:
+            self._knowledge_unavailable_until = time.monotonic() + 30
+        return Observation(tool_name='search_bank_knowledge', success=False,
+            error='KNOWLEDGE_SEARCH_UNAVAILABLE', trust='UNTRUSTED_EXTERNAL_DATA',
+            structured_result={'status': 'UNAVAILABLE', 'evidence': [],
+                'instruction': 'Knowledge dependency unavailable. Do not retry this task or invent policy evidence. Explain the limitation; do not change financial authorization.'})
 
     def visible(self) -> list[dict[str, Any]]:
         return [
             {"name": name, "description": description, "category": side_effect, "side_effect_class": side_effect,
              "risk_class": risk, "required_capabilities": capabilities,
+             "available": not (name == 'search_bank_knowledge' and time.monotonic() < self._knowledge_unavailable_until),
              "input_schema": schema.model_json_schema(), "output_schema": {"type": "object", "properties":
                 {field: {"type": field_type} for field, field_type in OUTPUT_FIELDS[name].items()}}}
             for name, description, schema, side_effect, risk, capabilities in DEFINITIONS
@@ -483,7 +506,14 @@ class ToolRegistry:
         try:
             args = definition[2].model_validate(arguments)
         except ValidationError as exc:
-            raise RegistryError("SCHEMA_VALIDATION_FAILED") from exc
+            # Only schema-owned paths and error codes; never rejected values,
+            # exception messages, URLs or credentials in a model observation.
+            fields = definition[2].model_fields
+            issues = [{'path': '.'.join(str(part) if part in fields else '<field>'
+                        for part in error['loc']) or '$', 'type': error['type']}
+                      for error in exc.errors(include_input=False, include_context=False,
+                                              include_url=False)[:8]]
+            raise ToolArgumentError(issues) from exc
         if name in {'prepare_card_action', 'prepare_stop_recurring_payment'}:
             try:
                 authorize_action_constraints(task, name, args.model_dump(mode='json'))
@@ -840,17 +870,27 @@ class ToolRegistry:
     @traced('tool.call')
     async def call(self, name: str, arguments: dict[str, Any], task: Task, cookie: str) -> Observation:
         args = self.validate(name, arguments, task)
+        if name == 'search_bank_knowledge' and time.monotonic() < self._knowledge_unavailable_until:
+            return self._knowledge_failure(open_circuit=False)
         if self.mcp_bridge is not None and name in {"search_bank_knowledge", "list_accounts", "list_cards"}:
             try:
                 result = await self.mcp_bridge.call(name, args.model_dump(mode="json", exclude_none=True),
                                                     task.customer_id, cookie)
             except ValueError as exc:
+                if name == 'search_bank_knowledge' and str(exc) in {
+                        'MCP_TIMEOUT', 'MCP_CONNECTION_FAILED', 'MCP_UPSTREAM_FAILED', 'MCP_TOOL_UNAVAILABLE'}:
+                    return self._knowledge_failure()
                 raise RegistryError(str(exc)) from exc
         elif name == "search_bank_knowledge":
             base_url = os.environ.get("KNOWLEDGE_SERVICE_URL", "http://127.0.0.1:8002").rstrip("/")
             payload = args.model_dump(mode="json", exclude_none=True)
-            async with httpx.AsyncClient(timeout=45, follow_redirects=False) as client:
-                response = await client.post(f"{base_url}/internal/knowledge/search", json=payload)
+            try:
+                async with httpx.AsyncClient(timeout=45, follow_redirects=False) as client:
+                    response = await client.post(f"{base_url}/internal/knowledge/search", json=payload)
+            except httpx.TransportError:
+                return self._knowledge_failure()
+            if response.status_code >= 500:
+                return self._knowledge_failure()
             if response.status_code != 200:
                 raise RegistryError("KNOWLEDGE_SEARCH_UNAVAILABLE")
             result = response.json()
