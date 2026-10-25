@@ -25,7 +25,13 @@ def effective_arguments(task: Task, call: ToolCall) -> dict[str, Any]:
     if call.tool_name not in ANALYTICAL_TOOLS:
         return args
     supported = SUPPORTED[call.tool_name]
+    if (task.analytical_scope.get('exact_time_range') == 'true'
+            and 'exact_time_range' not in args
+            and not any(key in args for key in ('date_from', 'date_to', 'calendar_period'))):
+        args['exact_time_range'] = True
     for field, value in task.analytical_scope.items():
+        if call.arguments.get('calendar_period') is not None and field in {'date_from', 'date_to'}:
+            continue
         # JSON null is an omitted filter, not permission to widen the query.
         # Clearing a previously observed filter requires an explicit scope_clear.
         if field in supported and field not in call.scope_clear and not args.get(field):
@@ -40,6 +46,10 @@ def effective_arguments(task: Task, call: ToolCall) -> dict[str, Any]:
 def record_scope(task: Task, call: ToolCall, arguments: dict[str, Any]) -> None:
     if call.tool_name not in ANALYTICAL_TOOLS:
         return
+    if 'date_from' in arguments or 'date_to' in arguments:
+        task.analytical_scope.pop('exact_time_range', None)
+        if arguments.get('exact_time_range') is True:
+            task.analytical_scope['exact_time_range'] = 'true'
     if (arguments.get("card_id") and arguments["card_id"] != task.analytical_scope.get("card_id")
             and "account_id" not in call.arguments):
         task.analytical_scope.pop("account_id", None)

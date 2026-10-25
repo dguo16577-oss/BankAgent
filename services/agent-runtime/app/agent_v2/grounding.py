@@ -67,6 +67,72 @@ def _dec(value: Any) -> Decimal | None:
         return None
 
 
+def _scoped_currency(text: str, position: int, money_matches: list, currencies: set[str]) -> str | None:
+    """Resolve a denomination from its table column or preceding section.
+
+    A number never borrows authority from the union of other currencies.
+    Explicit money tokens are not headings for later unrelated numbers.
+    """
+    def tokens(part):
+        return [_CURRENCY_NAMES.get(m.group(), m.group().upper()) for m in
+                re.finditer(rf'(?<![A-Za-z])(?:{_CURRENCIES})(?![A-Za-z])', part, re.IGNORECASE)]
+    line_start = text.rfind('\n', 0, position) + 1
+    line_end = text.find('\n', position)
+    line = text[line_start:line_end if line_end >= 0 else len(text)]
+    if '|' in line:
+        column = text[line_start:position].count('|')
+        row_tokens = tokens(line)
+        for previous in reversed(text[:line_start].splitlines()):
+            if '|' not in previous:
+                if not previous.strip(): continue
+                break
+            cells = previous.split('|')
+            header_tokens = tokens(previous)
+            if header_tokens:
+                column_tokens = tokens(cells[column]) if column < len(cells) else []
+                if len(set(column_tokens)) == 1:
+                    return column_tokens[0]
+                if len(set(header_tokens)) == 1:
+                    return header_tokens[0]
+                return None
+        if len(set(row_tokens)) == 1:
+            return row_tokens[0]
+    # Ignore complete explicitly denominated amounts when looking for headings.
+    prefix = list(text[:position])
+    for match in money_matches:
+        if match.start() < position:
+            prefix[match.start():min(position, match.end())] = ' ' * (min(position, match.end()) - match.start())
+    prefix_text = ''.join(prefix)
+    previous_tokens = tokens(prefix_text)
+    if previous_tokens:
+        matches = list(re.finditer(rf'(?<![A-Za-z])(?:{_CURRENCIES})(?![A-Za-z])', prefix_text, re.IGNORECASE))
+        if len(matches) > 1 and previous_tokens[-1] != previous_tokens[-2]:
+            between = prefix_text[matches[-2].end():matches[-1].start()]
+            if not between.strip(' \t\r\n/、,，和与&|()（）[]【】'):
+                return None
+        return previous_tokens[-1]
+    return next(iter(currencies)) if len(currencies) == 1 else None
+
+
+def _non_money_column(text: str, position: int) -> bool:
+    start = text.rfind('\n', 0, position) + 1
+    if '|' not in text[start:position]:
+        return False
+    column = text[start:position].count('|')
+    for line in reversed(text[:start].splitlines()):
+        if '|' not in line:
+            if not line.strip(): continue
+            break
+        cells = line.split('|')
+        if column < len(cells):
+            label = cells[column]
+            if re.search(r'金额|费用|小计|合计|总额|\bamount\b', label, re.IGNORECASE):
+                return False
+            if re.search(r'笔数|次数|占比|比例|百分比|日期|时间|\b(?:count|percent|date|time)\b', label, re.IGNORECASE):
+                return True
+    return False
+
+
 def validate_analytical_reply(task: Task, message: str) -> str | None:
     """Reject unsupported masks, amounts and transaction/merchant associations.
 
@@ -74,7 +140,7 @@ def validate_analytical_reply(task: Task, message: str) -> str | None:
     """
     allowed_money: set[tuple[Decimal, str]] = set()
     allowed_masks: set[str] = set()
-    merchant_amounts: dict[str, set[Decimal]] = defaultdict(set)
+    merchant_amounts: dict[str, set[tuple[Decimal, str | None]]] = defaultdict(set)
     transaction_merchants: dict[str, str] = {}
     for observation in task.observations:
         if not observation.success:
@@ -110,7 +176,11 @@ def validate_analytical_reply(task: Task, message: str) -> str | None:
                 money = row.get("amount")
                 amount = _dec(money.get("amount") if isinstance(money, dict) else money)
                 if amount is not None:
-                    merchant_amounts[merchant].add(amount)
+                    currency = money.get('currency') if isinstance(money, dict) else row.get('currency')
+                    if currency is None:
+                        known = {unit for _, unit in allowed_money}
+                        currency = next(iter(known)) if len(known) == 1 else None
+                    merchant_amounts[merchant].add((amount, currency))
                 ident = row.get("transaction_id")
                 if isinstance(ident, str):
                     transaction_merchants[ident] = merchant
@@ -128,16 +198,17 @@ def validate_analytical_reply(task: Task, message: str) -> str | None:
     # Scan signed numbers once; never rescan the positive suffix of -10.
     # Currency headings may apply to following rows, including integer money.
     # Dates, counts, percentages, masks and list markers are different measures.
-    allowed_values = {amount for amount, _ in allowed_money}
+    observed_currencies = {currency for _, currency in allowed_money}
     non_money_spans = [m.span() for m in re.finditer(
         r'\b\d{4}-\d{2}-\d{2}(?:T[0-9:.+Z-]+)?|\d{1,4}\s*[年月日号]|'
         r'(?:[•*]{2,}|尾号\s*)\s*\d{4}|(?m:^\s*\d+[.)、]\s)', plain_message)]
-    currency_context = re.search(_CURRENCIES, plain_message, re.IGNORECASE) is not None
     for match in re.finditer(rf'(?<![A-Za-z0-9.,+\-−]){_NUMBER}(?![0-9]|[.,][0-9])', plain_message):
         if any(start < match.end() and match.start() < end
                for start, end in non_money_spans + [m.span() for m in money_matches]):
             continue
         raw = match.group()
+        if _non_money_column(plain_message, match.start()):
+            continue
         tail = plain_message[match.end():].lstrip()
         if re.match(r'(?:[%％]|笔|天|个月|年|月|日|次|项|个|款|小时|分钟|秒|transactions?\b|days?\b)', tail, re.IGNORECASE):
             continue
@@ -145,18 +216,24 @@ def validate_analytical_reply(task: Task, message: str) -> str | None:
         # additionally needs an explicit currency context and a value slot.
         prefix = plain_message[max(0, match.start() - 40):match.start()]
         value_slot = re.search(r'(?:[:：|]|小计|合计|总额|金额|支出|消费)\s*$', prefix)
-        if '.' not in raw and not (currency_context and value_slot):
+        if '.' not in raw and not (allowed_money and value_slot):
             continue
         amount = _dec(raw.replace('−', '-'))
-        if amount is not None and amount != 0 and amount not in allowed_values:
-            return 'UNOBSERVED_AMOUNT'
+        if amount is not None and amount != 0:
+            currency = _scoped_currency(plain_message, match.start(), money_matches, observed_currencies)
+            if currency is None:
+                return 'AMBIGUOUS_AMOUNT_CURRENCY'
+            if (amount, currency) not in allowed_money:
+                return 'UNOBSERVED_AMOUNT'
     # A merchant label paired with a monetary value must be copied from a
     # bank observation. This catches translations and near-name substitutions
     # without a merchant-specific dictionary or an LLM judge.
     for match in BULLET_MERCHANT.finditer(message):
         name, raw_amount = match.groups()
         amount = _dec(raw_amount)
-        if amount is not None and merchant_amounts and amount not in merchant_amounts.get(name.strip(), set()):
+        unit_match = MONEY.search(match.group())
+        unit = _money_value(unit_match)[1] if unit_match else None
+        if amount is not None and merchant_amounts and (amount, unit) not in merchant_amounts.get(name.strip(), set()):
             return "UNOBSERVED_MERCHANT_AMOUNT_PAIR"
     for clause in re.split(r"[\n。；;]", plain_message):
         names = [(match.start(), match.end(), merchant)
@@ -166,12 +243,12 @@ def validate_analytical_reply(task: Task, message: str) -> str | None:
             if ident in clause and names and all(name != expected for _, _, name in names):
                 return "TRANSACTION_MERCHANT_MISMATCH"
         for match in MONEY.finditer(clause):
-            amount, _ = _money_value(match)
+            amount, currency = _money_value(match)
             if amount is None or not names:
                 continue
             nearest = min(names, key=lambda item: min(abs(item[0] - match.end()), abs(item[1] - match.start())))
             distance = min(abs(nearest[0] - match.end()), abs(nearest[1] - match.start()))
-            if distance <= 80 and amount not in merchant_amounts[nearest[2]]:
+            if distance <= 80 and (amount, currency) not in merchant_amounts[nearest[2]]:
                 return "MERCHANT_AMOUNT_MISMATCH"
     return None
 

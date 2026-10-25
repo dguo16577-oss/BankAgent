@@ -6,7 +6,7 @@ import hashlib
 import asyncio
 import os
 import time
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from decimal import Decimal, InvalidOperation
 import re
 from typing import Annotated, Any, Literal
@@ -31,7 +31,7 @@ from .schedule_time import validate_scheduled_at
 
 OffsetTimestamp = Annotated[str, Field(
     pattern=r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$',
-    description='ISO 8601 timestamp with seconds and explicit UTC offset, e.g. 2026-09-01T00:00:00+08:00. Date-only values are invalid; use the bank reporting timezone for period boundaries.')]
+    description='ISO 8601 instant with explicit UTC offset. Start is inclusive; end is EXCLUSIVE. For whole days/months use calendar_period instead. A whole September ends at October 1 00:00 +08:00, never September 30 23:59:59.')]
 
 
 class Args(BaseModel):
@@ -124,11 +124,47 @@ class KnowledgeSearch(Args):
     effective_at: str | None = Field(default=None, max_length=40)
 
 
-class Transactions(Args):
-    account_id: str | None = Field(default=None, pattern=r"^[A-Za-z0-9_-]{1,128}$")
-    card_id: str | None = Field(default=None, pattern=r"^[A-Za-z0-9_-]{1,128}$")
+class CalendarPeriod(Args):
+    start_date: str = Field(pattern=r'^\d{4}-\d{2}-\d{2}$', description='First included bank-local date, YYYY-MM-DD.')
+    end_date: str = Field(pattern=r'^\d{4}-\d{2}-\d{2}$', description='Last INCLUDED bank-local date, YYYY-MM-DD. Bank timezone is UTC+08:00.')
+
+
+def calendar_bounds(start, end, calendar, exact):
+    if calendar is not None:
+        local_zone = timezone(timedelta(hours=8))
+        first = datetime.combine(date.fromisoformat(calendar.start_date), datetime.min.time(), local_zone)
+        try:
+            last = datetime.combine(date.fromisoformat(calendar.end_date) + timedelta(days=1), datetime.min.time(), local_zone)
+        except OverflowError as exc:
+            raise ValueError('Calendar end date is out of range') from exc
+        if ((start is not None and datetime.fromisoformat(start) != first)
+                or (end is not None and datetime.fromisoformat(end) != last) or exact):
+            raise ValueError('Calendar dates conflict with exact timestamp boundaries')
+        return first.isoformat(), last.isoformat()
+    if end is not None and not exact:
+        local_end = datetime.fromisoformat(end).astimezone(timezone(timedelta(hours=8)))
+        if (local_end.hour, local_end.minute, local_end.second) == (23, 59, 59):
+            raise ValueError('End is exclusive: use calendar_period for inclusive days, or exact_time_range for an explicitly requested precise instant')
+    return start, end
+
+
+class ReadPeriodArgs(Args):
     date_from: OffsetTimestamp | None = None
     date_to: OffsetTimestamp | None = None
+    calendar_period: CalendarPeriod | None = Field(default=None,
+        description='Prefer for natural day/month requests: inclusive start_date/end_date, normalized deterministically to [first midnight, midnight after last date) in UTC+08:00. Omit date_from/date_to when supplying this.')
+    exact_time_range: bool = Field(default=False,
+        description='True ONLY when user explicitly requests precise timestamp boundaries; date_to remains exclusive. Never use for whole-day/month requests.')
+
+    @model_validator(mode='after')
+    def normalize_calendar(self):
+        self.date_from, self.date_to = calendar_bounds(self.date_from, self.date_to, self.calendar_period, self.exact_time_range)
+        return self
+
+
+class Transactions(ReadPeriodArgs):
+    account_id: str | None = Field(default=None, pattern=r"^[A-Za-z0-9_-]{1,128}$")
+    card_id: str | None = Field(default=None, pattern=r"^[A-Za-z0-9_-]{1,128}$")
     direction: Literal["INCOMING", "OUTGOING", "ALL"] = "ALL"
     status: Literal["PENDING", "COMPLETED", "FAILED", "REVERSED", "CANCELLED"] | None = None
     type: Literal["CARD_PAYMENT", "BANK_TRANSFER", "SALARY", "DIRECT_DEBIT", "CASH_WITHDRAWAL", "FEE", "INTEREST", "FX_EXCHANGE", "INVESTMENT_PURCHASE", "INVESTMENT_REDEMPTION"] | None = None
@@ -147,21 +183,22 @@ class Transactions(Args):
         return self
 
 
-class Spending(Args):
+class Spending(ReadPeriodArgs):
     account_id: str | None = Field(default=None, pattern=r"^[A-Za-z0-9_-]{1,128}$")
     card_id: str | None = Field(default=None, pattern=r"^[A-Za-z0-9_-]{1,128}$")
-    date_from: OffsetTimestamp
-    date_to: OffsetTimestamp
     category: Literal["DINING", "GROCERIES", "SHOPPING", "TRANSPORT", "ENTERTAINMENT", "SUBSCRIPTIONS", "HOUSING", "TRAVEL", "HEALTH", "OTHER"] | None = None
     merchant: str | None = Field(default=None, min_length=1, max_length=160)
     currency: str | None = Field(default=None, pattern=r"^[A-Z]{3}$")
     bucket_by: Literal["NONE", "DAY", "WEEK", "MONTH"] = "NONE"
     compare_from: OffsetTimestamp | None = None
     compare_to: OffsetTimestamp | None = None
+    comparison_calendar_period: CalendarPeriod | None = None
 
     @model_validator(mode="after")
     def valid_dates(self) -> "Spending":
         validate_period(self.date_from, self.date_to, required=True)
+        self.compare_from, self.compare_to = calendar_bounds(self.compare_from, self.compare_to,
+            self.comparison_calendar_period, self.exact_time_range)
         if (self.compare_from is None) != (self.compare_to is None):
             raise ValueError("Comparison requires both boundaries")
         if self.compare_from is not None:
@@ -169,11 +206,9 @@ class Spending(Args):
         return self
 
 
-class AnomalyScope(Args):
+class AnomalyScope(ReadPeriodArgs):
     account_id: str | None = Field(default=None, pattern=r"^[A-Za-z0-9_-]{1,128}$")
     card_id: str | None = Field(default=None, pattern=r"^[A-Za-z0-9_-]{1,128}$")
-    date_from: OffsetTimestamp
-    date_to: OffsetTimestamp
 
     @model_validator(mode="after")
     def valid_dates(self) -> "AnomalyScope":
@@ -514,6 +549,17 @@ class ToolRegistry:
                       for error in exc.errors(include_input=False, include_context=False,
                                               include_url=False)[:8]]
             raise ToolArgumentError(issues) from exc
+        if name in {'list_transactions', 'summarize_spending', 'detect_transaction_anomalies'} and args.exact_time_range:
+            # This validates a proposed precision claim, never chooses a tool
+            # or supplies dates. An old verified precise scope may be reused.
+            inherited_exact = (task.analytical_scope.get('exact_time_range') == 'true'
+                and args.date_from == task.analytical_scope.get('date_from')
+                and args.date_to == task.analytical_scope.get('date_to'))
+            user_text = next((turn['text'] for turn in reversed(task.conversation)
+                              if turn['role'] == 'user'), task.goal)
+            clock = r'\d{1,2}:\d{2}|\d{1,2}\s*(?:am|pm)\b|[零一二三四五六七八九十\d]+\s*(?:点|时)'
+            if not inherited_exact and not re.search(clock, user_text, re.IGNORECASE):
+                raise ToolArgumentError([{'path': 'exact_time_range', 'type': 'explicit_user_time_required'}])
         if name in {'prepare_card_action', 'prepare_stop_recurring_payment'}:
             try:
                 authorize_action_constraints(task, name, args.model_dump(mode='json'))

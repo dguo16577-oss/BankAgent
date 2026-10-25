@@ -685,7 +685,14 @@ class AgentRuntimeV2:
                         raise RegistryError(blocker)
                 arguments = effective_arguments(task, call)
                 try:
-                    self.registry.validate(call.tool_name, arguments, task)
+                    validated_args = self.registry.validate(call.tool_name, arguments, task)
+                    if call.tool_name in {'list_transactions', 'summarize_spending', 'detect_transaction_anomalies'}:
+                        # Persist and pass the canonical exclusive boundaries,
+                        # not the model's inclusive calendar dates.
+                        for field in ('date_from', 'date_to', 'compare_from', 'compare_to'):
+                            value = getattr(validated_args, field, None)
+                            if value is not None:
+                                arguments[field] = value
                 except RegistryError as exc:
                     tool_class = next((tool['side_effect_class'] for tool in self.registry.visible()
                                        if tool['name'] == call.tool_name), None)
