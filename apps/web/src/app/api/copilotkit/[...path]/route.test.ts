@@ -88,3 +88,44 @@ it("allows only the bank-session thread and uses a fresh per-request cookie agen
     },
   ]);
 });
+
+it("rejects oversized SDK collections before constructing an HttpAgent", async () => {
+  const threadId = copilotThreadId("SESSION=alice");
+  expect(
+    (
+      await POST(
+        request("agent/aster/run", { threadId, messages: Array(257).fill({}) }),
+      )
+    ).status,
+  ).toBe(413);
+  expect(calls.agents).toHaveLength(0);
+});
+
+it("retains the owned stop route with an empty body", async () => {
+  const threadId = copilotThreadId("SESSION=alice");
+  const result = await POST(
+    new Request(
+      `http://localhost:3000/api/copilotkit/agent/aster/stop/${threadId}`,
+      {
+        method: "POST",
+        headers: { Origin: "http://localhost:3000", Cookie: "SESSION=alice" },
+      },
+    ),
+  );
+  expect(result.status).toBe(200);
+});
+
+it("rejects non-HTTP and credential-bearing origins even when the host matches", async () => {
+  for (const origin of ["ftp://localhost:3000", "http://user@localhost:3000"]) {
+    const result = await POST(
+      new Request("http://localhost:3000/api/copilotkit/agent/aster/run", {
+        method: "POST",
+        headers: { Origin: origin, Cookie: "SESSION=alice" },
+        body: "{}",
+      }),
+    );
+    expect(result.status).toBe(403);
+  }
+  expect(calls.agents).toHaveLength(0);
+  expect(globalThis.fetch).not.toHaveBeenCalled();
+});

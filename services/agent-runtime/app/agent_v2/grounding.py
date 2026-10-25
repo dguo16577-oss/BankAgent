@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+import unicodedata
 from collections import defaultdict
 from decimal import Decimal, InvalidOperation
 from typing import Any
@@ -18,7 +19,7 @@ FACT_FIELDS = {"merchant_untrusted": "merchant", "counterparty_untrusted": "coun
                "category": "category"}
 _CURRENCIES = r'CNY|USD|JPY|EUR|GBP|HKD|AUD|SGD|人民币|美元|日元|欧元|英镑|港元|港币|澳元|新加坡元|元|[¥￥€£]'
 _NUMBER = r'[+\-−]?(?:[0-9]{1,3}(?:,[0-9]{3})+|[0-9]+)(?:\.[0-9]+)?'
-MONEY = re.compile(rf'(?<![A-Za-z0-9.,])(?:(?P<prefix>{_CURRENCIES})\s*(?P<left>{_NUMBER})(?![0-9]|[.,][0-9])|(?P<right>{_NUMBER})\s*(?P<suffix>{_CURRENCIES}))(?![A-Za-z])', re.IGNORECASE)
+MONEY = re.compile(rf'(?<![A-Za-z0-9.])(?<![0-9],)(?:(?P<prefix>{_CURRENCIES})\s*(?P<left>{_NUMBER})(?![0-9]|[.,][0-9])|(?P<right>{_NUMBER})\s*(?P<suffix>{_CURRENCIES}))(?![A-Za-z])', re.IGNORECASE)
 _CURRENCY_NAMES = {'人民币': 'CNY', '元': 'CNY', '¥': 'CNY', '￥': 'CNY', '美元': 'USD',
     '日元': 'JPY', '欧元': 'EUR', '€': 'EUR', '英镑': 'GBP', '£': 'GBP',
     '港元': 'HKD', '港币': 'HKD', '澳元': 'AUD', '新加坡元': 'SGD'}
@@ -37,8 +38,8 @@ BULLET_MERCHANT = re.compile(
 
 def evidence(task: Task) -> list[dict[str, str]]:
     facts: list[dict[str, str]] = []
-    for index, observation in reversed(list(enumerate(task.observations))):
-        if not observation.success:
+    for index, observation in reversed(_current_evidence(task)):
+        if not observation.success or not _bank_fact_source(observation.tool_name):
             continue
 
         def visit(value: Any, path: str) -> None:
@@ -59,6 +60,26 @@ def evidence(task: Task) -> list[dict[str, str]]:
     return facts
 
 
+def _current_evidence(task: Task) -> list:
+    # Reuse the durable ledger's evidence boundary. Earlier observations remain
+    # available for references, but cannot prove a new goal's financial figures.
+    floors = [step.get('observation_floor') for step in task.ledger
+              if type(step.get('observation_floor')) is int and step['observation_floor'] >= 0]
+    floor = min(floors, default=0)
+    return list(enumerate(task.observations))[floor:]
+
+
+def _bank_fact_source(tool_name: str) -> bool:
+    # Delegates publish underlying verified bank observations separately.
+    # Their narrative/result envelope and knowledge metadata are not money.
+    return tool_name not in {'search_bank_knowledge', 'service_navigation'} and not tool_name.startswith('delegate_')
+
+
+def has_current_analysis(task: Task) -> bool:
+    return any(observation.success and observation.tool_name in {
+        'summarize_spending', 'detect_transaction_anomalies'} for _, observation in _current_evidence(task))
+
+
 def _dec(value: Any) -> Decimal | None:
     try:
         number = Decimal(str(value).replace(",", ""))
@@ -67,43 +88,69 @@ def _dec(value: Any) -> Decimal | None:
         return None
 
 
+def _currency_tokens(text: str) -> list[str]:
+    return [_CURRENCY_NAMES.get(m.group(), m.group().upper()) for m in
+            re.finditer(rf'(?<![A-Za-z])(?:{_CURRENCIES})(?![A-Za-z])', text, re.IGNORECASE)]
+
+
+def _table_header(text: str, position: int):
+    start = text.rfind('\n', 0, position) + 1
+    end = text.find('\n', position)
+    row = text[start:end if end >= 0 else len(text)]
+    if '|' not in row:
+        return None
+    column = text[start:position].count('|')
+    previous = []
+    for line in reversed(text[:start].splitlines()):
+        if not line.strip() or '|' not in line:
+            break
+        previous.append(line)
+    previous.reverse()
+    for index in range(len(previous) - 1, -1, -1):
+        cells = [cell.strip() for cell in previous[index].strip().strip('|').split('|')]
+        if cells and all(re.fullmatch(r':?-{3,}:?', cell) for cell in cells):
+            if index:
+                return previous[index - 1].split('|'), column, row.split('|')
+            return None
+    return (previous[0].split('|'), column, row.split('|')) if previous else None
+
+
+def _table_currency(text: str, position: int):
+    table = _table_header(text, position)
+    if table is None:
+        return False, None
+    header, column, row = table
+    units = _currency_tokens('|'.join(header))
+    column_units = _currency_tokens(header[column]) if column < len(header) else []
+    if len(set(column_units)) == 1:
+        return True, column_units[0]
+    if len(set(units)) == 1:
+        return True, units[0]
+    if units:
+        return True, None
+    # A dedicated currency cell can denominate a row; an amount like USD 100
+    # in another cell cannot redefine a header or another row's currency.
+    row_units = [_currency_tokens(cell)[0] for cell in row
+                 if re.fullmatch(rf'\s*(?:{_CURRENCIES})\s*', cell, re.IGNORECASE)]
+    return (True, row_units[0]) if len(set(row_units)) == 1 else (False, None)
+
+
 def _scoped_currency(text: str, position: int, money_matches: list, currencies: set[str]) -> str | None:
     """Resolve a denomination from its table column or preceding section.
 
     A number never borrows authority from the union of other currencies.
     Explicit money tokens are not headings for later unrelated numbers.
     """
-    def tokens(part):
-        return [_CURRENCY_NAMES.get(m.group(), m.group().upper()) for m in
-                re.finditer(rf'(?<![A-Za-z])(?:{_CURRENCIES})(?![A-Za-z])', part, re.IGNORECASE)]
-    line_start = text.rfind('\n', 0, position) + 1
-    line_end = text.find('\n', position)
-    line = text[line_start:line_end if line_end >= 0 else len(text)]
-    if '|' in line:
-        column = text[line_start:position].count('|')
-        row_tokens = tokens(line)
-        for previous in reversed(text[:line_start].splitlines()):
-            if '|' not in previous:
-                if not previous.strip(): continue
-                break
-            cells = previous.split('|')
-            header_tokens = tokens(previous)
-            if header_tokens:
-                column_tokens = tokens(cells[column]) if column < len(cells) else []
-                if len(set(column_tokens)) == 1:
-                    return column_tokens[0]
-                if len(set(header_tokens)) == 1:
-                    return header_tokens[0]
-                return None
-        if len(set(row_tokens)) == 1:
-            return row_tokens[0]
+    found, table_unit = _table_currency(text, position)
+    if found:
+        return table_unit
     # Ignore complete explicitly denominated amounts when looking for headings.
     prefix = list(text[:position])
     for match in money_matches:
         if match.start() < position:
             prefix[match.start():min(position, match.end())] = ' ' * (min(position, match.end()) - match.start())
     prefix_text = ''.join(prefix)
-    previous_tokens = tokens(prefix_text)
+    previous_tokens = _currency_tokens(prefix_text)
     if previous_tokens:
         matches = list(re.finditer(rf'(?<![A-Za-z])(?:{_CURRENCIES})(?![A-Za-z])', prefix_text, re.IGNORECASE))
         if len(matches) > 1 and previous_tokens[-1] != previous_tokens[-2]:
@@ -115,22 +162,13 @@ def _scoped_currency(text: str, position: int, money_matches: list, currencies: 
 
 
 def _non_money_column(text: str, position: int) -> bool:
-    start = text.rfind('\n', 0, position) + 1
-    if '|' not in text[start:position]:
+    table = _table_header(text, position)
+    if table is None:
         return False
-    column = text[start:position].count('|')
-    for line in reversed(text[:start].splitlines()):
-        if '|' not in line:
-            if not line.strip(): continue
-            break
-        cells = line.split('|')
-        if column < len(cells):
-            label = cells[column]
-            if re.search(r'金额|费用|小计|合计|总额|\bamount\b', label, re.IGNORECASE):
-                return False
-            if re.search(r'笔数|次数|占比|比例|百分比|日期|时间|\b(?:count|percent|date|time)\b', label, re.IGNORECASE):
-                return True
-    return False
+    header, column, _ = table
+    label = header[column] if column < len(header) else ''
+    return (not re.search(r'金额|费用|小计|合计|总额|\bamount\b', label, re.IGNORECASE)
+            and bool(re.search(r'笔数|次数|占比|比例|百分比|日期|时间|\b(?:count|percent|date|time)\b', label, re.IGNORECASE)))
 
 
 def validate_analytical_reply(task: Task, message: str) -> str | None:
@@ -142,8 +180,8 @@ def validate_analytical_reply(task: Task, message: str) -> str | None:
     allowed_masks: set[str] = set()
     merchant_amounts: dict[str, set[tuple[Decimal, str | None]]] = defaultdict(set)
     transaction_merchants: dict[str, str] = {}
-    for observation in task.observations:
-        if not observation.success:
+    for _, observation in _current_evidence(task):
+        if not observation.success or not _bank_fact_source(observation.tool_name):
             continue
         result = observation.structured_result
 
@@ -173,6 +211,7 @@ def validate_analytical_reply(task: Task, message: str) -> str | None:
                 merchant = row.get("merchant_untrusted")
                 if not isinstance(merchant, str) or not merchant:
                     continue
+                merchant = unicodedata.normalize('NFKC', merchant)
                 money = row.get("amount")
                 amount = _dec(money.get("amount") if isinstance(money, dict) else money)
                 if amount is not None:
@@ -184,25 +223,43 @@ def validate_analytical_reply(task: Task, message: str) -> str | None:
                 ident = row.get("transaction_id")
                 if isinstance(ident, str):
                     transaction_merchants[ident] = merchant
+    message = unicodedata.normalize('NFKC', message)
     for match in MASK.finditer(message):
         if match.group(1) not in allowed_masks:
             return "UNOBSERVED_MASK"
     # Ignore typography, never arithmetic: both prefix and suffix currency,
     # signs, integer values and grouped decimals must match observed money.
     plain_message = message.replace('**', '').replace('`', '')
+    # Unsupported explicit money notation cannot disappear from the strict
+    # decimal scanner (fullwidth notation has already been normalized).
+    scale = r'(?:[百千万亿]|(?:thousand|million|billion|[kKmM])\b)'
+    candidate = rf'[+\-−]?(?:[0-9.][0-9.,A-Za-z+\-−]*|[一二三四五六七八九十百千万亿零壹贰叁肆伍陆柒捌玖拾佰仟]+|NaN|Infinity|Inf)(?:\s*{scale})?'
+    if re.search(r'\$\s*[+\-−]?(?:\d|\.\d)|\d\s*\$', plain_message):
+        return 'AMBIGUOUS_CURRENCY_SYMBOL'  # require USD/HKD/AUD/SGD explicitly
+    for match in re.finditer(rf'(?<![A-Za-z0-9])(?:(?:{_CURRENCIES})\s*(?P<left>{candidate})|(?P<right>{candidate})\s*(?:{_CURRENCIES}))(?![A-Za-z])', plain_message, re.IGNORECASE):
+        raw = (match.group('left') or match.group('right')).rstrip('.,')
+        if re.fullmatch(r'[一二三四五六七八九十百千万亿零]+', raw) and re.match(
+                r'\s*(?:个|种|项|笔)', plain_message[match.end():]):
+            continue
+        if not re.fullmatch(_NUMBER, raw):
+            return 'UNSUPPORTED_MONEY_FORMAT'
     money_matches = list(MONEY.finditer(plain_message))
     for match in money_matches:
         amount, currency = _money_value(match)
-        if amount is not None and amount != 0 and (amount, currency) not in allowed_money:
+        _, table_unit = _table_currency(plain_message, match.start())
+        if table_unit is not None and table_unit != currency:
+            return 'CURRENCY_SCOPE_MISMATCH'
+        if amount is not None and (amount, currency) not in allowed_money:
             return "UNOBSERVED_AMOUNT"
     # Scan signed numbers once; never rescan the positive suffix of -10.
     # Currency headings may apply to following rows, including integer money.
     # Dates, counts, percentages, masks and list markers are different measures.
     observed_currencies = {currency for _, currency in allowed_money}
     non_money_spans = [m.span() for m in re.finditer(
-        r'\b\d{4}-\d{2}-\d{2}(?:T[0-9:.+Z-]+)?|\d{1,4}\s*[年月日号]|'
+        r'\b\d{4}[-/.]\d{2}[-/.]\d{2}(?:T[0-9:.+Z-]+)?|\d{1,4}\s*[年月日号]|'
+        r'[+\-]?\d{1,2}:\d{2}(?::\d{2}(?:\.\d+)?)?|'
         r'(?:[•*]{2,}|尾号\s*)\s*\d{4}|(?m:^\s*\d+[.)、]\s)', plain_message)]
-    for match in re.finditer(rf'(?<![A-Za-z0-9.,+\-−]){_NUMBER}(?![0-9]|[.,][0-9])', plain_message):
+    for match in re.finditer(rf'(?<![A-Za-z0-9.+\-−])(?<![0-9],){_NUMBER}(?![0-9]|[.,][0-9])', plain_message):
         if any(start < match.end() and match.start() < end
                for start, end in non_money_spans + [m.span() for m in money_matches]):
             continue
@@ -215,11 +272,15 @@ def validate_analytical_reply(task: Task, message: str) -> str | None:
         # Bare decimals retain the previous conservative check; integer money
         # additionally needs an explicit currency context and a value slot.
         prefix = plain_message[max(0, match.start() - 40):match.start()]
+        if re.search(r'(?:笔数|次数|交易数|记录数|天数|占比|比例|百分比(?:变化)?|transaction count|count)\s*[:：=]?\s*$', prefix, re.IGNORECASE):
+            continue
         value_slot = re.search(r'(?:[:：|]|小计|合计|总额|金额|支出|消费)\s*$', prefix)
+        if value_slot and re.match(rf'(?:[A-Za-z]|\s*{scale})', plain_message[match.end():]):
+            return 'UNSUPPORTED_MONEY_FORMAT'
         if '.' not in raw and not (allowed_money and value_slot):
             continue
         amount = _dec(raw.replace('−', '-'))
-        if amount is not None and amount != 0:
+        if amount is not None:
             currency = _scoped_currency(plain_message, match.start(), money_matches, observed_currencies)
             if currency is None:
                 return 'AMBIGUOUS_AMOUNT_CURRENCY'
@@ -254,7 +315,7 @@ def validate_analytical_reply(task: Task, message: str) -> str | None:
 
 
 def coverage_notice(task: Task) -> str:
-    for observation in reversed(task.observations):
+    for _, observation in reversed(_current_evidence(task)):
         if observation.tool_name != "summarize_spending" or not observation.success:
             continue
         comparison = observation.structured_result.get("period_change")
@@ -264,7 +325,7 @@ def coverage_notice(task: Task) -> str:
             return ""
         left = comparison.get("left_period", {})
         right = comparison.get("right_period", {})
-        return (f"\n\n账期提醒：本期为截至目前的 MTD（{left.get('days_covered', '?')} 天），"
+        return (f"\n\n账期提醒：本期覆盖 {left.get('days_covered', '?')} 天，"
                 f"对比期覆盖 {right.get('days_covered', '?')} 天；覆盖天数不同，"
                 "不能仅凭金额差异判断完整月份的消费趋势。")
     return ""

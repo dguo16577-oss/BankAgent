@@ -6,6 +6,7 @@ import hashlib
 import asyncio
 import os
 import time
+import unicodedata
 from datetime import date, datetime, timedelta, timezone
 from decimal import Decimal, InvalidOperation
 import re
@@ -148,6 +149,30 @@ def calendar_bounds(start, end, calendar, exact):
     return start, end
 
 
+_USER_CLOCK = r'\d{1,2}:\d{2}|\d{1,2}\s*(?:am|pm)\b|[零一二三四五六七八九十\d]+\s*(?:点|时)'
+
+
+def requested_period_text(text: str, start: str | None, *, comparison: bool = False) -> str:
+    """Select an unambiguous user's period clause for a precision veto only.
+
+    Does not choose a tool or generate dates. Separate reads of comparison
+    periods still must not silently turn explicit clock times into full days.
+    """
+    parts = re.split(r'对比|相比|比较|\bcompared\s+(?:with|to)\b|\bversus\b|\bvs\.?\b', text, flags=re.IGNORECASE)
+    if len(parts) != 2 or not parts[0].strip():
+        return text
+    if start:
+        month = datetime.fromisoformat(start).astimezone(timezone(timedelta(hours=8))).month
+        english = ('January','February','March','April','May','June','July','August','September','October','November','December')[month-1]
+        pattern = rf'(?<!\d){month}\s*月|[-/]{month:02}[-/]|\b(?:{english}|{english[:3]})\b'
+        mentioned = [bool(re.search(pattern, part, re.IGNORECASE)) for part in parts]
+        if mentioned[0] != mentioned[1]:
+            return parts[0] if mentioned[0] else parts[1]
+        if all(mentioned) and any(re.search(_USER_CLOCK, part, re.IGNORECASE) for part in parts):
+            return text  # ambiguous same-month roles: never widen a precise range
+    return parts[1] if comparison else parts[0]
+
+
 class ReadPeriodArgs(Args):
     date_from: OffsetTimestamp | None = None
     date_to: OffsetTimestamp | None = None
@@ -193,12 +218,15 @@ class Spending(ReadPeriodArgs):
     compare_from: OffsetTimestamp | None = None
     compare_to: OffsetTimestamp | None = None
     comparison_calendar_period: CalendarPeriod | None = None
+    comparison_exact_time_range: bool = Field(default=False,
+        description='True only for explicit precise comparison timestamps. Independent of the main calendar_period; comparison end remains exclusive.')
 
     @model_validator(mode="after")
     def valid_dates(self) -> "Spending":
         validate_period(self.date_from, self.date_to, required=True)
         self.compare_from, self.compare_to = calendar_bounds(self.compare_from, self.compare_to,
-            self.comparison_calendar_period, self.exact_time_range)
+            self.comparison_calendar_period, self.comparison_exact_time_range or
+            (self.exact_time_range and self.comparison_calendar_period is None))
         if (self.compare_from is None) != (self.compare_to is None):
             raise ValueError("Comparison requires both boundaries")
         if self.compare_from is not None:
@@ -549,17 +577,25 @@ class ToolRegistry:
                       for error in exc.errors(include_input=False, include_context=False,
                                               include_url=False)[:8]]
             raise ToolArgumentError(issues) from exc
-        if name in {'list_transactions', 'summarize_spending', 'detect_transaction_anomalies'} and args.exact_time_range:
+        if name in {'list_transactions', 'summarize_spending', 'detect_transaction_anomalies'}:
+            latest_user = unicodedata.normalize('NFKC', next((turn['text'] for turn in reversed(task.conversation)
+                                if turn['role'] == 'user'), task.goal))
+            main_text = requested_period_text(latest_user, args.date_from)
+            compare_text = requested_period_text(latest_user, getattr(args, 'compare_from', None), comparison=True)
+            for field, source in [('calendar_period', main_text), ('comparison_calendar_period', compare_text)]:
+                if getattr(args, field, None) is not None and re.search(_USER_CLOCK, source, re.IGNORECASE):
+                    raise ToolArgumentError([{'path': field, 'type': 'precise_user_range_cannot_be_calendar_days'}])
+        if name in {'list_transactions', 'summarize_spending', 'detect_transaction_anomalies'} and (
+                args.exact_time_range or getattr(args, 'comparison_exact_time_range', False)):
             # This validates a proposed precision claim, never chooses a tool
             # or supplies dates. An old verified precise scope may be reused.
             inherited_exact = (task.analytical_scope.get('exact_time_range') == 'true'
                 and args.date_from == task.analytical_scope.get('date_from')
                 and args.date_to == task.analytical_scope.get('date_to'))
-            user_text = next((turn['text'] for turn in reversed(task.conversation)
-                              if turn['role'] == 'user'), task.goal)
-            clock = r'\d{1,2}:\d{2}|\d{1,2}\s*(?:am|pm)\b|[零一二三四五六七八九十\d]+\s*(?:点|时)'
-            if not inherited_exact and not re.search(clock, user_text, re.IGNORECASE):
+            if args.exact_time_range and not inherited_exact and not re.search(_USER_CLOCK, main_text, re.IGNORECASE):
                 raise ToolArgumentError([{'path': 'exact_time_range', 'type': 'explicit_user_time_required'}])
+            if getattr(args, 'comparison_exact_time_range', False) and not re.search(_USER_CLOCK, compare_text, re.IGNORECASE):
+                raise ToolArgumentError([{'path': 'comparison_exact_time_range', 'type': 'explicit_user_time_required'}])
         if name in {'prepare_card_action', 'prepare_stop_recurring_payment'}:
             try:
                 authorize_action_constraints(task, name, args.model_dump(mode='json'))

@@ -179,6 +179,11 @@ async def summarize(gateway: BankingGateway, cookie: str, params: dict[str, str]
                     bucket_by: str = "NONE", compare_from: str | None = None,
                     compare_to: str | None = None) -> dict[str, Any]:
     current = aggregate(await spending_rows(gateway, cookie, params), bucket_by)
+    if params.get('currency') and current['transaction_count'] == 0:
+        # An exhausted, currency-filtered read proves a zero total in that
+        # denomination. Empty unfiltered data does not invent a currency.
+        code = params['currency']
+        current['totals_by_currency'][code] = {'amount': '0.00', 'currency': code, 'transaction_count': 0}
     result: dict[str, Any] = {
         "period": {"from": params["from"], "to": params["to"]},
         "period_coverage": period_metadata(params["from"], params["to"]),
@@ -196,6 +201,7 @@ async def summarize(gateway: BankingGateway, cookie: str, params: dict[str, str]
                             "absolute_change": fmt(now - before),
                             "percentage_change": fmt((now - before) * 100 / before) if before else None})
         result["period_change"] = {"comparison_from": compare_from, "comparison_to": compare_to,
+                                   "comparison_summary": previous,
                                    "by_currency": changes,
                                    "left_period": result["period_coverage"],
                                    "right_period": period_metadata(compare_from, compare_to),

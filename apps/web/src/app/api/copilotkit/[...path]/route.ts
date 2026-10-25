@@ -7,6 +7,10 @@ import {
   activeBankSession,
   copilotThreadId,
 } from "@/lib/agent/copilot-session";
+import {
+  boundedJsonRequest,
+  RequestBoundError,
+} from "@/lib/agent/bounded-request";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -21,9 +25,12 @@ function allowedOrigin(request: Request) {
   const origin = request.headers.get("origin");
   if (!origin) return true;
   try {
+    const parsed = new URL(origin);
     return (
-      new URL(origin).host ===
-      (request.headers.get("host") ?? new URL(request.url).host)
+      ["http:", "https:"].includes(parsed.protocol) &&
+      !parsed.username &&
+      !parsed.password &&
+      parsed.host === (request.headers.get("host") ?? new URL(request.url).host)
     );
   } catch {
     return false;
@@ -64,11 +71,19 @@ async function handler(request: Request) {
     return fail(401, "Bank session is not active");
   // The runner's thread store is process-wide. Bind every run to an opaque
   // per-session thread before it reaches that store, including direct API use.
+  let body: unknown;
+  if (request.method === "POST") {
+    try {
+      const bounded = await boundedJsonRequest(request, isStop);
+      body = bounded.body;
+      request = bounded.request;
+    } catch (error) {
+      if (error instanceof RequestBoundError)
+        return fail(error.status, error.message);
+      return fail(400, "Invalid request body");
+    }
+  }
   if (isRun || isConnect) {
-    const body: unknown = await request
-      .clone()
-      .json()
-      .catch(() => undefined);
     if (
       !body ||
       typeof body !== "object" ||

@@ -21,7 +21,7 @@ from ..task_models import AgentResponse, ConfirmRequest, PlanStep, TaskStatus
 from ..transfer_policy import PolicyContext, PolicyDecision, TransferPolicy
 from .context import ContextBuilder
 from .analytical_scope import effective_arguments, record_scope
-from .grounding import coverage_notice, validate_analytical_reply
+from .grounding import coverage_notice, has_current_analysis, validate_analytical_reply
 from .analysis_safety import readonly_user_turn
 from .completeness import mark_cancelled_financial_step, preparation_blocker, update_ledger, financial_progress
 from .financial_terms import select_financial_step, bind_prepared_intent, bind_execution_receipt, validate_execution_binding
@@ -629,8 +629,7 @@ class AgentRuntimeV2:
                                 task.status = Status.FAILED
                                 self._save(task)
                                 return self._response(task, "已检索到资料，但回答引用未能通过来源核验；请重试。", "UNVERIFIED_KNOWLEDGE_CITATION")
-                    analysis_observed = any(o.success and o.tool_name in {
-                        "summarize_spending", "detect_transaction_anomalies"} for o in task.observations)
+                    analysis_observed = has_current_analysis(task)
                     if analysis_observed and task.active_intent is None:
                         issue = validate_analytical_reply(task, final_message)
                         if issue:
