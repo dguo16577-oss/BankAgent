@@ -23,6 +23,11 @@ import {
   parsePresentation,
   type PresentationBlock,
 } from "./presentation-schema";
+import {
+  categoryLabel,
+  displayPeriod,
+  presentationTitle,
+} from "./financial-display";
 
 const colors = [
   "#0f766e",
@@ -35,6 +40,9 @@ const colors = [
 
 function CoverageNote({
   value,
+  range,
+  source,
+  incomplete = false,
 }: {
   value?: {
     status: string;
@@ -45,18 +53,94 @@ function CoverageNote({
     as_of_time: string;
     missing_periods: string[];
   };
+  range?: { from: string; to: string };
+  source?: string;
+  incomplete?: boolean;
 }) {
-  if (!value) return null;
+  const { locale } = useLocale();
+  const zh = locale === "zh-CN";
+  const statuses: Record<string, string> = zh
+    ? {
+        COMPLETE: "数据完整",
+        PARTIAL_CURRENT_PERIOD: "统计期间进行中",
+        MISSING_PERIODS: "存在缺失月份",
+        UNKNOWN_COVERAGE: "覆盖范围待核实",
+      }
+    : {
+        COMPLETE: "Complete coverage",
+        PARTIAL_CURRENT_PERIOD: "Current period in progress",
+        MISSING_PERIODS: "Missing periods",
+        UNKNOWN_COVERAGE: "Coverage not verified",
+      };
+  if (!value && !range && !source) return null;
+  const from = value?.covered_start || range?.from;
+  const to = value?.covered_end || range?.to;
   return (
-    <p className="text-xs text-muted-foreground" data-testid="coverage-note">
-      {value.status} · {value.covered_start} – {value.covered_end}
-      {" · Requested: "}
-      {value.requested_start} – {value.requested_end}
-      {value.as_of_time ? ` · As of: ${value.as_of_time}` : ""}
-      {value.missing_periods.length
-        ? ` · Missing: ${value.missing_periods.join(", ")}`
-        : ""}
-    </p>
+    <div
+      className="mt-2 space-y-1 text-xs text-muted-foreground"
+      data-testid="coverage-note"
+    >
+      {from && to && <p>{displayPeriod(from, to, zh)}</p>}
+      {value && (
+        <p>
+          {statuses[value.status] ??
+            (zh ? "覆盖范围待核实" : "Coverage not verified")}
+        </p>
+      )}
+      {incomplete && (!value || value.status === "COMPLETE") && (
+        <p>{zh ? "数据不完整" : "Incomplete data"}</p>
+      )}
+      {Boolean(value?.missing_periods.length) && (
+        <p className="text-amber-800">
+          {zh ? "缺失月份：" : "Missing periods: "}
+          {value!.missing_periods.join(", ")}
+        </p>
+      )}
+      <details className="pt-1">
+        <summary className="cursor-pointer">
+          {zh ? "数据来源与统计口径" : "Source and calculation details"}
+        </summary>
+        <dl className="mt-2 grid gap-1 break-words">
+          {source && (
+            <>
+              <dt>{zh ? "接口标识" : "Source identifier"}</dt>
+              <dd>{source}</dd>
+            </>
+          )}
+          {value && (
+            <>
+              <dt>{zh ? "覆盖状态标识" : "Coverage identifier"}</dt>
+              <dd>{value.status}</dd>
+              <dt>
+                {zh
+                  ? "请求范围（起点含，终点不含）"
+                  : "Requested range (start inclusive, end exclusive)"}
+              </dt>
+              <dd>
+                {value.requested_start} – {value.requested_end}
+              </dd>
+              <dt>{zh ? "实际覆盖范围" : "Covered range"}</dt>
+              <dd>
+                {value.covered_start} – {value.covered_end}
+              </dd>
+              {value.as_of_time && (
+                <>
+                  <dt>{zh ? "数据时间" : "As of"}</dt>
+                  <dd>{value.as_of_time}</dd>
+                </>
+              )}
+            </>
+          )}
+        </dl>
+        {source === "summarize_spending" && (
+          <p className="mt-2">
+            {zh
+              ? "仅统计已完成的借记消费，不含普通转账和收入；各币种分别汇总。时间按北京时间，起点含、终点不含。"
+              : "Completed debit spending only; ordinary transfers and income excluded. Currencies remain separate. UTC+08:00, start inclusive and end exclusive."}
+          </p>
+        )}
+      </details>
+    </div>
   );
 }
 
@@ -194,6 +278,9 @@ function ChartBlock({
   const [showTable, setShowTable] = useState(false);
   const points = block.points.map((point) => ({
     ...point,
+    displayLabel: block.title.startsWith("Spending by category")
+      ? categoryLabel(point.label, zh)
+      : point.label,
     value: Number(point.amount),
   }));
   const tooltip = ({
@@ -201,12 +288,14 @@ function ChartBlock({
     payload,
   }: {
     active?: boolean;
-    payload?: readonly { payload?: { label?: string; amount?: string } }[];
+    payload?: readonly {
+      payload?: { displayLabel?: string; amount?: string };
+    }[];
   }) =>
     active && payload?.[0]?.payload ? (
       <div className="rounded border bg-white p-2 text-sm">
-        {payload[0].payload.label}: {payload[0].payload.amount} {block.currency}
-        <CoverageNote value={block.coverage} />
+        {payload[0].payload.displayLabel}: {payload[0].payload.amount}{" "}
+        {block.currency}
       </div>
     ) : null;
   return (
@@ -216,7 +305,7 @@ function ChartBlock({
     >
       <div className="flex justify-between gap-3">
         <h2 className="font-semibold">
-          {block.title} · {block.currency}
+          {presentationTitle(block.title, zh)} · {block.currency}
         </h2>
         {table && (
           <button
@@ -234,11 +323,12 @@ function ChartBlock({
           </button>
         )}
       </div>
-      <p className="mt-1 text-xs text-muted-foreground">
-        {block.date_range.from} – {block.date_range.to} · {block.source}
-        {block.incomplete ? (zh ? " · 数据不完整" : " · Incomplete data") : ""}
-      </p>
-      <CoverageNote value={block.coverage} />
+      <CoverageNote
+        value={block.coverage}
+        range={block.date_range}
+        source={block.source}
+        incomplete={block.incomplete}
+      />
       {points.length === 0 ? (
         <p className="mt-4 text-sm">
           {zh ? "当前范围没有数据。" : "No data in this range."}
@@ -249,7 +339,13 @@ function ChartBlock({
         </div>
       ) : (
         <div
-          className="mt-4 h-64 min-w-0"
+          className="mt-4 min-w-0"
+          style={{
+            height:
+              block.kind === "BAR_CHART"
+                ? Math.max(256, points.length * 36 + 48)
+                : 256,
+          }}
           role="img"
           aria-label={`${block.title} ${block.currency}`}
         >
@@ -264,7 +360,7 @@ function ChartBlock({
                 <Pie
                   data={points}
                   dataKey="value"
-                  nameKey="label"
+                  nameKey="displayLabel"
                   outerRadius={80}
                   label
                 >
@@ -281,7 +377,7 @@ function ChartBlock({
             ) : block.kind === "LINE_CHART" ? (
               <LineChart data={points}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="label" />
+                <XAxis dataKey="displayLabel" />
                 <YAxis />
                 <Tooltip content={tooltip} />
                 <Legend />
@@ -293,10 +389,21 @@ function ChartBlock({
                 />
               </LineChart>
             ) : (
-              <BarChart data={points}>
+              <BarChart
+                data={points}
+                layout="vertical"
+                margin={{ left: 0, right: 12 }}
+              >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="label" />
-                <YAxis />
+                <XAxis type="number" />
+                <YAxis
+                  type="category"
+                  dataKey="displayLabel"
+                  width={112}
+                  interval={0}
+                  tick={{ fontSize: 11 }}
+                  tickLine={false}
+                />
                 <Tooltip content={tooltip} />
                 <Legend />
                 <Bar
@@ -354,18 +461,15 @@ export function RichPresentation({
               aria-label={zh ? "消费总额" : "Total spending"}
             >
               <p>
-                {block.title} · {block.currency}
+                {presentationTitle(block.title, zh)} · {block.currency}
               </p>
               <strong className="text-2xl">{block.amount}</strong>
-              <CoverageNote value={block.coverage} />
-              <p className="text-xs text-muted-foreground">
-                {block.date_range.from} – {block.date_range.to}
-                {block.incomplete
-                  ? zh
-                    ? " · 数据不完整"
-                    : " · Incomplete data"
-                  : ""}
-              </p>
+              <CoverageNote
+                value={block.coverage}
+                range={block.date_range}
+                source={block.source}
+                incomplete={block.incomplete}
+              />
             </section>
           );
         if (block.kind === "TABLE") {
@@ -392,17 +496,16 @@ export function RichPresentation({
               className="rounded-2xl border bg-white p-5"
               aria-label={block.title}
             >
-              <h2 className="font-semibold">{block.title}</h2>
-              <p className="text-xs text-muted-foreground">
-                {block.source}
-                {block.incomplete
-                  ? zh
-                    ? " · 数据不完整"
-                    : " · Incomplete data"
-                  : ""}
-              </p>
+              <h2 className="font-semibold">
+                {presentationTitle(block.title, zh)}
+              </h2>
+              <CoverageNote
+                value={block.coverage}
+                range={block.date_range}
+                source={block.source}
+                incomplete={block.incomplete}
+              />
               <DataTable block={block} />
-              <CoverageNote value={block.coverage} />
             </section>
           );
         }
