@@ -636,7 +636,10 @@ class AgentRuntimeV2:
                             repair_context = self.context_builder.build(task, self.registry.visible())
                             repair_context["grounding_repair"] = {"issue": issue,
                                 "instruction": "Return COMPLETE with corrected facts from evidence_facts only. "
-                                               "Do not call tools or invent a merchant, amount or mask."}
+                                               "Do not call tools or invent a merchant, amount or mask. "
+                                               "The UI renders charts from bank observations. Remove textual bars, "
+                                               "axis ticks, per-block amounts and scales; return only a factual caption "
+                                               "with observed totals/categories. Do not whitelist a display scale as bank money."}
                             repaired = await self._decide(task, repair_context)
                             task.trace.append({"kind": "GROUNDING_REPAIR", "issue": issue,
                                                "decision": _trace_safe(repaired.model_dump(mode="json"))})
