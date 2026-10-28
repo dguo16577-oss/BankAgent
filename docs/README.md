@@ -2,6 +2,7 @@
 
 - [启动与维护](../START-README.md)
 - [当前限制与开发检查](release-status.md)
+- [r7 自查与30项交接复测](testing/r7-handoff-20261028.md)
 - [API 工作流](api/README.md)
 - [持久任务](architecture/durable-agent-runtime.md)
 - [结构化响应](architecture/agent-rich-response.md)
