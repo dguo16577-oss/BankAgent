@@ -7,6 +7,39 @@ describe("service cards", () => {
     localStorage.removeItem("aster.locale");
     vi.restoreAllMocks();
   });
+  it("shows the exclusive microsecond endpoint without expanding source details", () => {
+    localStorage.setItem("aster.locale", "zh-CN");
+    const raw = [
+      {
+        kind: "SUMMARY_CARD",
+        title: "Spending",
+        source: "summarize_spending",
+        currency: "CNY",
+        amount: "0.00",
+        incomplete: false,
+        date_range: {
+          from: "2026-09-30T23:59:59.000001+08:00",
+          to: "2026-09-30T23:59:59.000002+08:00",
+        },
+      },
+    ];
+    const before = JSON.stringify(raw);
+    const { container } = render(
+      <RichPresentation
+        raw={raw}
+        onAssist={vi.fn()}
+        onCancel={vi.fn()}
+        busy={false}
+      />,
+    );
+    expect(
+      screen.getByText(
+        "2026/09/30 23:59:59.000001 – 2026/09/30 23:59:59.000002 （不含结束时刻） · UTC+08:00",
+      ),
+    ).toBeVisible();
+    expect(container.querySelector("details")).not.toHaveAttribute("open");
+    expect(JSON.stringify(raw)).toBe(before);
+  });
   it("keeps source identifiers and repeated raw ranges in collapsed details", () => {
     localStorage.setItem("aster.locale", "zh-CN");
     const { container } = render(

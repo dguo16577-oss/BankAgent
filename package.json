@@ -10,7 +10,7 @@
     "dev": "node scripts/web-runtime.mjs dev",
     "lint": "pnpm --filter web lint && pnpm format:check",
     "typecheck": "pnpm api:check && pnpm --filter web typecheck",
-    "test": "pnpm --filter web test && node --test scripts/contract-hash.test.mjs",
+    "test": "pnpm --filter web test && node --test scripts/contract-hash.test.mjs scripts/dependency-security.test.mjs",
     "test:e2e": "pnpm --filter web test:e2e",
     "build": "node scripts/web-runtime.mjs build",
     "start": "node scripts/web-runtime.mjs start",
