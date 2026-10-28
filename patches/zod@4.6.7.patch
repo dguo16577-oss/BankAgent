@@ -1,0 +1,93 @@
+diff --git a/src/v3/types.ts b/src/v3/types.ts
+index 17bef73f42205b301bc0de7f3f3eb6608791bda8..5ef35f6592c75df085317a46be54bd3ca1de36ca 100644
+--- a/src/v3/types.ts
++++ b/src/v3/types.ts
+@@ -2266,6 +2266,8 @@ export class ZodArray<T extends ZodTypeAny, Cardinality extends ArrayCardinality
+           message: def.exactLength.message,
+         });
+         status.dirty();
++        // Aster backport: do not walk an already oversized collection.
++        if (tooBig) return INVALID;
+       }
+     }
+ 
+@@ -2294,6 +2296,8 @@ export class ZodArray<T extends ZodTypeAny, Cardinality extends ArrayCardinality
+           message: def.maxLength.message,
+         });
+         status.dirty();
++        // Aster backport: do not walk an already oversized collection.
++        return INVALID;
+       }
+     }
+ 
+@@ -3728,6 +3732,8 @@ export class ZodSet<Value extends ZodTypeAny = ZodTypeAny> extends ZodType<
+           message: def.maxSize.message,
+         });
+         status.dirty();
++        // Aster backport: do not walk an already oversized collection.
++        return INVALID;
+       }
+     }
+ 
+diff --git a/v3/types.cjs b/v3/types.cjs
+index 7c3fa90509fe0149fde8ad5e647b9657014c538f..01351c0f8c11a9c5cc8cd73baa2dab94b32ada17 100644
+--- a/v3/types.cjs
++++ b/v3/types.cjs
+@@ -1793,6 +1793,8 @@ class ZodArray extends ZodType {
+                     message: def.exactLength.message,
+                 });
+                 status.dirty();
++                // Aster backport: do not walk an already oversized collection.
++                if (tooBig) return parseUtil_js_1.INVALID;
+             }
+         }
+         if (def.minLength !== null) {
+@@ -1819,6 +1821,8 @@ class ZodArray extends ZodType {
+                     message: def.maxLength.message,
+                 });
+                 status.dirty();
++                // Aster backport: do not walk an already oversized collection.
++                return parseUtil_js_1.INVALID;
+             }
+         }
+         if (ctx.common.async) {
+@@ -2850,6 +2854,8 @@ class ZodSet extends ZodType {
+                     message: def.maxSize.message,
+                 });
+                 status.dirty();
++                // Aster backport: do not walk an already oversized collection.
++                return parseUtil_js_1.INVALID;
+             }
+         }
+         const valueType = this._def.valueType;
+diff --git a/v3/types.js b/v3/types.js
+index ea2be4dba5775eabf4d5b5fecdead5e1a0ca52ff..583d0d00a64a89318071144244cd7d10880fc2b0 100644
+--- a/v3/types.js
++++ b/v3/types.js
+@@ -1772,6 +1772,8 @@ export class ZodArray extends ZodType {
+                     message: def.exactLength.message,
+                 });
+                 status.dirty();
++                // Aster backport: do not walk an already oversized collection.
++                if (tooBig) return INVALID;
+             }
+         }
+         if (def.minLength !== null) {
+@@ -1798,6 +1800,8 @@ export class ZodArray extends ZodType {
+                     message: def.maxLength.message,
+                 });
+                 status.dirty();
++                // Aster backport: do not walk an already oversized collection.
++                return INVALID;
+             }
+         }
+         if (ctx.common.async) {
+@@ -2821,6 +2825,8 @@ export class ZodSet extends ZodType {
+                     message: def.maxSize.message,
+                 });
+                 status.dirty();
++                // Aster backport: do not walk an already oversized collection.
++                return INVALID;
+             }
+         }
+         const valueType = this._def.valueType;

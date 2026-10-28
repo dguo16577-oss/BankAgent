@@ -10,12 +10,16 @@ overrides:
   body-parser@>=2 <2.4.0: 2.4.0
   fast-uri@>=3 <3.1.9: 3.1.9
   zod@>=4 <4.6.6: 4.6.7
+  zod@>=3 <4: workspace:@aster/zod-v3-compat@*
   qs@>=6.7.0 <=6.16.0: 6.16.1
   dompurify@<3.4.17: 3.4.17
   katex@>=0.11 <0.18.2: 0.18.2
   ip-address@<=10.7.3: 10.7.4
   vite@>=8.3.0 <=8.3.2: 8.3.3
   '@vitest/mocker@>=5.0.0-beta.1 <5.0.3': 5.0.3
+
+patchedDependencies:
+  zod@4.6.7: 55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5
 
 importers:
 
@@ -47,13 +51,13 @@ importers:
         version: 1.0.2
       '@copilotkit/react-core':
         specifier: 1.78.0
-        version: 1.78.0(@cfworker/json-schema@4.1.1)(@types/mdast@4.0.4)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(graphql@16.14.2)(micromark-util-types@2.0.3)(micromark@4.0.3(supports-color@10.2.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)(zod@4.6.7)
+        version: 1.78.0(@cfworker/json-schema@4.1.1)(@types/mdast@4.0.4)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(graphql@16.14.2)(micromark-util-types@2.0.3)(micromark@4.0.3(supports-color@10.2.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5))
       '@copilotkit/runtime':
         specifier: 1.78.0
-        version: 1.78.0(@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(ws@8.22.0))(@langchain/langgraph-sdk@1.12.3(@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(ws@8.22.0))(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@opentelemetry/api@1.9.1)(@types/express@5.0.6)(debug@4.4.3(supports-color@10.2.2))(express@5.3.0(supports-color@10.2.2))(langchain@1.5.16(@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(ws@8.22.0))(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(ws@8.22.0))(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)(vitest@5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(jsdom@30.1.1)(msw@2.15.0(@types/node@24.19.0)(typescript@5.9.3))(vite@8.3.3(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)))
+        version: 1.78.0(7de6040f30c3503b155155bc56c18c09)
       '@hookform/resolvers':
         specifier: ^5.9.1
-        version: 5.9.1(@standard-schema/spec@1.1.0)(ajv@8.20.0)(class-transformer@0.5.1)(class-validator@0.14.4)(react-hook-form@7.89.0(@types/react@19.3.0)(react@19.2.8))(zod@4.6.7)
+        version: 5.9.1(@standard-schema/spec@1.1.0)(ajv@8.20.0)(class-transformer@0.5.1)(class-validator@0.14.4)(react-hook-form@7.89.0(@types/react@19.3.0)(react@19.2.8))(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5))
       '@tanstack/react-query':
         specifier: ^5.104.0
         version: 5.104.0(react@19.2.8)
@@ -98,7 +102,7 @@ importers:
         version: 3.7.0
       zod:
         specifier: ^4.6.7
-        version: 4.6.7
+        version: 4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)
     devDependencies:
       '@playwright/test':
         specifier: ^1.63.0
@@ -148,6 +152,12 @@ importers:
       vitest:
         specifier: ^5.0.3
         version: 5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(jsdom@30.1.1)(msw@2.15.0(@types/node@24.19.0)(typescript@5.9.3))(vite@8.3.3(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1))
+
+  packages/zod-v3-compat:
+    dependencies:
+      zod:
+        specifier: 4.6.7
+        version: 4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)
 
 packages:
 
@@ -6307,9 +6317,6 @@ packages:
     peerDependencies:
       zod: 4.6.7
 
-  zod@3.25.76:
-    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
-
   zod@4.6.7:
     resolution: {integrity: sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==}
 
@@ -6326,8 +6333,8 @@ snapshots:
     dependencies:
       '@preact/signals-core': 1.14.4
       date-fns: 4.4.0
-      zod: 3.25.76
-      zod-to-json-schema: 3.25.2(zod@3.25.76)
+      zod: link:packages/zod-v3-compat
+      zod-to-json-schema: 3.25.2(zod@packages+zod-v3-compat)
 
   '@adobe/css-tools@4.5.0': {}
 
@@ -6351,12 +6358,12 @@ snapshots:
       rxjs: 7.8.1
       untruncate-json: 0.0.1
       uuid: 11.1.1
-      zod: 3.25.76
+      zod: link:packages/zod-v3-compat
 
   '@ag-ui/client@1.0.2':
     dependencies:
-      '@ag-ui/core': 1.0.2(zod@3.25.76)
-      '@ag-ui/encoder': 1.0.2(zod@3.25.76)
+      '@ag-ui/core': 1.0.2(zod@packages+zod-v3-compat)
+      '@ag-ui/encoder': 1.0.2(zod@packages+zod-v3-compat)
       '@ag-ui/proto': 1.0.2
       '@types/uuid': 10.0.0
       compare-versions: 6.1.1
@@ -6364,40 +6371,40 @@ snapshots:
       rxjs: 7.8.1
       untruncate-json: 0.0.1
       uuid: 11.1.1
-      zod: 3.25.76
+      zod: link:packages/zod-v3-compat
 
   '@ag-ui/core@0.0.59':
     dependencies:
-      zod: 3.25.76
+      zod: link:packages/zod-v3-compat
 
-  '@ag-ui/core@1.0.2(zod@3.25.76)':
+  '@ag-ui/core@1.0.2(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5))':
     optionalDependencies:
-      zod: 3.25.76
+      zod: 4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)
 
-  '@ag-ui/core@1.0.2(zod@4.6.7)':
+  '@ag-ui/core@1.0.2(zod@packages+zod-v3-compat)':
     optionalDependencies:
-      zod: 4.6.7
+      zod: link:packages/zod-v3-compat
 
   '@ag-ui/encoder@0.0.59':
     dependencies:
       '@ag-ui/core': 0.0.59
       '@ag-ui/proto': 0.0.59
 
-  '@ag-ui/encoder@1.0.2(zod@3.25.76)':
+  '@ag-ui/encoder@1.0.2(zod@packages+zod-v3-compat)':
     dependencies:
-      '@ag-ui/core': 1.0.2(zod@3.25.76)
+      '@ag-ui/core': 1.0.2(zod@packages+zod-v3-compat)
       '@ag-ui/proto': 1.0.2
     transitivePeerDependencies:
       - zod
 
-  '@ag-ui/langgraph@0.0.44(@ag-ui/client@1.0.2)(@ag-ui/core@1.0.2(zod@3.25.76))(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(ws@8.22.0)':
+  '@ag-ui/langgraph@0.0.44(@ag-ui/client@1.0.2)(@ag-ui/core@1.0.2(zod@packages+zod-v3-compat))(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(ws@8.22.0)':
     dependencies:
       '@ag-ui/a2ui-toolkit': 0.0.4
       '@ag-ui/client': 1.0.2
-      '@ag-ui/core': 1.0.2(zod@3.25.76)
-      '@langchain/core': 1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(ws@8.22.0)
-      '@langchain/langgraph-sdk': 1.12.3(@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(ws@8.22.0))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      langchain: 1.5.16(@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(ws@8.22.0))(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(ws@8.22.0)
+      '@ag-ui/core': 1.0.2(zod@packages+zod-v3-compat)
+      '@langchain/core': 1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)))(ws@8.22.0)
+      '@langchain/langgraph-sdk': 1.12.3(@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)))(ws@8.22.0))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      langchain: 1.5.16(@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)))(ws@8.22.0))(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(ws@8.22.0)
       partial-json: 0.1.7
       rxjs: 7.8.1
     transitivePeerDependencies:
@@ -6409,20 +6416,20 @@ snapshots:
       - react-dom
       - ws
 
-  '@ag-ui/mcp-apps-middleware@0.1.2(@ag-ui/client@1.0.2)(@cfworker/json-schema@4.1.1)(rxjs@7.8.1)(supports-color@10.2.2)(zod@3.25.76)':
+  '@ag-ui/mcp-apps-middleware@0.1.2(@ag-ui/client@1.0.2)(@cfworker/json-schema@4.1.1)(rxjs@7.8.1)(supports-color@10.2.2)(zod@packages+zod-v3-compat)':
     dependencies:
       '@ag-ui/client': 1.0.2
-      '@modelcontextprotocol/sdk': 1.32.1(@cfworker/json-schema@4.1.1)(supports-color@10.2.2)(zod@3.25.76)
+      '@modelcontextprotocol/sdk': 1.32.1(@cfworker/json-schema@4.1.1)(supports-color@10.2.2)(zod@packages+zod-v3-compat)
       rxjs: 7.8.1
     transitivePeerDependencies:
       - '@cfworker/json-schema'
       - supports-color
       - zod
 
-  '@ag-ui/mcp-middleware@0.0.2(@ag-ui/client@1.0.2)(@cfworker/json-schema@4.1.1)(rxjs@7.8.1)(supports-color@10.2.2)(zod@3.25.76)':
+  '@ag-ui/mcp-middleware@0.0.2(@ag-ui/client@1.0.2)(@cfworker/json-schema@4.1.1)(rxjs@7.8.1)(supports-color@10.2.2)(zod@packages+zod-v3-compat)':
     dependencies:
       '@ag-ui/client': 1.0.2
-      '@modelcontextprotocol/sdk': 1.32.1(@cfworker/json-schema@4.1.1)(supports-color@10.2.2)(zod@3.25.76)
+      '@modelcontextprotocol/sdk': 1.32.1(@cfworker/json-schema@4.1.1)(supports-color@10.2.2)(zod@packages+zod-v3-compat)
       rxjs: 7.8.1
     transitivePeerDependencies:
       - '@cfworker/json-schema'
@@ -6437,89 +6444,89 @@ snapshots:
 
   '@ag-ui/proto@1.0.2':
     dependencies:
-      '@ag-ui/core': 1.0.2(zod@3.25.76)
+      '@ag-ui/core': 1.0.2(zod@packages+zod-v3-compat)
       '@bufbuild/protobuf': 2.16.0
       '@protobuf-ts/protoc': 2.11.1
-      zod: 3.25.76
+      zod: link:packages/zod-v3-compat
 
-  '@ai-sdk/anthropic@2.0.109(zod@3.25.76)':
+  '@ai-sdk/anthropic@2.0.109(zod@packages+zod-v3-compat)':
     dependencies:
       '@ai-sdk/provider': 2.0.5
-      '@ai-sdk/provider-utils': 3.0.41(zod@3.25.76)
-      zod: 3.25.76
+      '@ai-sdk/provider-utils': 3.0.41(zod@packages+zod-v3-compat)
+      zod: link:packages/zod-v3-compat
 
-  '@ai-sdk/anthropic@3.0.129(zod@3.25.76)':
+  '@ai-sdk/anthropic@3.0.129(zod@packages+zod-v3-compat)':
     dependencies:
       '@ai-sdk/provider': 3.0.18
-      '@ai-sdk/provider-utils': 4.0.57(zod@3.25.76)
-      zod: 3.25.76
+      '@ai-sdk/provider-utils': 4.0.57(zod@packages+zod-v3-compat)
+      zod: link:packages/zod-v3-compat
 
-  '@ai-sdk/gateway@3.0.212(zod@3.25.76)':
+  '@ai-sdk/gateway@3.0.212(zod@packages+zod-v3-compat)':
     dependencies:
       '@ai-sdk/provider': 3.0.18
-      '@ai-sdk/provider-utils': 4.0.57(zod@3.25.76)
+      '@ai-sdk/provider-utils': 4.0.57(zod@packages+zod-v3-compat)
       '@vercel/oidc': 3.2.0
-      zod: 3.25.76
+      zod: link:packages/zod-v3-compat
 
-  '@ai-sdk/google-vertex@3.0.181(supports-color@10.2.2)(zod@3.25.76)':
+  '@ai-sdk/google-vertex@3.0.181(supports-color@10.2.2)(zod@packages+zod-v3-compat)':
     dependencies:
-      '@ai-sdk/anthropic': 2.0.109(zod@3.25.76)
-      '@ai-sdk/google': 2.0.102(zod@3.25.76)
-      '@ai-sdk/openai-compatible': 1.0.58(zod@3.25.76)
+      '@ai-sdk/anthropic': 2.0.109(zod@packages+zod-v3-compat)
+      '@ai-sdk/google': 2.0.102(zod@packages+zod-v3-compat)
+      '@ai-sdk/openai-compatible': 1.0.58(zod@packages+zod-v3-compat)
       '@ai-sdk/provider': 2.0.5
-      '@ai-sdk/provider-utils': 3.0.41(zod@3.25.76)
+      '@ai-sdk/provider-utils': 3.0.41(zod@packages+zod-v3-compat)
       google-auth-library: 10.9.1(supports-color@10.2.2)
-      zod: 3.25.76
+      zod: link:packages/zod-v3-compat
     transitivePeerDependencies:
       - supports-color
 
-  '@ai-sdk/google@2.0.102(zod@3.25.76)':
+  '@ai-sdk/google@2.0.102(zod@packages+zod-v3-compat)':
     dependencies:
       '@ai-sdk/provider': 2.0.5
-      '@ai-sdk/provider-utils': 3.0.41(zod@3.25.76)
-      zod: 3.25.76
+      '@ai-sdk/provider-utils': 3.0.41(zod@packages+zod-v3-compat)
+      zod: link:packages/zod-v3-compat
 
-  '@ai-sdk/google@3.0.131(zod@3.25.76)':
+  '@ai-sdk/google@3.0.131(zod@packages+zod-v3-compat)':
     dependencies:
       '@ai-sdk/provider': 3.0.18
-      '@ai-sdk/provider-utils': 4.0.57(zod@3.25.76)
-      zod: 3.25.76
+      '@ai-sdk/provider-utils': 4.0.57(zod@packages+zod-v3-compat)
+      zod: link:packages/zod-v3-compat
 
-  '@ai-sdk/mcp@1.0.92(zod@3.25.76)':
+  '@ai-sdk/mcp@1.0.92(zod@packages+zod-v3-compat)':
     dependencies:
       '@ai-sdk/provider': 3.0.18
-      '@ai-sdk/provider-utils': 4.0.57(zod@3.25.76)
+      '@ai-sdk/provider-utils': 4.0.57(zod@packages+zod-v3-compat)
       cross-spawn: 7.0.6
       pkce-challenge: 5.0.1
-      zod: 3.25.76
+      zod: link:packages/zod-v3-compat
 
-  '@ai-sdk/openai-compatible@1.0.58(zod@3.25.76)':
+  '@ai-sdk/openai-compatible@1.0.58(zod@packages+zod-v3-compat)':
     dependencies:
       '@ai-sdk/provider': 2.0.5
-      '@ai-sdk/provider-utils': 3.0.41(zod@3.25.76)
-      zod: 3.25.76
+      '@ai-sdk/provider-utils': 3.0.41(zod@packages+zod-v3-compat)
+      zod: link:packages/zod-v3-compat
 
-  '@ai-sdk/openai@3.0.125(zod@3.25.76)':
+  '@ai-sdk/openai@3.0.125(zod@packages+zod-v3-compat)':
     dependencies:
       '@ai-sdk/provider': 3.0.18
-      '@ai-sdk/provider-utils': 4.0.57(zod@3.25.76)
-      zod: 3.25.76
+      '@ai-sdk/provider-utils': 4.0.57(zod@packages+zod-v3-compat)
+      zod: link:packages/zod-v3-compat
 
-  '@ai-sdk/provider-utils@3.0.41(zod@3.25.76)':
+  '@ai-sdk/provider-utils@3.0.41(zod@packages+zod-v3-compat)':
     dependencies:
       '@ai-sdk/provider': 2.0.5
       '@standard-schema/spec': 1.1.0
       eventsource-parser: 3.1.1
       undici: 6.29.1
-      zod: 3.25.76
+      zod: link:packages/zod-v3-compat
 
-  '@ai-sdk/provider-utils@4.0.57(zod@3.25.76)':
+  '@ai-sdk/provider-utils@4.0.57(zod@packages+zod-v3-compat)':
     dependencies:
       '@ai-sdk/provider': 3.0.18
       '@standard-schema/spec': 1.1.0
       eventsource-parser: 3.1.1
       undici: 6.29.1
-      zod: 3.25.76
+      zod: link:packages/zod-v3-compat
 
   '@ai-sdk/provider@2.0.5':
     dependencies:
@@ -6674,33 +6681,33 @@ snapshots:
     dependencies:
       '@a2ui/web_core': 0.10.4
       clsx: 2.1.1
-      zod: 3.25.76
-      zod-to-json-schema: 3.25.2(zod@3.25.76)
+      zod: link:packages/zod-v3-compat
+      zod-to-json-schema: 3.25.2(zod@packages+zod-v3-compat)
     optionalDependencies:
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
 
-  '@copilotkit/channels-core@0.11.0(vitest@5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(jsdom@30.1.1)(msw@2.15.0(@types/node@24.19.0)(typescript@5.9.3))(vite@8.3.3(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)))(zod@3.25.76)':
+  '@copilotkit/channels-core@0.11.0(vitest@5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(jsdom@30.1.1)(msw@2.15.0(@types/node@24.19.0)(typescript@5.9.3))(vite@8.3.3(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)))(zod@packages+zod-v3-compat)':
     dependencies:
       '@ag-ui/client': 0.0.59
       '@ag-ui/core': 0.0.59
       '@copilotkit/channels-ui': 0.11.0(@ag-ui/core@0.0.59)
-      '@copilotkit/core': 1.78.0(@ag-ui/core@0.0.59)(zod@3.25.76)
+      '@copilotkit/core': 1.78.0(@ag-ui/core@0.0.59)(zod@packages+zod-v3-compat)
       '@copilotkit/shared': 1.78.0(@ag-ui/core@0.0.59)
-      zod-to-json-schema: 3.25.2(zod@3.25.76)
+      zod-to-json-schema: 3.25.2(zod@packages+zod-v3-compat)
     optionalDependencies:
       vitest: 5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(jsdom@30.1.1)(msw@2.15.0(@types/node@24.19.0)(typescript@5.9.3))(vite@8.3.3(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1))
     transitivePeerDependencies:
       - encoding
       - zod
 
-  '@copilotkit/channels-intelligence@0.11.0(@ag-ui/core@1.0.2(zod@3.25.76))(@types/express@5.0.6)(debug@4.4.3(supports-color@10.2.2))(express@5.3.0(supports-color@10.2.2))(supports-color@10.2.2)(vitest@5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(jsdom@30.1.1)(msw@2.15.0(@types/node@24.19.0)(typescript@5.9.3))(vite@8.3.3(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)))(zod@3.25.76)':
+  '@copilotkit/channels-intelligence@0.11.0(@ag-ui/core@1.0.2(zod@packages+zod-v3-compat))(@types/express@5.0.6)(debug@4.4.3(supports-color@10.2.2))(express@5.3.0(supports-color@10.2.2))(supports-color@10.2.2)(vitest@5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(jsdom@30.1.1)(msw@2.15.0(@types/node@24.19.0)(typescript@5.9.3))(vite@8.3.3(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)))(zod@packages+zod-v3-compat)':
     dependencies:
       '@ag-ui/client': 0.0.59
-      '@copilotkit/channels-core': 0.11.0(vitest@5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(jsdom@30.1.1)(msw@2.15.0(@types/node@24.19.0)(typescript@5.9.3))(vite@8.3.3(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)))(zod@3.25.76)
-      '@copilotkit/channels-slack': 0.11.0(@types/express@5.0.6)(debug@4.4.3(supports-color@10.2.2))(supports-color@10.2.2)(vitest@5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(jsdom@30.1.1)(msw@2.15.0(@types/node@24.19.0)(typescript@5.9.3))(vite@8.3.3(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)))(zod@3.25.76)
-      '@copilotkit/channels-teams': 0.11.0(express@5.3.0(supports-color@10.2.2))(vitest@5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(jsdom@30.1.1)(msw@2.15.0(@types/node@24.19.0)(typescript@5.9.3))(vite@8.3.3(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)))(zod@3.25.76)
-      '@copilotkit/channels-ui': 0.11.0(@ag-ui/core@1.0.2(zod@3.25.76))
+      '@copilotkit/channels-core': 0.11.0(vitest@5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(jsdom@30.1.1)(msw@2.15.0(@types/node@24.19.0)(typescript@5.9.3))(vite@8.3.3(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)))(zod@packages+zod-v3-compat)
+      '@copilotkit/channels-slack': 0.11.0(@types/express@5.0.6)(debug@4.4.3(supports-color@10.2.2))(supports-color@10.2.2)(vitest@5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(jsdom@30.1.1)(msw@2.15.0(@types/node@24.19.0)(typescript@5.9.3))(vite@8.3.3(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)))(zod@packages+zod-v3-compat)
+      '@copilotkit/channels-teams': 0.11.0(express@5.3.0(supports-color@10.2.2))(vitest@5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(jsdom@30.1.1)(msw@2.15.0(@types/node@24.19.0)(typescript@5.9.3))(vite@8.3.3(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)))(zod@packages+zod-v3-compat)
+      '@copilotkit/channels-ui': 0.11.0(@ag-ui/core@1.0.2(zod@packages+zod-v3-compat))
       phoenix: 1.8.15
     transitivePeerDependencies:
       - '@ag-ui/core'
@@ -6716,13 +6723,13 @@ snapshots:
       - vitest
       - zod
 
-  '@copilotkit/channels-slack@0.11.0(@types/express@5.0.6)(debug@4.4.3(supports-color@10.2.2))(supports-color@10.2.2)(vitest@5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(jsdom@30.1.1)(msw@2.15.0(@types/node@24.19.0)(typescript@5.9.3))(vite@8.3.3(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)))(zod@3.25.76)':
+  '@copilotkit/channels-slack@0.11.0(@types/express@5.0.6)(debug@4.4.3(supports-color@10.2.2))(supports-color@10.2.2)(vitest@5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(jsdom@30.1.1)(msw@2.15.0(@types/node@24.19.0)(typescript@5.9.3))(vite@8.3.3(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)))(zod@packages+zod-v3-compat)':
     dependencies:
       '@ag-ui/client': 0.0.59
       '@ag-ui/core': 0.0.59
-      '@copilotkit/channels-core': 0.11.0(vitest@5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(jsdom@30.1.1)(msw@2.15.0(@types/node@24.19.0)(typescript@5.9.3))(vite@8.3.3(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)))(zod@3.25.76)
+      '@copilotkit/channels-core': 0.11.0(vitest@5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(jsdom@30.1.1)(msw@2.15.0(@types/node@24.19.0)(typescript@5.9.3))(vite@8.3.3(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)))(zod@packages+zod-v3-compat)
       '@copilotkit/channels-ui': 0.11.0(@ag-ui/core@0.0.59)
-      '@copilotkit/core': 1.78.0(@ag-ui/core@0.0.59)(zod@3.25.76)
+      '@copilotkit/core': 1.78.0(@ag-ui/core@0.0.59)(zod@packages+zod-v3-compat)
       '@copilotkit/shared': 1.78.0(@ag-ui/core@0.0.59)
       '@slack/bolt': 4.7.3(@types/express@5.0.6)(debug@4.4.3(supports-color@10.2.2))(supports-color@10.2.2)
       '@slack/types': 2.22.0
@@ -6738,13 +6745,13 @@ snapshots:
       - vitest
       - zod
 
-  '@copilotkit/channels-teams@0.11.0(express@5.3.0(supports-color@10.2.2))(vitest@5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(jsdom@30.1.1)(msw@2.15.0(@types/node@24.19.0)(typescript@5.9.3))(vite@8.3.3(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)))(zod@3.25.76)':
+  '@copilotkit/channels-teams@0.11.0(express@5.3.0(supports-color@10.2.2))(vitest@5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(jsdom@30.1.1)(msw@2.15.0(@types/node@24.19.0)(typescript@5.9.3))(vite@8.3.3(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)))(zod@packages+zod-v3-compat)':
     dependencies:
       '@ag-ui/client': 0.0.59
       '@ag-ui/core': 0.0.59
-      '@copilotkit/channels-core': 0.11.0(vitest@5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(jsdom@30.1.1)(msw@2.15.0(@types/node@24.19.0)(typescript@5.9.3))(vite@8.3.3(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)))(zod@3.25.76)
+      '@copilotkit/channels-core': 0.11.0(vitest@5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(jsdom@30.1.1)(msw@2.15.0(@types/node@24.19.0)(typescript@5.9.3))(vite@8.3.3(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)))(zod@packages+zod-v3-compat)
       '@copilotkit/channels-ui': 0.11.0(@ag-ui/core@0.0.59)
-      '@copilotkit/core': 1.78.0(@ag-ui/core@0.0.59)(zod@3.25.76)
+      '@copilotkit/core': 1.78.0(@ag-ui/core@0.0.59)(zod@packages+zod-v3-compat)
       '@copilotkit/shared': 1.78.0(@ag-ui/core@0.0.59)
       rxjs: 7.8.1
     optionalDependencies:
@@ -6761,14 +6768,14 @@ snapshots:
       - '@ag-ui/core'
       - encoding
 
-  '@copilotkit/channels-ui@0.11.0(@ag-ui/core@1.0.2(zod@3.25.76))':
+  '@copilotkit/channels-ui@0.11.0(@ag-ui/core@1.0.2(zod@packages+zod-v3-compat))':
     dependencies:
-      '@copilotkit/shared': 1.78.0(@ag-ui/core@1.0.2(zod@3.25.76))
+      '@copilotkit/shared': 1.78.0(@ag-ui/core@1.0.2(zod@packages+zod-v3-compat))
     transitivePeerDependencies:
       - '@ag-ui/core'
       - encoding
 
-  '@copilotkit/core@1.78.0(@ag-ui/core@0.0.59)(zod@3.25.76)':
+  '@copilotkit/core@1.78.0(@ag-ui/core@0.0.59)(zod@packages+zod-v3-compat)':
     dependencies:
       '@ag-ui/client': 1.0.2
       '@copilotkit/learning': 0.0.1
@@ -6776,21 +6783,21 @@ snapshots:
       '@tanstack/pacer': 0.20.1
       phoenix: 1.8.15
       rxjs: 7.8.1
-      zod-to-json-schema: 3.25.2(zod@3.25.76)
+      zod-to-json-schema: 3.25.2(zod@packages+zod-v3-compat)
     transitivePeerDependencies:
       - '@ag-ui/core'
       - encoding
       - zod
 
-  '@copilotkit/core@1.78.0(@ag-ui/core@1.0.2(zod@3.25.76))(zod@4.6.7)':
+  '@copilotkit/core@1.78.0(@ag-ui/core@1.0.2(zod@packages+zod-v3-compat))(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5))':
     dependencies:
       '@ag-ui/client': 1.0.2
       '@copilotkit/learning': 0.0.1
-      '@copilotkit/shared': 1.78.0(@ag-ui/core@1.0.2(zod@3.25.76))
+      '@copilotkit/shared': 1.78.0(@ag-ui/core@1.0.2(zod@packages+zod-v3-compat))
       '@tanstack/pacer': 0.20.1
       phoenix: 1.8.15
       rxjs: 7.8.1
-      zod-to-json-schema: 3.25.2(zod@4.6.7)
+      zod-to-json-schema: 3.25.2(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5))
     transitivePeerDependencies:
       - '@ag-ui/core'
       - encoding
@@ -6800,13 +6807,13 @@ snapshots:
 
   '@copilotkit/license-verifier@0.5.0': {}
 
-  '@copilotkit/mcp-apps-renderer@1.78.0(@ag-ui/client@1.0.2)(@ag-ui/core@1.0.2(zod@3.25.76))(@cfworker/json-schema@4.1.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)(zod@4.6.7)':
+  '@copilotkit/mcp-apps-renderer@1.78.0(@ag-ui/client@1.0.2)(@ag-ui/core@1.0.2(zod@packages+zod-v3-compat))(@cfworker/json-schema@4.1.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5))':
     dependencies:
       '@ag-ui/client': 1.0.2
-      '@copilotkit/shared': 1.78.0(@ag-ui/core@1.0.2(zod@3.25.76))
-      '@modelcontextprotocol/ext-apps': 1.7.5(@modelcontextprotocol/sdk@1.32.1(@cfworker/json-schema@4.1.1)(supports-color@10.2.2)(zod@4.6.7))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zod@4.6.7)
-      '@modelcontextprotocol/sdk': 1.32.1(@cfworker/json-schema@4.1.1)(supports-color@10.2.2)(zod@4.6.7)
-      zod: 4.6.7
+      '@copilotkit/shared': 1.78.0(@ag-ui/core@1.0.2(zod@packages+zod-v3-compat))
+      '@modelcontextprotocol/ext-apps': 1.7.5(@modelcontextprotocol/sdk@1.32.1(@cfworker/json-schema@4.1.1)(supports-color@10.2.2)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5))
+      '@modelcontextprotocol/sdk': 1.32.1(@cfworker/json-schema@4.1.1)(supports-color@10.2.2)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5))
+      zod: 4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)
     transitivePeerDependencies:
       - '@ag-ui/core'
       - '@cfworker/json-schema'
@@ -6815,17 +6822,17 @@ snapshots:
       - react-dom
       - supports-color
 
-  '@copilotkit/react-core@1.78.0(@cfworker/json-schema@4.1.1)(@types/mdast@4.0.4)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(graphql@16.14.2)(micromark-util-types@2.0.3)(micromark@4.0.3(supports-color@10.2.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)(zod@4.6.7)':
+  '@copilotkit/react-core@1.78.0(@cfworker/json-schema@4.1.1)(@types/mdast@4.0.4)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(graphql@16.14.2)(micromark-util-types@2.0.3)(micromark@4.0.3(supports-color@10.2.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5))':
     dependencies:
       '@ag-ui/client': 1.0.2
-      '@ag-ui/core': 1.0.2(zod@4.6.7)
+      '@ag-ui/core': 1.0.2(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5))
       '@copilotkit/a2ui-renderer': 1.78.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      '@copilotkit/core': 1.78.0(@ag-ui/core@1.0.2(zod@3.25.76))(zod@4.6.7)
-      '@copilotkit/mcp-apps-renderer': 1.78.0(@ag-ui/client@1.0.2)(@ag-ui/core@1.0.2(zod@3.25.76))(@cfworker/json-schema@4.1.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)(zod@4.6.7)
-      '@copilotkit/runtime-client-gql': 1.78.0(@ag-ui/core@1.0.2(zod@3.25.76))(graphql@16.14.2)(react@19.2.8)
-      '@copilotkit/shared': 1.78.0(@ag-ui/core@1.0.2(zod@3.25.76))
+      '@copilotkit/core': 1.78.0(@ag-ui/core@1.0.2(zod@packages+zod-v3-compat))(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5))
+      '@copilotkit/mcp-apps-renderer': 1.78.0(@ag-ui/client@1.0.2)(@ag-ui/core@1.0.2(zod@packages+zod-v3-compat))(@cfworker/json-schema@4.1.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5))
+      '@copilotkit/runtime-client-gql': 1.78.0(@ag-ui/core@1.0.2(zod@packages+zod-v3-compat))(graphql@16.14.2)(react@19.2.8)
+      '@copilotkit/shared': 1.78.0(@ag-ui/core@1.0.2(zod@packages+zod-v3-compat))
       '@copilotkit/web-components': 1.78.0(lit@3.3.3)
-      '@copilotkit/web-inspector': 1.78.0(@ag-ui/core@1.0.2(zod@3.25.76))(zod@4.6.7)
+      '@copilotkit/web-inspector': 1.78.0(@ag-ui/core@1.0.2(zod@packages+zod-v3-compat))(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5))
       '@jetbrains/websandbox': 1.4.3
       '@radix-ui/react-dropdown-menu': 2.1.24(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@radix-ui/react-slot': 1.3.3(@types/react@19.3.0)(react@19.2.8)
@@ -6846,8 +6853,8 @@ snapshots:
       tw-animate-css: 1.4.0
       untruncate-json: 0.0.1
       use-stick-to-bottom: 1.1.6(react@19.2.8)
-      zod: 4.6.7
-      zod-to-json-schema: 3.25.2(zod@4.6.7)
+      zod: 4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)
+      zod-to-json-schema: 3.25.2(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5))
     transitivePeerDependencies:
       - '@cfworker/json-schema'
       - '@types/mdast'
@@ -6859,9 +6866,9 @@ snapshots:
       - micromark-util-types
       - supports-color
 
-  '@copilotkit/runtime-client-gql@1.78.0(@ag-ui/core@1.0.2(zod@3.25.76))(graphql@16.14.2)(react@19.2.8)':
+  '@copilotkit/runtime-client-gql@1.78.0(@ag-ui/core@1.0.2(zod@packages+zod-v3-compat))(graphql@16.14.2)(react@19.2.8)':
     dependencies:
-      '@copilotkit/shared': 1.78.0(@ag-ui/core@1.0.2(zod@3.25.76))
+      '@copilotkit/shared': 1.78.0(@ag-ui/core@1.0.2(zod@packages+zod-v3-compat))
       '@urql/core': 5.2.0(graphql@16.14.2)
       react: 19.2.8
       untruncate-json: 0.0.1
@@ -6871,34 +6878,34 @@ snapshots:
       - encoding
       - graphql
 
-  ? '@copilotkit/runtime@1.78.0(@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(ws@8.22.0))(@langchain/langgraph-sdk@1.12.3(@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(ws@8.22.0))(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@opentelemetry/api@1.9.1)(@types/express@5.0.6)(debug@4.4.3(supports-color@10.2.2))(express@5.3.0(supports-color@10.2.2))(langchain@1.5.16(@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(ws@8.22.0))(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(ws@8.22.0))(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@10.2.2)(vitest@5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(jsdom@30.1.1)(msw@2.15.0(@types/node@24.19.0)(typescript@5.9.3))(vite@8.3.3(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)))'
-  : dependencies:
+  '@copilotkit/runtime@1.78.0(7de6040f30c3503b155155bc56c18c09)':
+    dependencies:
       '@ag-ui/a2ui-middleware': 0.0.10(@ag-ui/client@1.0.2)(rxjs@7.8.1)
       '@ag-ui/client': 1.0.2
-      '@ag-ui/core': 1.0.2(zod@3.25.76)
-      '@ag-ui/encoder': 1.0.2(zod@3.25.76)
-      '@ag-ui/langgraph': 0.0.44(@ag-ui/client@1.0.2)(@ag-ui/core@1.0.2(zod@3.25.76))(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(ws@8.22.0)
-      '@ag-ui/mcp-apps-middleware': 0.1.2(@ag-ui/client@1.0.2)(@cfworker/json-schema@4.1.1)(rxjs@7.8.1)(supports-color@10.2.2)(zod@3.25.76)
-      '@ag-ui/mcp-middleware': 0.0.2(@ag-ui/client@1.0.2)(@cfworker/json-schema@4.1.1)(rxjs@7.8.1)(supports-color@10.2.2)(zod@3.25.76)
-      '@ai-sdk/anthropic': 3.0.129(zod@3.25.76)
-      '@ai-sdk/google': 3.0.131(zod@3.25.76)
-      '@ai-sdk/google-vertex': 3.0.181(supports-color@10.2.2)(zod@3.25.76)
-      '@ai-sdk/mcp': 1.0.92(zod@3.25.76)
-      '@ai-sdk/openai': 3.0.125(zod@3.25.76)
+      '@ag-ui/core': 1.0.2(zod@packages+zod-v3-compat)
+      '@ag-ui/encoder': 1.0.2(zod@packages+zod-v3-compat)
+      '@ag-ui/langgraph': 0.0.44(@ag-ui/client@1.0.2)(@ag-ui/core@1.0.2(zod@packages+zod-v3-compat))(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(ws@8.22.0)
+      '@ag-ui/mcp-apps-middleware': 0.1.2(@ag-ui/client@1.0.2)(@cfworker/json-schema@4.1.1)(rxjs@7.8.1)(supports-color@10.2.2)(zod@packages+zod-v3-compat)
+      '@ag-ui/mcp-middleware': 0.0.2(@ag-ui/client@1.0.2)(@cfworker/json-schema@4.1.1)(rxjs@7.8.1)(supports-color@10.2.2)(zod@packages+zod-v3-compat)
+      '@ai-sdk/anthropic': 3.0.129(zod@packages+zod-v3-compat)
+      '@ai-sdk/google': 3.0.131(zod@packages+zod-v3-compat)
+      '@ai-sdk/google-vertex': 3.0.181(supports-color@10.2.2)(zod@packages+zod-v3-compat)
+      '@ai-sdk/mcp': 1.0.92(zod@packages+zod-v3-compat)
+      '@ai-sdk/openai': 3.0.125(zod@packages+zod-v3-compat)
       '@cfworker/json-schema': 4.1.1
-      '@copilotkit/channels-core': 0.11.0(vitest@5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(jsdom@30.1.1)(msw@2.15.0(@types/node@24.19.0)(typescript@5.9.3))(vite@8.3.3(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)))(zod@3.25.76)
-      '@copilotkit/channels-intelligence': 0.11.0(@ag-ui/core@1.0.2(zod@3.25.76))(@types/express@5.0.6)(debug@4.4.3(supports-color@10.2.2))(express@5.3.0(supports-color@10.2.2))(supports-color@10.2.2)(vitest@5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(jsdom@30.1.1)(msw@2.15.0(@types/node@24.19.0)(typescript@5.9.3))(vite@8.3.3(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)))(zod@3.25.76)
+      '@copilotkit/channels-core': 0.11.0(vitest@5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(jsdom@30.1.1)(msw@2.15.0(@types/node@24.19.0)(typescript@5.9.3))(vite@8.3.3(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)))(zod@packages+zod-v3-compat)
+      '@copilotkit/channels-intelligence': 0.11.0(@ag-ui/core@1.0.2(zod@packages+zod-v3-compat))(@types/express@5.0.6)(debug@4.4.3(supports-color@10.2.2))(express@5.3.0(supports-color@10.2.2))(supports-color@10.2.2)(vitest@5.0.5(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(jsdom@30.1.1)(msw@2.15.0(@types/node@24.19.0)(typescript@5.9.3))(vite@8.3.3(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)))(zod@packages+zod-v3-compat)
       '@copilotkit/license-verifier': 0.5.0
-      '@copilotkit/shared': 1.78.0(@ag-ui/core@1.0.2(zod@3.25.76))
+      '@copilotkit/shared': 1.78.0(@ag-ui/core@1.0.2(zod@packages+zod-v3-compat))
       '@graphql-yoga/plugin-defer-stream': 3.24.4(graphql-yoga@5.24.4(graphql@16.14.2))(graphql@16.14.2)
       '@hono/node-server': 1.19.17(hono@4.13.13)
-      '@langchain/core': 1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(ws@8.22.0)
-      '@modelcontextprotocol/sdk': 1.32.1(@cfworker/json-schema@4.1.1)(supports-color@10.2.2)(zod@3.25.76)
+      '@langchain/core': 1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)))(ws@8.22.0)
+      '@modelcontextprotocol/sdk': 1.32.1(@cfworker/json-schema@4.1.1)(supports-color@10.2.2)(zod@packages+zod-v3-compat)
       '@remix-run/node-fetch-server': 0.13.3
       '@scarf/scarf': 1.4.0
       '@segment/analytics-node': 2.3.0
       '@types/cors': 2.8.19
-      ai: 6.0.303(zod@3.25.76)
+      ai: 6.0.303(zod@packages+zod-v3-compat)
       class-transformer: 0.5.1
       class-validator: 0.14.4
       cors: 2.8.6
@@ -6906,7 +6913,7 @@ snapshots:
       graphql-scalars: 1.26.0(graphql@16.14.2)
       graphql-yoga: 5.24.4(graphql@16.14.2)
       hono: 4.13.13
-      openai: 7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7)
+      openai: 7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5))
       partial-json: 0.1.7
       phoenix: 1.8.15
       pino: 10.4.0
@@ -6917,11 +6924,11 @@ snapshots:
       uuid: 11.1.1
       ws: 8.22.0
       yauzl: 2.10.0
-      zod: 3.25.76
+      zod: link:packages/zod-v3-compat
     optionalDependencies:
-      '@langchain/langgraph-sdk': 1.12.3(@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(ws@8.22.0))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@langchain/langgraph-sdk': 1.12.3(@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)))(ws@8.22.0))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       express: 5.3.0(supports-color@10.2.2)
-      langchain: 1.5.16(@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(ws@8.22.0))(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(ws@8.22.0)
+      langchain: 1.5.16(@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)))(ws@8.22.0))(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(ws@8.22.0)
     transitivePeerDependencies:
       - '@microsoft/agents-activity'
       - '@microsoft/agents-hosting'
@@ -6952,16 +6959,16 @@ snapshots:
       partial-json: 0.1.7
       rxjs: 7.8.1
       uuid: 11.1.1
-      zod: 3.25.76
-      zod-to-json-schema: 3.25.2(zod@3.25.76)
+      zod: link:packages/zod-v3-compat
+      zod-to-json-schema: 3.25.2(zod@packages+zod-v3-compat)
     transitivePeerDependencies:
       - encoding
 
-  '@copilotkit/shared@1.78.0(@ag-ui/core@1.0.2(zod@3.25.76))':
+  '@copilotkit/shared@1.78.0(@ag-ui/core@1.0.2(zod@packages+zod-v3-compat))':
     dependencies:
       '@ag-ui/a2ui-middleware': 0.0.10(@ag-ui/client@1.0.2)(rxjs@7.8.1)
       '@ag-ui/client': 1.0.2
-      '@ag-ui/core': 1.0.2(zod@3.25.76)
+      '@ag-ui/core': 1.0.2(zod@packages+zod-v3-compat)
       '@copilotkit/license-verifier': 0.5.0
       '@segment/analytics-node': 2.3.0
       '@standard-schema/spec': 1.1.0
@@ -6971,8 +6978,8 @@ snapshots:
       partial-json: 0.1.7
       rxjs: 7.8.1
       uuid: 11.1.1
-      zod: 3.25.76
-      zod-to-json-schema: 3.25.2(zod@3.25.76)
+      zod: link:packages/zod-v3-compat
+      zod-to-json-schema: 3.25.2(zod@packages+zod-v3-compat)
     transitivePeerDependencies:
       - encoding
 
@@ -6980,11 +6987,11 @@ snapshots:
     dependencies:
       lit: 3.3.3
 
-  '@copilotkit/web-inspector@1.78.0(@ag-ui/core@1.0.2(zod@3.25.76))(zod@4.6.7)':
+  '@copilotkit/web-inspector@1.78.0(@ag-ui/core@1.0.2(zod@packages+zod-v3-compat))(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5))':
     dependencies:
       '@ag-ui/client': 1.0.2
-      '@copilotkit/core': 1.78.0(@ag-ui/core@1.0.2(zod@3.25.76))(zod@4.6.7)
-      '@copilotkit/shared': 1.78.0(@ag-ui/core@1.0.2(zod@3.25.76))
+      '@copilotkit/core': 1.78.0(@ag-ui/core@1.0.2(zod@packages+zod-v3-compat))(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5))
+      '@copilotkit/shared': 1.78.0(@ag-ui/core@1.0.2(zod@packages+zod-v3-compat))
       lit: 3.3.3
       lucide: 0.525.0
       marked: 12.0.2
@@ -7189,7 +7196,7 @@ snapshots:
     dependencies:
       hono: 4.13.13
 
-  '@hookform/resolvers@5.9.1(@standard-schema/spec@1.1.0)(ajv@8.20.0)(class-transformer@0.5.1)(class-validator@0.14.4)(react-hook-form@7.89.0(@types/react@19.3.0)(react@19.2.8))(zod@4.6.7)':
+  '@hookform/resolvers@5.9.1(@standard-schema/spec@1.1.0)(ajv@8.20.0)(class-transformer@0.5.1)(class-validator@0.14.4)(react-hook-form@7.89.0(@types/react@19.3.0)(react@19.2.8))(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5))':
     dependencies:
       '@standard-schema/utils': 0.3.0
       react-hook-form: 7.89.0(@types/react@19.3.0)(react@19.2.8)
@@ -7198,7 +7205,7 @@ snapshots:
       ajv: 8.20.0
       class-transformer: 0.5.1
       class-validator: 0.14.4
-      zod: 4.6.7
+      zod: 4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)
 
   '@humanfs/core@0.19.2':
     dependencies:
@@ -7378,15 +7385,15 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.6.0
 
-  '@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(ws@8.22.0)':
+  '@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)))(ws@8.22.0)':
     dependencies:
       '@cfworker/json-schema': 4.1.1
       '@standard-schema/spec': 1.1.0
       js-tiktoken: 1.0.21
-      langsmith: 0.10.11(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(ws@8.22.0)
+      langsmith: 0.10.11(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)))(ws@8.22.0)
       mustache: 4.2.0
       p-queue: 6.6.2
-      zod: 4.6.7
+      zod: 4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)
     transitivePeerDependencies:
       - '@opentelemetry/api'
       - '@opentelemetry/exporter-trace-otlp-proto'
@@ -7394,13 +7401,13 @@ snapshots:
       - openai
       - ws
 
-  '@langchain/langgraph-checkpoint@1.1.6(@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(ws@8.22.0))':
+  '@langchain/langgraph-checkpoint@1.1.6(@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)))(ws@8.22.0))':
     dependencies:
-      '@langchain/core': 1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(ws@8.22.0)
+      '@langchain/core': 1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)))(ws@8.22.0)
 
-  '@langchain/langgraph-sdk@1.12.3(@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(ws@8.22.0))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+  '@langchain/langgraph-sdk@1.12.3(@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)))(ws@8.22.0))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
-      '@langchain/core': 1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(ws@8.22.0)
+      '@langchain/core': 1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)))(ws@8.22.0)
       '@langchain/protocol': 0.0.19
       '@types/json-schema': 7.0.15
       p-queue: 9.3.4
@@ -7409,14 +7416,14 @@ snapshots:
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
 
-  '@langchain/langgraph@1.4.21(@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(ws@8.22.0))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zod@4.6.7)':
+  '@langchain/langgraph@1.4.21(@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)))(ws@8.22.0))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5))':
     dependencies:
-      '@langchain/core': 1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(ws@8.22.0)
-      '@langchain/langgraph-checkpoint': 1.1.6(@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(ws@8.22.0))
-      '@langchain/langgraph-sdk': 1.12.3(@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(ws@8.22.0))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@langchain/core': 1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)))(ws@8.22.0)
+      '@langchain/langgraph-checkpoint': 1.1.6(@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)))(ws@8.22.0))
+      '@langchain/langgraph-sdk': 1.12.3(@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)))(ws@8.22.0))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@langchain/protocol': 0.0.19
       '@standard-schema/spec': 1.1.0
-      zod: 4.6.7
+      zod: 4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)
     transitivePeerDependencies:
       - react
       - react-dom
@@ -7439,16 +7446,16 @@ snapshots:
     dependencies:
       '@chevrotain/types': 11.1.2
 
-  '@modelcontextprotocol/ext-apps@1.7.5(@modelcontextprotocol/sdk@1.32.1(@cfworker/json-schema@4.1.1)(supports-color@10.2.2)(zod@4.6.7))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zod@4.6.7)':
+  '@modelcontextprotocol/ext-apps@1.7.5(@modelcontextprotocol/sdk@1.32.1(@cfworker/json-schema@4.1.1)(supports-color@10.2.2)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5))':
     dependencies:
-      '@modelcontextprotocol/sdk': 1.32.1(@cfworker/json-schema@4.1.1)(supports-color@10.2.2)(zod@4.6.7)
+      '@modelcontextprotocol/sdk': 1.32.1(@cfworker/json-schema@4.1.1)(supports-color@10.2.2)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5))
       '@standard-schema/spec': 1.1.0
-      zod: 4.6.7
+      zod: 4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)
     optionalDependencies:
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
 
-  '@modelcontextprotocol/sdk@1.32.1(@cfworker/json-schema@4.1.1)(supports-color@10.2.2)(zod@3.25.76)':
+  '@modelcontextprotocol/sdk@1.32.1(@cfworker/json-schema@4.1.1)(supports-color@10.2.2)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5))':
     dependencies:
       '@hono/node-server': 1.19.17(hono@4.13.13)
       ajv: 8.20.0
@@ -7465,14 +7472,14 @@ snapshots:
       json-schema-typed: 8.0.2
       pkce-challenge: 5.0.1
       raw-body: 3.0.2
-      zod: 3.25.76
-      zod-to-json-schema: 3.25.2(zod@3.25.76)
+      zod: 4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)
+      zod-to-json-schema: 3.25.2(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5))
     optionalDependencies:
       '@cfworker/json-schema': 4.1.1
     transitivePeerDependencies:
       - supports-color
 
-  '@modelcontextprotocol/sdk@1.32.1(@cfworker/json-schema@4.1.1)(supports-color@10.2.2)(zod@4.6.7)':
+  '@modelcontextprotocol/sdk@1.32.1(@cfworker/json-schema@4.1.1)(supports-color@10.2.2)(zod@packages+zod-v3-compat)':
     dependencies:
       '@hono/node-server': 1.19.17(hono@4.13.13)
       ajv: 8.20.0
@@ -7489,8 +7496,8 @@ snapshots:
       json-schema-typed: 8.0.2
       pkce-challenge: 5.0.1
       raw-body: 3.0.2
-      zod: 4.6.7
-      zod-to-json-schema: 3.25.2(zod@4.6.7)
+      zod: link:packages/zod-v3-compat
+      zod-to-json-schema: 3.25.2(zod@packages+zod-v3-compat)
     optionalDependencies:
       '@cfworker/json-schema': 4.1.1
     transitivePeerDependencies:
@@ -9192,13 +9199,13 @@ snapshots:
 
   agent-base@7.1.4: {}
 
-  ai@6.0.303(zod@3.25.76):
+  ai@6.0.303(zod@packages+zod-v3-compat):
     dependencies:
-      '@ai-sdk/gateway': 3.0.212(zod@3.25.76)
+      '@ai-sdk/gateway': 3.0.212(zod@packages+zod-v3-compat)
       '@ai-sdk/provider': 3.0.18
-      '@ai-sdk/provider-utils': 4.0.57(zod@3.25.76)
+      '@ai-sdk/provider-utils': 4.0.57(zod@packages+zod-v3-compat)
       '@opentelemetry/api': 1.9.1
-      zod: 3.25.76
+      zod: link:packages/zod-v3-compat
 
   ajv-formats@3.0.1(ajv@8.20.0):
     optionalDependencies:
@@ -10092,8 +10099,8 @@ snapshots:
       '@babel/parser': 7.29.9
       eslint: 9.39.5(jiti@2.7.0)(supports-color@10.2.2)
       hermes-parser: 0.25.1
-      zod: 4.6.7
-      zod-validation-error: 4.0.2(zod@4.6.7)
+      zod: 4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)
+      zod-validation-error: 4.0.2(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5))
     transitivePeerDependencies:
       - supports-color
 
@@ -11019,13 +11026,13 @@ snapshots:
 
   kleur@4.1.5: {}
 
-  langchain@1.5.16(@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(ws@8.22.0))(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(ws@8.22.0):
+  langchain@1.5.16(@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)))(ws@8.22.0))(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(ws@8.22.0):
     dependencies:
-      '@langchain/core': 1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(ws@8.22.0)
-      '@langchain/langgraph': 1.4.21(@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(ws@8.22.0))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zod@4.6.7)
-      '@langchain/langgraph-checkpoint': 1.1.6(@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(ws@8.22.0))
-      langsmith: 0.10.11(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(ws@8.22.0)
-      zod: 4.6.7
+      '@langchain/core': 1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)))(ws@8.22.0)
+      '@langchain/langgraph': 1.4.21(@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)))(ws@8.22.0))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5))
+      '@langchain/langgraph-checkpoint': 1.1.6(@langchain/core@1.2.17(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)))(ws@8.22.0))
+      langsmith: 0.10.11(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)))(ws@8.22.0)
+      zod: 4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)
     transitivePeerDependencies:
       - '@opentelemetry/api'
       - '@opentelemetry/exporter-trace-otlp-proto'
@@ -11035,12 +11042,12 @@ snapshots:
       - react-dom
       - ws
 
-  langsmith@0.10.11(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7))(ws@8.22.0):
+  langsmith@0.10.11(@opentelemetry/api@1.9.1)(openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)))(ws@8.22.0):
     dependencies:
       p-queue: 6.6.2
     optionalDependencies:
       '@opentelemetry/api': 1.9.1
-      openai: 7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7)
+      openai: 7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5))
       ws: 8.22.0
 
   language-subtag-registry@0.3.23: {}
@@ -12040,11 +12047,11 @@ snapshots:
       regex: 6.1.0
       regex-recursion: 6.0.2
 
-  openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7):
+  openai@7.32.0(undici@6.29.1)(ws@8.22.0)(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)):
     optionalDependencies:
       undici: 6.29.1
       ws: 8.22.0
-      zod: 4.6.7
+      zod: 4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)
 
   openapi-typescript@7.13.0(typescript@5.9.3):
     dependencies:
@@ -13553,20 +13560,18 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  zod-to-json-schema@3.25.2(zod@3.25.76):
+  zod-to-json-schema@3.25.2(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)):
     dependencies:
-      zod: 3.25.76
+      zod: 4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)
 
-  zod-to-json-schema@3.25.2(zod@4.6.7):
+  zod-to-json-schema@3.25.2(zod@packages+zod-v3-compat):
     dependencies:
-      zod: 4.6.7
+      zod: link:packages/zod-v3-compat
 
-  zod-validation-error@4.0.2(zod@4.6.7):
+  zod-validation-error@4.0.2(zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)):
     dependencies:
-      zod: 4.6.7
+      zod: 4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5)
 
-  zod@3.25.76: {}
-
-  zod@4.6.7: {}
+  zod@4.6.7(patch_hash=55a44bbfd9aeb9b8ceb2f8933b7180808a314bceb77c0c43a81c2b41848513b5): {}
 
   zwitch@2.0.4: {}

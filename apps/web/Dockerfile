@@ -3,6 +3,8 @@ WORKDIR /workspace
 RUN npm install --global pnpm@11.19.0
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/web/package.json apps/web/package.json
+COPY packages/zod-v3-compat packages/zod-v3-compat
+COPY patches patches
 ENV npm_config_fetch_timeout=300000 npm_config_fetch_retries=5
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store/v11 pnpm install --frozen-lockfile --network-concurrency=8
 
