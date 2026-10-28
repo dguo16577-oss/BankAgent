@@ -2,6 +2,8 @@
 
 ## 运行状态
 
+2026-10-28（r7真实联测后修复）：交接人已完成r7 Linux Web镜像、五服务、真实余额、SDK边界9项与PG恢复13项；原阶段部署阻塞已被其新证据更新，测试服务结束后停止。新发现同范围CNY重复展示和首次JSON决策失败，本轮已修语义范围/币种的最新观察选择，以及严格JSON错误分类回灌原有最多两次重试。新增9项回归通过；Agent最终466项中453 PASS、13因无隔离PG跳过。真实DeepSeek+合成银行准备探针3/3到WAITING_CONFIRMATION，其中一次无效JSON经有界反馈恢复；13个completion attempts，无扣款，不等于真实银行联合验收或稳定性保证。启动器构建输入v2指纹已覆盖锁文件/兼容包/补丁/Dockerfile，mock安全及Windows PowerShell5验证通过。本轮Docker引擎未运行，修复尚未构建部署；待测与证据详见[r8修复交接](testing/r8-r7-fixes-20261028.md)。S1/R1 PARTIAL及公网HOLD保留。
+
 2026-10-28（重部署预检与r7交接）：实际启动器返回RESOURCE_BLOCKED，提交余量1284 MiB，末次采样1716 MiB；Aster容器均停止，未开始新Linux构建或修改数据库。已生成[30项交接复测清单](testing/r7-handoff-20261028.md)，区分源码通过、历史外部证据和最新联合验收缺口；新增确认启动器Web指纹未覆盖lockfile/兼容包/patch，不能单凭现有标签证明Zod修复已部署。非转账未知结果的完整回执恢复仍有能力缺口。S1/R1 PARTIAL及公网HOLD保留。
 
 2026-10-28（Zod 修复）：生产与全部依赖审计均为0漏洞，未配置告警忽略。SDK所需旧式API通过私有兼容包复用官方Zod4.6.7；其自带v3实现中复现的集合超限问题通过可重现pnpm源码补丁修复。锁文件仅移除Zod3，未升级其他依赖版本。Web全套579 PASS，依赖安全/合同哈希27 PASS（含实际CopilotKit v2处理器初始化），typecheck、lint、格式、API类型、contract和integration检查通过；冻结离线安装成功。构建和部署验证结果见[修复说明](security/zod-compatibility-closure.md)。旧镜像不会自动获得补丁；S1/R1 PARTIAL和公网HOLD独立保留。以下Zod high记录为历史状态。

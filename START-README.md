@@ -42,7 +42,7 @@
 .\start.cmd start -NoBuild
 ```
 
-构建失败时不要执行下一步并声称更新成功。运行镜像标签 `io.aster.source.sha256` 是源树指纹，不是 Git Commit。
+构建失败时不要执行下一步并声称更新成功。运行镜像标签 `io.aster.source.sha256` 使用构建输入v2指纹（包含锁文件、兼容包、patch与Dockerfile），不是Git Commit或镜像Digest；旧src-only标签不能与v2直接比较。可用 `./scripts/build-fingerprint.ps1 -Service web` 或 `-Service agent-runtime` 核对当前输入；仍须记录实际运行Image ID/Digest和配置。
 
 ## 现有演示环境
 

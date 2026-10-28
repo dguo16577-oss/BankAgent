@@ -22,6 +22,14 @@ MODEL_HTTP_TIMEOUT = httpx.Timeout(connect=20.0, read=90.0, write=10.0, pool=10.
 # Per-request progress carries fixed status codes only, never model reasoning.
 model_progress_sink: ContextVar[Callable[[str, str], Awaitable[None]] | None] = ContextVar("model_progress_sink", default=None)
 
+
+class ModelJSONError(json.JSONDecodeError):
+    """Safe format metadata, without retaining output text or hidden reasoning."""
+    def __init__(self, reason: str, content: object):
+        self.format_metadata = {'reason': reason,
+                                'content_length': len(content) if isinstance(content, str) else 0}
+        super().__init__('Model must return exactly one JSON object', '', 0)
+
 _SIGNALS = (
     (r"转账|转给|汇款|汇给|打钱|\btransfer\b|\bsend\s+money\b", "transfer"),
     (r"余额|账户|账号|\bbalance\b|\baccount\b", "account balance"),
@@ -161,7 +169,15 @@ class DeepSeekClassifier:
             raise ValueError("MODEL_OUTPUT_BUDGET_EXCEEDED")
         # reasoning_content is intentionally neither returned, persisted nor streamed.
         content = choice["message"]["content"]
-        result = json.loads(content)
+        if not isinstance(content, str):
+            raise ModelJSONError('INVALID_CONTENT_TYPE', content)
+        if not content.strip():
+            raise ModelJSONError('EMPTY_CONTENT', content)
+        try:
+            result = json.loads(content)
+        except json.JSONDecodeError:
+            reason = 'MARKDOWN_FENCE' if content.lstrip().startswith('```') else 'INVALID_JSON'
+            raise ModelJSONError(reason, content) from None
         if not isinstance(result, dict):
-            raise ValueError("Expected JSON object")
+            raise ModelJSONError('NON_OBJECT_JSON', content)
         return result

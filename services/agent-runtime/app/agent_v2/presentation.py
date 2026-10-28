@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import re
+import json
+from datetime import datetime, timezone
 from typing import Any
 
 from .models import Task
@@ -45,7 +47,7 @@ def _rows(items: object, label_key: str, limit: int = 24) -> list[dict[str, str]
     return rows
 
 
-def _spending(raw: dict[str, Any], preference: str) -> list[dict[str, Any]]:
+def _spending(raw: dict[str, Any], preference: str, selected_currency: str | None = None) -> list[dict[str, Any]]:
     blocks: list[dict[str, Any]] = []
     totals = raw.get("totals_by_currency")
     if not isinstance(totals, dict):
@@ -58,6 +60,8 @@ def _spending(raw: dict[str, Any], preference: str) -> list[dict[str, Any]]:
         blocks.append({"kind": "TEXT", "text": "数据质量问题 / Data quality issue: " + ', '.join(issues) +
                        ". 图表已隐藏，未补齐金额 / Charts withheld; no amounts inferred."})
     for code, value in list(totals.items())[:6]:
+        if selected_currency is not None and code != selected_currency:
+            continue
         if not isinstance(value, dict):
             continue
         amount, currency = _amount(value.get("amount")), _currency(code)
@@ -74,6 +78,8 @@ def _spending(raw: dict[str, Any], preference: str) -> list[dict[str, Any]]:
         for row in group:
             by_currency.setdefault(row["currency"], []).append(row)
         for currency, points in by_currency.items():
+            if selected_currency is not None and currency != selected_currency:
+                continue
             kind = "PIE_CHART" if group is categories and preference == "PIE_CHART" else default_kind
             if not issues:
                 blocks.append({"kind": kind, "title": title + suffix, "currency": currency,
@@ -89,6 +95,36 @@ def _spending(raw: dict[str, Any], preference: str) -> list[dict[str, Any]]:
     return blocks
 
 
+def _period_instant(value: Any) -> Any:
+    """Canonicalize aware instants without truncating sub-microsecond precision."""
+    if not isinstance(value, str):
+        return value
+    match = re.fullmatch(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.(\d+))?(?:Z|[+-]\d{2}:\d{2})', value)
+    if not match:
+        return value
+    try:
+        instant = datetime.fromisoformat(value.replace('Z', '+00:00'))
+        return [instant.replace(microsecond=0).astimezone(timezone.utc).isoformat(), (match[1] or '').rstrip('0')]
+    except ValueError:
+        return value
+
+
+def _spending_key(raw: dict, currency: str) -> str | None:
+    period = raw.get('period')
+    if not isinstance(period, dict) or not period.get('from') or not period.get('to'):
+        return None
+    scope = raw.get('scope', {})
+    if not isinstance(scope, dict):
+        return None
+    comparison = raw.get('period_change')
+    comparison = ({key: _period_instant(comparison.get(key)) for key in ('comparison_from', 'comparison_to')}
+                  if isinstance(comparison, dict) else None)
+    return json.dumps({'period': {key: _period_instant(value) for key, value in period.items()},
+        'scope': {key: value for key, value in scope.items() if key != 'currency'},
+        'currency': currency, 'bucket_by': raw.get('bucket_by', 'NONE'), 'comparison': comparison},
+        sort_keys=True, ensure_ascii=False)
+
+
 def build_presentation(task: Task) -> list[dict[str, Any]]:
     """Only the task owner's already-authorized tool observations enter the UI."""
     blocks: list[dict[str, Any]] = []
@@ -99,12 +135,34 @@ def build_presentation(task: Task) -> list[dict[str, Any]]:
     observations = getattr(task, "observations", [])
     floor = ledger[0].get("observation_floor", 0) if ledger else 0
     floor = floor if isinstance(floor, int) and 0 <= floor <= len(observations) else 0
-    for observation in observations[floor:][-24:]:
+    window = observations[floor:][-24:]
+    # Select the most recent authoritative observation per semantic scope and
+    # denomination. Never sum overlapping results or modify persisted evidence.
+    selected: dict[str, tuple[int, str]] = {}
+    for index, observation in enumerate(window):
+        if observation.success and observation.tool_name == 'summarize_spending':
+            raw = observation.structured_result
+            totals = raw.get('totals_by_currency')
+            for code in list(totals)[:6] if isinstance(totals, dict) else []:
+                if _currency(code) is not None and (key := _spending_key(raw, code)) is not None:
+                    selected[key] = (index, code)
+    spending_emitted = False
+    for index, observation in enumerate(window):
         if not observation.success:
             continue
         raw = observation.structured_result
         if observation.tool_name == "summarize_spending":
-            blocks.extend(_spending(raw, preference))
+            totals = raw.get('totals_by_currency')
+            codes = list(totals)[:6] if isinstance(totals, dict) else []
+            if codes and all(_currency(code) is not None and _spending_key(raw, code) is not None for code in codes):
+                # Dictionary insertion order keeps stable currency order even if
+                # a later, narrower read refreshes one denomination.
+                if not spending_emitted:
+                    for position, code in selected.values():
+                        blocks.extend(_spending(window[position].structured_result, preference, code))
+                    spending_emitted = True
+            else:
+                blocks.extend(_spending(raw, preference))
         elif observation.tool_name == "list_transactions":
             transactions = raw.get("transactions")
             rows = []

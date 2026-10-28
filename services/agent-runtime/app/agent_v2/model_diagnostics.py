@@ -5,6 +5,7 @@ from contextvars import ContextVar
 from typing import Callable
 
 from pydantic import ValidationError
+from ..deepseek import ModelJSONError
 
 diagnostic_sink: ContextVar[Callable[[dict], None] | None] = ContextVar('planner_diagnostics', default=None)
 _FIELDS = frozenset({'type', 'tool_call', 'tool_name', 'arguments', 'step_id',
@@ -28,6 +29,8 @@ def record_schema_error(error: Exception, attempt: int) -> dict:
         issues = [{'path': '$', 'type': 'invalid_json'}]
     diagnostic = {'kind': 'MODEL_SCHEMA_ERROR', 'phase': 'PLANNER_DECISION',
         'schema_version': 'planner-decision-v1', 'attempt': attempt, 'issues': issues}
+    if isinstance(error, ModelJSONError):
+        diagnostic['format'] = error.format_metadata
     sink = diagnostic_sink.get()
     if sink:
         sink(diagnostic)

@@ -137,21 +137,13 @@ if ($Command -in @('start', 'restart')) {
     if ($WithKnowledge -and -not $selectedServices.Count) { $buildServices += 'knowledge-service' }
     foreach ($service in $buildServices) {
       $memory = Get-CimInstance Win32_PerfFormattedData_PerfOS_Memory
-      if (([double]$memory.CommitLimit - [double]$memory.CommittedBytes) -lt 2GB) {
+      if (([double]$memory.CommitLimit - [double]$memory.CommittedBytes) -lt 2GB -or $memory.AvailableMBytes -lt 2048) {
         throw 'RESOURCE_BLOCKED before next build; running services unchanged.'
       }
       Write-Host "Building $service..."
       if ($service -in @('web', 'agent-runtime')) {
-        $sourceDirectory = if ($service -eq 'web') { Join-Path $root 'apps/web/src' } else { Join-Path $root 'services/agent-runtime/app' }
-        $entries = @(Get-ChildItem -LiteralPath $sourceDirectory -Recurse -File |
-          Where-Object { $_.Extension -in @('.py', '.ts', '.tsx', '.css', '.json') } |
-          Sort-Object FullName | ForEach-Object {
-            $_.FullName.Substring($root.Length) + ':' + (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash
-          })
-        $sha = [Security.Cryptography.SHA256]::Create()
-        try { $fingerprint = ([BitConverter]::ToString($sha.ComputeHash([Text.Encoding]::UTF8.GetBytes(($entries -join "`n"))))).Replace('-', '').ToLowerInvariant() }
-        finally { $sha.Dispose() }
-        Write-Host "Source tree SHA256 ($service): $fingerprint"
+        $fingerprint = & (Join-Path $root 'scripts/build-fingerprint.ps1') -Service $service -Root $root
+        Write-Host "Build input SHA256 v2 ($service): $fingerprint"
         Invoke-Compose -Arguments @('build', '--build-arg', "ASTER_SOURCE_SHA256=$fingerprint", $service)
       } else {
         Invoke-Compose -Arguments @('build', $service)

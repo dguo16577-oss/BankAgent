@@ -489,7 +489,7 @@ class DeepSeekPlanner:
         for attempt in range(2):
             try:
                 result = await self.classifier._json_completion(
-                    instructions if schema_repair is None else instructions + " Correct the schema issues supplied in schema_repair. Return exactly one valid decision; do not change bank facts or authorization.",
+                    instructions if schema_repair is None else instructions + " Correct the format/schema issues supplied in schema_repair. Return exactly one JSON object matching decision_schema, without markdown fences, prose, or a JSON string/array. Never include reasoning in content. Do not change bank facts, original user terms, tool permissions or authorization.",
                     payload if schema_repair is None else json.dumps({**context, 'schema_repair': schema_repair}, ensure_ascii=False, separators=(',', ':')),
                     1500,
                 )
