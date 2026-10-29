@@ -95,31 +95,48 @@ def _spending(raw: dict[str, Any], preference: str, selected_currency: str | Non
     return blocks
 
 
-def _period_instant(value: Any) -> Any:
+def _period_instant(value: Any) -> list[str] | None:
     """Canonicalize aware instants without truncating sub-microsecond precision."""
     if not isinstance(value, str):
-        return value
-    match = re.fullmatch(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.(\d+))?(?:Z|[+-]\d{2}:\d{2})', value)
+        return None
+    match = re.fullmatch(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.(\d+))?(?P<zone>Z|[+-]\d{2}:\d{2})', value)
     if not match:
-        return value
+        return None
+    zone = match['zone']
+    if zone != 'Z' and (int(zone[1:3]) > 23 or int(zone[4:6]) > 59):
+        return None
     try:
         instant = datetime.fromisoformat(value.replace('Z', '+00:00'))
         return [instant.replace(microsecond=0).astimezone(timezone.utc).isoformat(), (match[1] or '').rstrip('0')]
-    except ValueError:
-        return value
+    except (ValueError, OverflowError):
+        return None
+
+
+def _period_bounds(period: Any, left_key: str, right_key: str) -> dict | None:
+    if not isinstance(period, dict):
+        return None
+    left, right = _period_instant(period.get(left_key)), _period_instant(period.get(right_key))
+    if left is None or right is None or left >= right:
+        # An opaque string, naive date, invalid calendar value or non-positive
+        # interval cannot prove that two observations cover the same period.
+        return None
+    return {left_key: left, right_key: right}
 
 
 def _spending_key(raw: dict, currency: str) -> str | None:
     period = raw.get('period')
-    if not isinstance(period, dict) or not period.get('from') or not period.get('to'):
+    bounds = _period_bounds(period, 'from', 'to')
+    if bounds is None:
         return None
     scope = raw.get('scope', {})
     if not isinstance(scope, dict):
         return None
     comparison = raw.get('period_change')
-    comparison = ({key: _period_instant(comparison.get(key)) for key in ('comparison_from', 'comparison_to')}
-                  if isinstance(comparison, dict) else None)
-    return json.dumps({'period': {key: _period_instant(value) for key, value in period.items()},
+    if comparison is not None:
+        comparison = _period_bounds(comparison, 'comparison_from', 'comparison_to')
+        if comparison is None:
+            return None
+    return json.dumps({'period': {**period, **bounds},
         'scope': {key: value for key, value in scope.items() if key != 'currency'},
         'currency': currency, 'bucket_by': raw.get('bucket_by', 'NONE'), 'comparison': comparison},
         sort_keys=True, ensure_ascii=False)

@@ -64,6 +64,37 @@ class SpendingSelectionTests(unittest.TestCase):
         unknown = spending('CNY'); unknown.pop('period')
         self.assertEqual(sum(b['kind'] == 'SUMMARY_CARD' for b in self.render(unknown, spending('CNY'))), 2)
 
+    def test_nonempty_unknown_invalid_and_unsupported_periods_never_merge(self):
+        for period in [
+            {'from': 'unknown', 'to': 'unknown'},
+            {'from': '2026-02-30T00:00:00+08:00', 'to': '2026-03-01T00:00:00+08:00'},
+            {'from': '2026-09-01', 'to': '2026-10-01'},
+            {'from': '2026-09-01T00:00:00', 'to': '2026-10-01T00:00:00'},
+            {'from': '2026-09-01T00:00:00+08:70', 'to': '2026-10-01T00:00:00+08:70'},
+            {'from': ['unknown'], 'to': ['unknown']},
+            {'from': '2026-09-01T00:00:00+08:00'},
+        ]:
+            with self.subTest(period=period):
+                row = spending('CNY'); row['period'] = period
+                self.assertEqual(sum(b['kind'] == 'SUMMARY_CARD' for b in self.render(row, copy.deepcopy(row))), 2)
+
+    def test_equal_and_reverse_ranges_never_merge(self):
+        for start in ['2026-10-01T00:00:00+08:00', '2026-10-02T00:00:00+08:00']:
+            row = spending('CNY', start=start)
+            self.assertEqual(sum(b['kind'] == 'SUMMARY_CARD' for b in self.render(row, copy.deepcopy(row))), 2)
+
+    def test_invalid_comparison_range_never_merges_valid_primary_period(self):
+        for comparison in [{}, {'comparison_from': 'unknown', 'comparison_to': 'unknown'},
+                           {'comparison_from': '2026-08-01T00:00:00Z'}, 'unknown']:
+            row = spending('CNY'); row['period_change'] = comparison
+            self.assertEqual(sum(b['kind'] == 'SUMMARY_CARD' for b in self.render(row, copy.deepcopy(row))), 2)
+
+    def test_valid_comparison_timezone_equivalence_still_merges(self):
+        before, after = spending('CNY'), spending('CNY')
+        before['period_change'] = {'comparison_from': '2026-08-01T00:00:00+08:00', 'comparison_to': '2026-09-01T00:00:00+08:00'}
+        after['period_change'] = {'comparison_from': '2026-07-31T16:00:00Z', 'comparison_to': '2026-08-31T16:00:00Z'}
+        self.assertEqual(sum(b['kind'] == 'SUMMARY_CARD' for b in self.render(before, after)), 1)
+
     def test_timezone_equivalence_and_submicrosecond_periods(self):
         before, after = spending('CNY'), spending('CNY')
         after['period'] = {'from': '2026-08-31T16:00:00Z', 'to': '2026-09-30T16:00:00Z'}
