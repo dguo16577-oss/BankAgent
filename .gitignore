@@ -29,6 +29,7 @@ services/agent-runtime/**/__pycache__/
 .local-backups/
 .publish/
 deliverables/
+output/
 docs.zip
 docs/screenshots/
 *.pem

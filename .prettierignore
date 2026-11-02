@@ -9,6 +9,7 @@ next-env.d.ts
 coverage
 playwright-report
 test-results
+output
 artifacts/agent-eval/*.json
 artifacts/m18-*.json
 artifacts/m19-1-*.json

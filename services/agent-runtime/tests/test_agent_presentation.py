@@ -3,6 +3,7 @@ from __future__ import annotations
 import pathlib
 import sys
 import unittest
+from datetime import datetime, timezone
 
 import httpx
 
@@ -53,7 +54,9 @@ class AccountPresentationTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn("Savings", reply)
 
     async def test_transfer_history_question_is_read_only_not_a_new_transfer_task(self):
-        app = create_app(FixtureGateway(), OfflineClassifier(), agent_version="v1")
+        # Relative-month queries must use the same clock as the history fixture.
+        app = create_app(FixtureGateway(), OfflineClassifier(), agent_version="v1",
+                         now_provider=lambda: datetime(2026, 10, 15, tzinfo=timezone.utc))
         async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://agent.test") as client:
             response = await client.post("/agent/chat", json={"message": "我这个月转给 Lin Wei 多少钱？"},
                                          headers={"Cookie": "SESSION=alex"})

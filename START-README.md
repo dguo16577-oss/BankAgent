@@ -44,22 +44,25 @@
 
 构建失败时不要执行下一步并声称更新成功。运行镜像标签 `io.aster.source.sha256` 使用构建输入v2指纹（包含锁文件、兼容包、patch与Dockerfile），不是Git Commit或镜像Digest；旧src-only标签不能与v2直接比较。可用 `./scripts/build-fingerprint.ps1 -Service web` 或 `-Service agent-runtime` 核对当前输入；仍须记录实际运行Image ID/Digest和配置。
 
-## 现有演示环境
+## 独立部署示例
 
-本机项目 `aster-acceptance-20261012` 使用 18088，维护时始终指定同一项目名和端口：
+使用独立项目名与空闲端口，在仓库外按 `start.env.example` 准备配置。路径按实际环境替换，维护或重启时保留同一项目名、端口、配置和密钥文件：
 
 ```powershell
-.\start.cmd check -ProjectName aster-acceptance-20261012 -Port 18088
-.\start.cmd start -ProjectName aster-acceptance-20261012 -Port 18088
-.\start.cmd status -ProjectName aster-acceptance-20261012
-.\start.cmd stop -ProjectName aster-acceptance-20261012
+.\start.cmd check -ProjectName aster-demo -Port 18090 -EnvFile 'C:\private\aster.env' -KeyFile 'C:\private\deepseek-key.txt'
+.\start.cmd start -ProjectName aster-demo -Port 18090 -EnvFile 'C:\private\aster.env' -KeyFile 'C:\private\deepseek-key.txt'
+.\start.cmd status -ProjectName aster-demo
+.\start.cmd logs -ProjectName aster-demo
+.\start.cmd stop -ProjectName aster-demo
 ```
 
 启动成功后访问：
 
-- 银行首页：<http://127.0.0.1:18088/>
-- 智能助手：<http://127.0.0.1:18088/app/agent-copilot>
-- 简洁对话：<http://127.0.0.1:18088/app/agent>
+- 银行首页：<http://127.0.0.1:18090/>
+- Copilot助手：<http://127.0.0.1:18090/app/agent-copilot>
+- Legacy助手：<http://127.0.0.1:18090/app/agent>
+
+以上是启动成功后的访问位置，不表示服务当前已在线。首次构建需要镜像与依赖仓库访问，本仓库不包含镜像或模型缓存。
 
 合成演示账户：`alex@aster.local`、`lin@aster.local`，密码 `demo-password`。请勿使用真实银行密码。对浏览器中不同客户进行隔离应使用不同浏览器配置，不仅是不同端口。
 

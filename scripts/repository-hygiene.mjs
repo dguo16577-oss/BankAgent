@@ -19,7 +19,7 @@ let bytes = 0;
 let links = 0;
 let localEvidence = 0;
 const localOnly =
-  /^(?:artifacts|test-results|backups|deliverables|docs\/screenshots)\//;
+  /^(?:artifacts|test-results|backups|deliverables|output|docs\/screenshots)\//;
 const forbiddenDirectory =
   /(?:^|\/)(?:node_modules|\.next|\.venv(?:-mcp)?|__pycache__|\.pytest_cache|\.mypy_cache|dist|out|target(?:-[^/]+)?|coverage|playwright-report|\.local-backups|\.publish)(?:\/|$)/;
 const obsolete = new Set([
